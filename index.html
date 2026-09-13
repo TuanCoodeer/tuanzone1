@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tuanzOne.com - Bán nick Free Fire, Liên Quân, FC Mobile UY TÍN - GIÁ RẺ - CHẤT LƯỢNG</title>
+  <meta name="description" content="tuanzOne.com - Hệ thống mua bán tài khoản Free Fire, Liên Quân Mobile, FC Mobile (OVR cao, đội hình giá trị). Nạp thẻ cào tự động, nạp ATM/ngân hàng ngoài đời, bảo mật tuyệt đối.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/theme.css?v=1.0.7">
+  <link rel="stylesheet" href="styles/components.css?v=1.0.7">
+  <link rel="stylesheet" href="styles/modals.css?v=1.0.7">
+</head>
+<body data-theme="dark">
+
+  <!-- =========================================================
+       HEADER CHÍNH THỨC
+       ========================================================= -->
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- 1. Logo Website -->
+      <a href="#" class="brand-wrapper" id="header-logo-btn">
+        <div class="brand-badge-icon">TZ</div>
+        <div class="brand-text">
+          <div class="brand-name">tuanz<span>One</span>.com</div>
+          <div class="brand-sub">UY TÍN - GIÁ RẺ - CHẤT LƯỢNG</div>
+        </div>
+      </a>
+
+      <!-- 2. Menu Điều Hướng Nhanh Đến 3 Kho -->
+      <nav class="header-nav">
+        <a href="#kho-freefire" class="nav-link">🔥 Kho Free Fire</a>
+        <a href="#kho-lienquan" class="nav-link">⚔️ Kho Liên Quân</a>
+        <a href="#kho-fcmobile" class="nav-link">⚽ Kho FC Mobile</a>
+      </nav>
+
+      <!-- 3. Thanh Tìm Kiếm Acc Bằng Mã Hoặc Mô Tả -->
+      <div class="header-search">
+        <input type="text" class="search-input-box" id="global-search-input" placeholder="Tìm mã acc hoặc mô tả...">
+        <button class="search-submit-btn" id="global-search-btn" title="Tìm kiếm">🔍</button>
+      </div>
+
+      <!-- 4. Nút Đổi Chế Độ Sáng/Tối, Nạp Tiền & Đăng Nhập/Đăng Ký -->
+      <div class="header-actions">
+        <!-- Nút Bật/Tắt Sáng Tối (Light / Dark Mode) -->
+        <button class="btn-theme-toggle" id="btn-toggle-theme" title="Chuyển chế độ Sáng / Tối">
+          <span id="theme-toggle-icon">🌙</span>
+          <span id="theme-toggle-label">Tối</span>
+        </button>
+
+        <!-- Nút Nạp Tiền (Mở 2 Phương Án: Thẻ cào & Ngân hàng/ATM) -->
+        <button class="btn-topup-main" id="btn-open-deposit-modal">
+          <span>💳</span> Nạp Tiền
+        </button>
+
+        <!-- Khu vực Đăng Nhập / Đăng Ký -->
+        <div class="auth-group" id="header-auth-group">
+          <button class="btn-auth-item" id="btn-header-login">Đăng Nhập</button>
+          <button class="btn-auth-item" id="btn-header-register" style="background: var(--primary-blue); color: #fff; border: none;">Đăng Ký</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       HERO WRAPPER: TOP NẠP TIỀN THÁNG & BANNER SLIDER
+       ========================================================= -->
+  <main class="container">
+    <section class="hero-wrapper">
+      
+      <!-- Cột Trái: TOP NẠP TIỀN THÁNG -->
+      <div class="topup-leaderboard">
+        <div class="leaderboard-title">
+          <span>⭐</span> TOP NẠP TIỀN THÁNG
+        </div>
+        <div class="leaderboard-list" id="leaderboard-list-items">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Cột Phải: BANNER SLIDER GAME CHÍNH DIỆN -->
+      <div class="hero-slider-panel">
+        <div class="slider-content">
+          <span class="slider-tag">HỆ THỐNG GIAO DỊCH TỰ ĐỘNG</span>
+          <h1 class="slider-headline">
+            SHOP NICK <span>TUANZONE.COM</span>
+          </h1>
+          <p class="slider-desc">
+            Chuyên cung cấp tài khoản Free Fire (Prime 1-8), Liên Quân Mobile và FC Mobile (OVR cao, đội hình giá trị). Nạp tiền thẻ cào và ngân hàng ATM tự động 24/7.
+          </p>
+          <div class="slider-badges">
+            <span class="feature-pill">🛡️ Uy Tín - Giá Rẻ</span>
+            <span class="feature-pill">⚡ Nhận Nick Tức Thì</span>
+            <span class="feature-pill">🔒 Bảo Mật Thông Tin</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         KHO 1: KHO NICK FREE FIRE
+         Phân loại Prime (1-8) & Mức giá, Sắp xếp
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-freefire">
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-ff">🔥</div>
+          <h2 class="warehouse-heading">KHO NICK FREE FIRE</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho Free Fire -->
+      <div class="filter-toolbar">
+        <!-- 1. Lọc Theo Prime (từ 1 - 8) -->
+        <div class="filter-row">
+          <span class="filter-label">Bậc Prime:</span>
+          <div class="chip-group" id="ff-prime-chips">
+            <button class="filter-chip active" data-prime="all">Tất cả Prime</button>
+            <button class="filter-chip" data-prime="Prime 1">Prime 1</button>
+            <button class="filter-chip" data-prime="Prime 2">Prime 2</button>
+            <button class="filter-chip" data-prime="Prime 3">Prime 3</button>
+            <button class="filter-chip" data-prime="Prime 4">Prime 4</button>
+            <button class="filter-chip" data-prime="Prime 5">Prime 5</button>
+            <button class="filter-chip" data-prime="Prime 6">Prime 6</button>
+            <button class="filter-chip" data-prime="Prime 7">Prime 7</button>
+            <button class="filter-chip" data-prime="Prime 8">Prime 8</button>
+          </div>
+        </div>
+
+        <!-- 2. Lọc Theo Giá -->
+        <div class="filter-row">
+          <span class="filter-label">Mức Giá:</span>
+          <div class="chip-group" id="ff-price-chips">
+            <button class="filter-chip active" data-price="all">Tất cả giá</button>
+            <button class="filter-chip" data-price="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price="1m-5m">1 Triệu - 5 Triệu</button>
+            <button class="filter-chip" data-price="5m-10m">5 Triệu - 10 Triệu</button>
+            <button class="filter-chip" data-price="10m-15m">10 Triệu - 15 Triệu</button>
+            <button class="filter-chip" data-price="15m-20m">15 Triệu - 20 Triệu</button>
+            <button class="filter-chip" data-price="over-20m">Trên 20 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Chọn mức giá phù hợp với túi tiền của bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="ff-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="ff-accounts-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+         KHO 2: KHO NICK LIÊN QUÂN
+         Phân loại Mức giá & Sắp xếp
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-lienquan">
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-lq">⚔️</div>
+          <h2 class="warehouse-heading">KHO NICK LIÊN QUÂN</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho Liên Quân -->
+      <div class="filter-toolbar">
+        <div class="filter-row">
+          <span class="filter-label">Mức Giá:</span>
+          <div class="chip-group" id="lq-price-chips">
+            <button class="filter-chip active" data-price="all">Tất cả giá</button>
+            <button class="filter-chip" data-price="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price="1m-5m">1 Triệu - 5 Triệu</button>
+            <button class="filter-chip" data-price="5m-10m">5 Triệu - 10 Triệu</button>
+            <button class="filter-chip" data-price="10m-15m">10 Triệu - 15 Triệu</button>
+            <button class="filter-chip" data-price="15m-20m">15 Triệu - 20 Triệu</button>
+            <button class="filter-chip" data-price="over-20m">Trên 20 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Chọn mức giá phù hợp với túi tiền của bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="lq-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="lq-accounts-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+         KHO 3: KHO NICK FC MOBILE
+         Phân loại Chỉ số OVR, Phiên bản Server, Mức giá, Sắp xếp
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-fcmobile">
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-fc">⚽</div>
+          <h2 class="warehouse-heading">KHO NICK FC MOBILE</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho FC Mobile -->
+      <div class="filter-toolbar">
+        <!-- 1. Lọc Theo OVR Đội Hình -->
+        <div class="filter-row">
+          <span class="filter-label">Chỉ Số OVR:</span>
+          <div class="chip-group" id="fc-ovr-chips">
+            <button class="filter-chip active" data-ovr="all">Tất cả OVR</button>
+            <button class="filter-chip" data-ovr="100-110">OVR 100 - 110</button>
+            <button class="filter-chip" data-ovr="111-120">OVR 111 - 120</button>
+            <button class="filter-chip" data-ovr="121-130">OVR 121 - 130</button>
+            <button class="filter-chip" data-ovr="over-130">OVR 130+</button>
+          </div>
+        </div>
+
+        <!-- 2. Lọc Theo Server / Phiên Bản -->
+        <div class="filter-row">
+          <span class="filter-label">Phiên Bản:</span>
+          <div class="chip-group" id="fc-server-chips">
+            <button class="filter-chip active" data-server="all">Tất cả Server</button>
+            <button class="filter-chip" data-server="global">Bản Quốc Tế (Global)</button>
+            <button class="filter-chip" data-server="korea">Bản Hàn Quốc (Nexon)</button>
+          </div>
+        </div>
+
+        <!-- 3. Lọc Mức Giá -->
+        <div class="filter-row">
+          <span class="filter-label">Mức Giá:</span>
+          <div class="chip-group" id="fc-price-chips">
+            <button class="filter-chip active" data-price="all">Tất cả giá</button>
+            <button class="filter-chip" data-price="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price="1m-5m">1 Triệu - 5 Triệu</button>
+            <button class="filter-chip" data-price="5m-10m">5 Triệu - 10 Triệu</button>
+            <button class="filter-chip" data-price="10m-15m">10 Triệu - 15 Triệu</button>
+            <button class="filter-chip" data-price="15m-20m">15 Triệu - 20 Triệu</button>
+            <button class="filter-chip" data-price="over-20m">Trên 20 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Chọn chỉ số OVR và mức giá phù hợp với bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="fc-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="fc-accounts-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       MODAL NẠP TIỀN: 2 PHƯƠNG ÁN (THẺ CÀO & NGÂN HÀNG/ATM)
+       ========================================================= -->
+  <div class="modal-overlay" id="deposit-modal">
+    <div class="modal-window">
+      <button class="modal-close-trigger" id="deposit-modal-close-btn">✕</button>
+      
+      <div class="modal-header-block">
+        <div class="modal-title-text">
+          <span>💳</span> Nạp Tiền Vào Shop tuanzOne.com
+        </div>
+        <div class="modal-sub-text">Hỗ trợ nạp tiền thẻ cào thực tế và chuyển khoản ngân hàng ATM tự động 24/7</div>
+      </div>
+
+      <div class="modal-body-content">
+        <!-- 2 Tab Lựa Chọn: Thẻ Cào hoặc Ngân Hàng/ATM -->
+        <div class="segmented-tabs-bar">
+          <button class="seg-tab-btn active" id="tab-deposit-card">
+            <span>🎫</span> 1. Nạp Bằng Thẻ Cào Ngoài Đời
+          </button>
+          <button class="seg-tab-btn" id="tab-deposit-bank">
+            <span>🏦</span> 2. Nạp Bằng ATM / Ngân Hàng
+          </button>
+        </div>
+
+        <!-- PHƯƠNG ÁN 1: NẠP THẺ CÀO -->
+        <div id="panel-deposit-card">
+          <form id="form-deposit-card">
+            <div class="modal-form-group">
+              <label class="modal-field-label">Chọn Loại Thẻ Cào:</label>
+              <div class="card-provider-grid">
+                <button type="button" class="provider-item-btn selected" data-telco="VIETTEL">Viettel</button>
+                <button type="button" class="provider-item-btn" data-telco="VINAPHONE">Vinaphone</button>
+                <button type="button" class="provider-item-btn" data-telco="MOBIFONE">Mobifone</button>
+                <button type="button" class="provider-item-btn" data-telco="GARENA">Thẻ Garena</button>
+                <button type="button" class="provider-item-btn" data-telco="ZING">Thẻ Zing</button>
+              </div>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Chọn Mệnh Giá Thẻ:</label>
+              <select class="modal-select-field" id="card-amount-select" required>
+                <option value="10000">10.000 VNĐ (Nhận 10.000 đ)</option>
+                <option value="20000">20.000 VNĐ (Nhận 20.000 đ)</option>
+                <option value="50000" selected>50.000 VNĐ (Nhận 50.000 đ)</option>
+                <option value="100000">100.000 VNĐ (Nhận 100.000 đ)</option>
+                <option value="200000">200.000 VNĐ (Nhận 200.000 đ)</option>
+                <option value="500000">500.000 VNĐ (Nhận 500.000 đ)</option>
+                <option value="1000000">1.000.000 VNĐ (Nhận 1.000.000 đ)</option>
+              </select>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Số Seri Thẻ Cào:</label>
+              <input type="text" class="modal-input-field" id="card-serial-input" placeholder="Nhập số seri in trên thẻ..." required>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Mã Thẻ (Mã Cào PIN):</label>
+              <input type="text" class="modal-input-field" id="card-pin-input" placeholder="Nhập mã thẻ cào dưới lớp tráng bạc..." required>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+              * Lưu ý: Thẻ cào sẽ được gửi lên hệ thống để Admin kiểm tra và nạp tiền vào ví trong 1 - 3 phút. Vui lòng chọn đúng mệnh giá thẻ hoặc gửi trực tiếp qua Zalo <strong>0907960586</strong> để được duyệt nhanh hơn!
+            </div>
+
+            <button type="submit" class="btn-submit-modal-action">
+              ⚡ Gửi Thẻ Cào Chờ Duyệt
+            </button>
+          </form>
+        </div>
+
+        <!-- PHƯƠNG ÁN 2: CHUYỂN KHOẢN NGÂN HÀNG / ATM -->
+        <div id="panel-deposit-bank" style="display: none;">
+          <div style="background: rgba(0, 132, 255, 0.08); border: 1px solid rgba(0, 132, 255, 0.2); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 1.8rem;">🏦</span>
+            <div style="font-size: 0.82rem; line-height: 1.4; color: var(--text-main);">
+              Chuyển khoản qua <strong>Vietcombank</strong> tự động tạo mã QR. Tiền vào thẳng tài khoản shop, được Admin kiểm tra và duyệt nhanh trong <strong>1 - 3 phút</strong>.
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Nhập Số Tiền Bạn Muốn Nạp (VNĐ):</label>
+              <input type="number" class="modal-input-field" id="bank-deposit-amount" value="50000" min="10000" step="10000" placeholder="Nhập số tiền (tối thiểu 10.000 đ)">
+            </div>
+          </div>
+
+          <div class="bank-qr-layout">
+            <div class="qr-image-wrapper">
+              <img src="" class="qr-code-view" id="bank-qr-code-img" alt="VietQR Nạp Tiền">
+              <div class="qr-caption" style="margin-top: 6px; font-weight: 600; color: var(--primary-blue);">⚡ Quét bằng mọi App Ngân Hàng</div>
+            </div>
+
+            <div class="bank-info-details">
+              <div class="info-data-row">
+                <span class="info-data-label">Ngân Hàng:</span>
+                <span class="info-data-val" id="bank-display-name" style="color: var(--primary-blue); font-weight: 700;">Vietcombank (Ngoại Thương Việt Nam)</span>
+              </div>
+
+              <div class="info-data-row">
+                <span class="info-data-label">Số Tài Khoản:</span>
+                <div class="info-data-value-wrap">
+                  <span class="info-data-val" id="bank-acc-num" style="font-family: var(--font-mono); font-weight: 800; color: #fff;">0281000095697</span>
+                  <button class="btn-mini-copy" data-copy-val="0281000095697">Copy</button>
+                </div>
+              </div>
+
+              <div class="info-data-row">
+                <span class="info-data-label">Chủ Tài Khoản:</span>
+                <div class="info-data-value-wrap">
+                  <span class="info-data-val" id="bank-acc-holder" style="font-weight: 700; color: var(--accent-gold);">HUỲNH VĂN ÚT</span>
+                </div>
+              </div>
+
+              <div class="info-data-row">
+                <span class="info-data-label">Nội Dung Chuyển Khoản:</span>
+                <div class="info-data-value-wrap">
+                  <span class="info-data-val" id="bank-memo-syntax" style="color: var(--accent-gold); font-family: var(--font-mono); font-weight: 800;">NAP TUANZONE KHACH</span>
+                  <button class="btn-mini-copy" id="btn-copy-syntax">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px;">
+            <button type="button" class="btn-submit-modal-action" id="btn-confirm-bank-transferred" style="background: linear-gradient(135deg, #00c853, #009624); width: 100%;">
+              ⚡ Tôi Đã Chuyển Tiền (Gửi Yêu Cầu Duyệt)
+            </button>
+            <a href="https://zalo.me/0907960586" target="_blank" rel="noopener noreferrer" class="btn-zalo-quick-notify" id="btn-open-zalo-verify" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; padding: 10px; background: rgba(0, 132, 255, 0.12); border: 1px solid rgba(0, 132, 255, 0.35); border-radius: var(--radius-md); color: #00e5ff; font-weight: 700; text-decoration: none; font-size: 0.88rem;">
+              💬 Nhắn Zalo 0907960586 Duyệt Tiền Ngay (1 Phút)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL ĐĂNG NHẬP & ĐĂNG KÝ (THIẾT KẾ CHUẨN THEO ẢNH YÊU CẦU)
+       ========================================================= -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-window auth-window-styled">
+      <button class="modal-close-trigger" id="auth-modal-close-btn" title="Đóng">✕</button>
+      
+      <!-- Cảnh báo nếu mở từ nút Mua Acc -->
+      <div class="must-login-warning" id="auth-login-required-msg" style="display: none; margin-bottom: 14px;">
+        <span>⚠️</span> Bạn cần đăng nhập tài khoản trước khi mua acc game!
+      </div>
+
+      <!-- Phần Đầu Header Của Modal Đăng Nhập / Đăng Ký -->
+      <div class="auth-header-centered">
+        <!-- Logo của Shop (Giữ đúng thương hiệu tuanzOne.com) -->
+        <div class="auth-brand-logo-center">
+          <div class="brand-badge-icon auth-logo-badge">TZ</div>
+          <div class="brand-name auth-logo-text">tuanz<span>One</span>.com</div>
+        </div>
+
+        <!-- Tag thành viên -->
+        <div class="auth-member-pill">TUANZONE MEMBER</div>
+
+        <!-- Tiêu đề lớn (Đổi linh hoạt Đăng nhập / Đăng ký) -->
+        <h2 class="auth-form-headline" id="auth-modal-title">Đăng nhập</h2>
+
+        <!-- Dòng mô tả chuẩn theo yêu cầu: Nạp tiền, mua acc và xem lịch sử giao dịch -->
+        <p class="auth-form-subline">Nạp tiền, mua acc và xem lịch sử giao dịch.</p>
+      </div>
+
+      <!-- Thanh chọn Tab: Đăng nhập / Đăng ký (Giống ảnh mẫu) -->
+      <div class="auth-segmented-control">
+        <button type="button" class="auth-seg-btn active" id="tab-auth-login">Đăng nhập</button>
+        <button type="button" class="auth-seg-btn" id="tab-auth-register">Đăng ký</button>
+      </div>
+
+      <!-- Form nhập dữ liệu -->
+      <form id="auth-submit-form">
+        <!-- Trường Tên đăng nhập -->
+        <div class="auth-field-wrap">
+          <label class="auth-field-label" for="auth-username-field">Tên đăng nhập</label>
+          <div class="auth-input-container">
+            <input type="text" class="auth-input" id="auth-username-field" placeholder="Ví dụ: abcxyz12" autocomplete="username" required>
+          </div>
+          <div class="auth-helper-hint">5–12 ký tự, bắt đầu bằng chữ; chỉ dùng chữ thường và số.</div>
+        </div>
+
+        <!-- Trường Mật khẩu -->
+        <div class="auth-field-wrap">
+          <label class="auth-field-label" for="auth-password-field">Mật khẩu</label>
+          <div class="auth-input-container">
+            <input type="password" class="auth-input" id="auth-password-field" placeholder="Tối thiểu 6 ký tự" autocomplete="current-password" required>
+            <button type="button" class="auth-pwd-toggle-btn" id="btn-toggle-pwd-main" title="Hiện/Ẩn mật khẩu">Hiện</button>
+          </div>
+        </div>
+
+        <!-- Trường Nhập lại mật khẩu (Chỉ hiển thị khi bấm tab Đăng ký) -->
+        <div class="auth-field-wrap" id="auth-repass-group" style="display: none;">
+          <label class="auth-field-label" for="auth-repassword-field">Nhập lại mật khẩu</label>
+          <div class="auth-input-container">
+            <input type="password" class="auth-input" id="auth-repassword-field" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+            <button type="button" class="auth-pwd-toggle-btn" id="btn-toggle-pwd-repass" title="Hiện/Ẩn mật khẩu">Hiện</button>
+          </div>
+        </div>
+
+        <!-- Nút Submit chính diện màu xanh đậm -->
+        <button type="submit" class="auth-submit-btn" id="btn-auth-action-submit">
+          Đăng nhập
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL LỊCH SỬ GIAO DỊCH DÀNH CHO NGƯỜI DÙNG
+       (Chỉ xuất hiện khi người dùng đăng nhập tài khoản)
+       ========================================================= -->
+  <div class="modal-overlay" id="user-history-modal">
+    <div class="modal-window" style="max-width: 780px;">
+      <button class="modal-close-trigger" id="user-history-close-btn" title="Đóng">✕</button>
+      
+      <div class="modal-header-block" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+        <div class="modal-title-text" style="color: var(--primary-blue);">
+          <span>📜</span> LỊCH SỬ GIAO DỊCH CỦA BẠN
+        </div>
+        <div class="modal-sub-text">Xem lại toàn bộ tài khoản game đã mua, thông tin mật khẩu bàn giao và lịch sử nạp tiền ví</div>
+      </div>
+
+      <div class="modal-body-content" style="padding-top: 18px;">
+        <!-- Tabs Chuyển đổi giữa Nick đã mua & Lịch sử nạp tiền -->
+        <div class="auth-segmented-control" style="margin-bottom: 20px;">
+          <button type="button" class="auth-seg-btn active" id="tab-user-history-orders">🎮 Nick Đã Mua & Thông Tin Mật Khẩu</button>
+          <button type="button" class="auth-seg-btn" id="tab-user-history-deposits">💳 Lịch Sử Nạp Tiền Ví</button>
+        </div>
+
+        <!-- Panel 1: Danh sách Nick Đã Mua & Thông tin đăng nhập -->
+        <div id="panel-user-history-orders">
+          <div id="user-orders-list-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Panel 2: Lịch Sử Nạp Tiền -->
+        <div id="panel-user-history-deposits" style="display: none;">
+          <div id="user-deposits-list-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL ADMIN: THÊM ACC VÀO KHO (CHỈ ADMIN THẤY)
+       ========================================================= -->
+  <div class="modal-overlay" id="admin-add-acc-modal">
+    <div class="modal-window" style="max-width: 620px;">
+      <button class="modal-close-trigger" id="admin-add-acc-close-btn">✕</button>
+      
+      <div class="modal-header-block" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+        <div class="modal-title-text" style="color: var(--accent-gold);">
+          <span>👑</span> Thêm Tài Khoản Mới Vào Kho
+        </div>
+        <div class="modal-sub-text">Đăng bán acc game mới lên website tuanzOne.com</div>
+      </div>
+
+      <div class="modal-body-content" style="padding-top: 18px;">
+        <form id="form-admin-add-acc">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Chọn Tựa Game:</label>
+              <select class="modal-select-field" id="admin-acc-game" required>
+                <option value="freefire">🔥 Free Fire</option>
+                <option value="lienquan">⚔️ Liên Quân Mobile</option>
+                <option value="fcmobile">⚽ FC Mobile</option>
+              </select>
+            </div>
+
+            <!-- Phân loại Free Fire: Prime -->
+            <div class="modal-form-group" id="admin-prime-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Cấp Độ Prime:</label>
+              <select class="modal-select-field" id="admin-acc-prime">
+                <option value="Prime 1">Prime 1</option>
+                <option value="Prime 2">Prime 2</option>
+                <option value="Prime 3">Prime 3</option>
+                <option value="Prime 4">Prime 4</option>
+                <option value="Prime 5">Prime 5</option>
+                <option value="Prime 6">Prime 6</option>
+                <option value="Prime 7">Prime 7</option>
+                <option value="Prime 8">Prime 8</option>
+              </select>
+            </div>
+
+            <!-- Phân loại FC Mobile: OVR & Server -->
+            <div class="modal-form-group" id="admin-fcmobile-group" style="display: none; margin-bottom: 0;">
+              <label class="modal-field-label">Phân Loại FC Mobile:</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <select class="modal-select-field" id="admin-acc-ovr">
+                  <option value="100-110">OVR 100 - 110</option>
+                  <option value="111-120">OVR 111 - 120</option>
+                  <option value="121-130" selected>OVR 121 - 130</option>
+                  <option value="over-130">OVR 130+</option>
+                </select>
+                <select class="modal-select-field" id="admin-acc-server">
+                  <option value="global" selected>Bản Global</option>
+                  <option value="korea">Bản Hàn Quốc</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px; margin-bottom: 14px;">
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Mã Nick (ID):</label>
+              <input type="text" class="modal-input-field" id="admin-acc-id" placeholder="VD: TZ-1029" required>
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Giá Bán (VNĐ):</label>
+              <input type="number" class="modal-input-field" id="admin-acc-price" placeholder="VD: 150000" min="10000" step="5000" required>
+            </div>
+          </div>
+
+          <div class="modal-form-group">
+            <label class="modal-field-label">Tiêu Đề Nick (Hiển thị nổi bật):</label>
+            <input type="text" class="modal-input-field" id="admin-acc-title" placeholder="VD: Nick FF Prime 6 Full Skin VIP Giá Học Sinh" required>
+          </div>
+
+          <div class="modal-form-group">
+            <label class="modal-field-label">Link Ảnh Mô Tả (URL):</label>
+            <input type="url" class="modal-input-field" id="admin-acc-image" placeholder="https://..." value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+              * Mặc định dùng ảnh mẫu đẹp. Bạn có thể đổi sang link ảnh nick thực tế.
+            </div>
+          </div>
+
+          <div class="modal-form-group">
+            <label class="modal-field-label">Thông Tin Đăng Nhập (Tự động gửi cho khách sau khi mua):</label>
+            <textarea class="modal-input-field" id="admin-acc-credentials" rows="2" placeholder="Tài khoản: xxx | Mật khẩu: yyy | Mã 2FA/Ghi chú: zzz" required style="resize: vertical; font-family: var(--font-mono); font-size: 0.85rem;"></textarea>
+          </div>
+
+          <div class="modal-form-group">
+            <label class="modal-field-label">Mô Tả Chi Tiết Về Nick:</label>
+            <textarea class="modal-input-field" id="admin-acc-desc" rows="2" placeholder="VD: Trắng thông tin 100%, rank Kim Cương, nhiều skin súng..." style="resize: vertical; font-size: 0.85rem;"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-modal-action" style="background: linear-gradient(135deg, #ff6b00, #ff8800); margin-top: 8px;">
+            ⚡ ĐĂNG BÁN ACC VÀO KHO NGAY
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL ADMIN: TRUNG TÂM QUẢN TRỊ & BÁO CÁO DOANH THU
+       ========================================================= -->
+  <div class="modal-overlay" id="admin-dashboard-modal">
+    <div class="modal-window" style="max-width: 780px;">
+      <button class="modal-close-trigger" id="admin-dashboard-close-btn">✕</button>
+      
+      <div class="modal-header-block" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+        <div class="modal-title-text" style="color: var(--accent-gold);">
+          <span>👑</span> TRUNG TÂM QUẢN TRỊ ADMIN - TUANZONE.COM
+        </div>
+        <div class="modal-sub-text">Theo dõi doanh thu, báo cáo bán acc và kiểm tra lịch sử giao dịch</div>
+      </div>
+
+      <div class="modal-body-content" style="padding-top: 16px;">
+        <!-- Tabs Quản Trị -->
+        <div class="segmented-tabs-bar" style="margin-bottom: 20px;">
+          <button class="seg-tab-btn active" id="tab-admin-revenue">📊 Doanh Thu Tháng</button>
+          <button class="seg-tab-btn" id="tab-admin-deposits">
+            💳 Duyệt Nạp Tiền (<span id="admin-pending-deposit-count" style="color: var(--accent-gold); font-weight: 800;">0</span>)
+          </button>
+          <button class="seg-tab-btn" id="tab-admin-history">📜 Lịch Sử Giao Dịch</button>
+          <button class="seg-tab-btn" id="tab-admin-inventory">📦 Quản Lý Kho Nick</button>
+        </div>
+
+        <!-- Panel 1: Doanh Thu -->
+        <div id="panel-admin-revenue">
+          <div class="admin-metrics-grid">
+            <div class="admin-metric-card metric-card-gold">
+              <span class="metric-lbl">💰 Tổng Doanh Thu</span>
+              <span class="metric-val" id="metric-total-revenue" style="color: var(--accent-gold);">0 đ</span>
+            </div>
+            <div class="admin-metric-card metric-card-green">
+              <span class="metric-lbl">✅ Nick Đã Bán</span>
+              <span class="metric-val" id="metric-total-sold" style="color: #00e676;">0 acc</span>
+            </div>
+            <div class="admin-metric-card metric-card-cyan">
+              <span class="metric-lbl">📦 Nick Còn Trong Kho</span>
+              <span class="metric-val" id="metric-total-available" style="color: #00e5ff;">0 acc</span>
+            </div>
+          </div>
+
+          <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 12px; color: var(--text-main);">
+            🎯 Doanh Thu Phân Loại Theo Từng Game:
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;" id="admin-game-revenue-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Panel Duyệt Nạp Tiền -->
+        <div id="panel-admin-deposits" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Danh sách các yêu cầu nạp tiền ATM Vietcombank & Thẻ cào:
+            </div>
+            <button type="button" class="btn-mini-copy" id="btn-refresh-admin-deposits" style="background: rgba(0, 242, 254, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan); cursor: pointer; padding: 4px 10px;">
+              🔄 Làm Mới
+            </button>
+          </div>
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã GD</th>
+                  <th>Khách Hàng</th>
+                  <th>Hình Thức</th>
+                  <th>Số Tiền</th>
+                  <th>Chi Tiết / Mã Thẻ</th>
+                  <th>Thời Gian</th>
+                  <th>Trạng Thái</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="admin-deposits-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Panel 2: Lịch Sử Giao Dịch -->
+        <div id="panel-admin-history" style="display: none;">
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã Đơn</th>
+                  <th>Người Mua</th>
+                  <th>Mã Nick & Tên</th>
+                  <th>Game</th>
+                  <th>Giá Tiền</th>
+                  <th>Thời Gian</th>
+                  <th>Trạng Thái</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Panel 3: Quản Lý Kho Nick -->
+        <div id="panel-admin-inventory" style="display: none;">
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã Nick</th>
+                  <th>Tựa Game</th>
+                  <th>Tiêu Đề</th>
+                  <th>Giá Bán</th>
+                  <th>Trạng Thái</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inventory-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       FOOTER CHUẨN 4 CỘT (100% THEO ẢNH SHOPT1.COM MẪU)
+       ========================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <!-- CỘT 1: LOGO & THÔNG ĐIỆP CHÍNH -->
+        <div class="footer-col-1">
+          <div class="footer-brand-logo">
+            <div class="brand-badge-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">TZ</div>
+            <div class="brand-name" style="font-size: 1.3rem;">tuanz<span>One</span>.com</div>
+          </div>
+          <p class="footer-motto">
+            tuanzOne.com · Bán nick Free Fire, Liên Quân, FC Mobile UY TÍN - GIÁ RẺ - CHẤT LƯỢNG
+          </p>
+        </div>
+
+        <!-- CỘT 2: THÔNG TIN CHUNG (Theo ảnh mẫu) -->
+        <div>
+          <h4 class="footer-col-title">THÔNG TIN CHUNG</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="#">Về chúng tôi</a></li>
+            <li class="footer-link-item"><a href="#">Chính sách bảo mật và đổi trả</a></li>
+            <li class="footer-link-item"><a href="#">Điều khoản sử dụng</a></li>
+            <li class="footer-link-item"><a href="#">Hướng dẫn nạp tiền thẻ cào vào shop</a></li>
+            <li class="footer-link-item"><a href="#">Hướng dẫn nạp tiền ATM/chuyển khoản ngân hàng</a></li>
+          </ul>
+        </div>
+
+        <!-- CỘT 3: SẢN PHẨM (Theo ảnh mẫu) -->
+        <div>
+          <h4 class="footer-col-title">SẢN PHẨM</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="#kho-freefire">Nick Free Fire giá rẻ</a></li>
+            <li class="footer-link-item"><a href="#kho-lienquan">Nick Liên Quân giá rẻ</a></li>
+            <li class="footer-link-item"><a href="#kho-fcmobile">Nick FC Mobile giá rẻ</a></li>
+          </ul>
+        </div>
+
+        <!-- CỘT 4: HỖ TRỢ KHÁCH HÀNG -->
+        <div>
+          <h4 class="footer-col-title">HỖ TRỢ KHÁCH HÀNG</h4>
+          <div class="footer-contact-item">
+            <span>💬</span>
+            <span>Chăm sóc khách hàng Zalo: <a href="https://zalo.me/0907960586" target="_blank" style="color: var(--primary-blue); font-weight: 700;">0907960586</a></span>
+          </div>
+          <div class="footer-contact-item">
+            <span>📱</span>
+            <span>Facebook admin: <a href="https://www.facebook.com/huynh.tuan.84918" id="footer-fb-link" target="_blank" rel="noopener noreferrer" style="color: var(--primary-blue); font-weight: 700;">Huynh Tuan</a></span>
+          </div>
+          <div class="footer-contact-item">
+            <span>☎</span>
+            <span>Hotline / Zalo: <a href="tel:0907960586" style="color: var(--accent-gold); font-weight: 700;">0907960586</a></span>
+          </div>
+          <div class="footer-contact-item">
+            <span>⏰</span>
+            <span>Giờ làm việc: 8h30 - 23h30 (Hỗ trợ trực tuyến 24/7)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar">
+        © 2026 tuanzOne.com. All rights reserved. Nền tảng mua bán acc game trực tuyến uy tín hàng đầu.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Nút Liên Hệ Nổi Zalo & Facebook -->
+  <div class="floating-contact-widget">
+    <a href="https://zalo.me/0907960586" target="_blank" class="floating-contact-btn floating-zalo-btn" title="Chat Zalo hỗ trợ">
+      <span>💬</span> Chat Zalo 0907960586
+    </a>
+    <a href="https://www.facebook.com/huynh.tuan.84918" target="_blank" rel="noopener noreferrer" id="floating-fb-btn" class="floating-contact-btn floating-fb-btn" title="Facebook Admin">
+      <span>📱</span> Facebook: Huynh Tuan
+    </a>
+  </div>
+
+  <!-- Supabase Cloud Database SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Main JavaScript App -->
+  <script type="module" src="js/app.js?v=1.0.9"></script>
+</body>
+</html>

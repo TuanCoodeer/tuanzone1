@@ -1,0 +1,1306 @@
+// =========================================================
+// tuanzOne.com - Main Application Logic
+// =========================================================
+
+import { store, ADMIN_CONFIG, BANK_CONFIG } from './store.js';
+import { WAREHOUSES, TOP_DEPOSIT_USERS } from '../data/games.js?v=1.0.6';
+import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from './popup.js';
+
+class TuanzoneApp {
+  constructor() {
+    this.selectedTelco = 'VIETTEL';
+  }
+
+  init() {
+    initPopupSystem();
+    this.initTheme();
+    this.renderTopLeaderboard();
+    this.renderHeaderAuth();
+    this.renderWarehouses();
+    this.attachHeaderEvents();
+    this.attachDepositModalEvents();
+    this.attachAuthModalEvents();
+    this.attachWarehouseFilterEvents();
+    this.attachAdminEvents();
+    this.attachUserHistoryModalEvents();
+
+    store.subscribe(() => {
+      this.renderHeaderAuth();
+      this.renderWarehouses();
+    });
+  }
+
+  // --- 1. THEME SWITCHER (Light / Dark) ---
+  initTheme() {
+    const savedTheme = localStorage.getItem('tz_theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    this.updateThemeBtnState(savedTheme);
+
+    const toggleBtn = document.getElementById('btn-toggle-theme');
+    toggleBtn?.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('tz_theme', next);
+      this.updateThemeBtnState(next);
+    });
+  }
+
+  updateThemeBtnState(theme) {
+    const iconEl = document.getElementById('theme-toggle-icon');
+    const labelEl = document.getElementById('theme-toggle-label');
+    if (iconEl && labelEl) {
+      if (theme === 'dark') {
+        iconEl.textContent = '🌙';
+        labelEl.textContent = 'Tối';
+      } else {
+        iconEl.textContent = '☀️';
+        labelEl.textContent = 'Sáng';
+      }
+    }
+  }
+
+  // --- 2. TOP NẠP TIỀN THÁNG ---
+  renderTopLeaderboard() {
+    const container = document.getElementById('leaderboard-list-items');
+    if (!container) return;
+    // Để trống khung theo yêu cầu của bạn
+    container.innerHTML = '';
+  }
+
+  // --- 3. HEADER AUTH & USER / ADMIN CONTROLS ---
+  renderHeaderAuth() {
+    const group = document.getElementById('header-auth-group');
+    if (!group) return;
+
+    if (store.user.isLoggedIn) {
+      if (store.user.isAdmin) {
+        // Giao diện ĐỘC QUYỀN của tài khoản ADMIN
+        group.innerHTML = `
+          <div class="admin-header-controls">
+            <button class="btn-admin-nav" id="btn-admin-open-add-acc" title="Thêm tài khoản game mới vào kho">
+              <span>➕</span> Thêm Acc Vào Kho
+            </button>
+            <button class="btn-admin-nav btn-admin-stats" id="btn-admin-open-dashboard" title="Xem doanh thu và lịch sử giao dịch">
+              <span>📊</span> Doanh Thu & Lịch Sử
+            </button>
+            <div class="admin-badge-pill">
+              <span class="admin-crown">👑</span>
+              <span class="admin-name">Huỳnh Tuấn</span>
+              <button class="btn-logout-mini" id="btn-header-logout" title="Đăng xuất Admin">Thoát</button>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('btn-admin-open-add-acc')?.addEventListener('click', () => {
+          this.openAddAccModal();
+        });
+
+        document.getElementById('btn-admin-open-dashboard')?.addEventListener('click', () => {
+          this.openAdminDashboardModal();
+        });
+
+      } else {
+        // Giao diện Khách hàng / Người dùng bình thường
+        group.innerHTML = `
+          <div class="user-logged-nav-group">
+            <div class="user-badge-logged">
+              <div class="user-avatar-text">👤</div>
+              <div class="user-info-text">
+                <span class="user-name-title">${store.user.displayName}</span>
+                <span class="user-info-divider">•</span>
+                <span class="user-balance-val">💰 ${store.user.balance.toLocaleString('vi-VN')} đ</span>
+              </div>
+            </div>
+            <button class="btn-user-history-nav" id="btn-header-user-history" title="Xem lịch sử giao dịch và tài khoản đã mua">
+              <span>📜</span> Lịch Sử Giao Dịch
+            </button>
+            <button class="btn-logout-mini" id="btn-header-logout" title="Đăng xuất">Thoát</button>
+          </div>
+        `;
+
+        document.getElementById('btn-header-user-history')?.addEventListener('click', () => {
+          this.openUserHistoryModal();
+        });
+      }
+
+      document.getElementById('btn-header-logout')?.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?", {
+          title: "Xác Nhận Đăng Xuất",
+          type: "warning",
+          confirmText: "Đăng Xuất",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.logout();
+          showToast("Đã đăng xuất thành công!", "info");
+        }
+      });
+
+    } else {
+      // Khi Chưa Đăng Nhập
+      group.innerHTML = `
+        <button class="btn-auth-item" id="btn-header-login">Đăng Nhập</button>
+        <button class="btn-auth-item" id="btn-header-register" style="background: var(--primary-blue); color: #fff; border: none;">Đăng Ký</button>
+      `;
+
+      document.getElementById('btn-header-login')?.addEventListener('click', () => {
+        this.openAuthModal('login');
+      });
+
+      document.getElementById('btn-header-register')?.addEventListener('click', () => {
+        this.openAuthModal('register');
+      });
+    }
+
+    // Cập nhật cú pháp chuyển khoản ngân hàng
+    const syntaxEl = document.getElementById('bank-memo-syntax');
+    if (syntaxEl) {
+      const uname = store.user.isLoggedIn ? store.user.username : 'KHACH';
+      syntaxEl.textContent = `NAP TUANZONE ${uname.toUpperCase()}`;
+    }
+  }
+
+  attachHeaderEvents() {
+    const searchInput = document.getElementById('global-search-input');
+    const searchBtn = document.getElementById('global-search-btn');
+
+    const handleSearch = () => {
+      const query = (searchInput?.value || '').trim().toLowerCase();
+      store.searchQuery = query;
+      this.renderWarehouses();
+    };
+
+    searchBtn?.addEventListener('click', handleSearch);
+    searchInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleSearch();
+    });
+
+    document.getElementById('header-logo-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // --- 4. RENDER 3 KHO TÀI KHOẢN ---
+  renderWarehouses() {
+    this.renderFreeFireWarehouse();
+    this.renderLienQuanWarehouse();
+    this.renderFcMobileWarehouse();
+  }
+
+  renderFreeFireWarehouse() {
+    const container = document.getElementById('ff-accounts-container');
+    const badge = document.querySelector('#kho-freefire .warehouse-total-badge');
+    if (!container) return;
+
+    let list = store.accounts.filter(a => a.game === 'freefire' && a.status === 'AVAILABLE');
+
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
+    }
+
+    // Lọc Prime
+    const primeFilter = store.filters.freefire.prime;
+    if (primeFilter !== 'all') {
+      list = list.filter(a => a.prime === primeFilter);
+    }
+
+    // Lọc Mức giá
+    list = this.filterByPrice(list, store.filters.freefire.priceRange);
+
+    // Tìm kiếm
+    if (store.searchQuery) {
+      list = list.filter(a => 
+        a.id.toLowerCase().includes(store.searchQuery) ||
+        a.title.toLowerCase().includes(store.searchQuery) ||
+        a.description.toLowerCase().includes(store.searchQuery)
+      );
+    }
+
+    // Sắp xếp
+    list = this.sortList(list, store.filters.freefire.sortBy);
+
+    container.innerHTML = this.buildWarehouseHTML('freefire', list, "Kho Nick Free Fire");
+    this.attachCardBuyTriggers(container);
+  }
+
+  renderLienQuanWarehouse() {
+    const container = document.getElementById('lq-accounts-container');
+    const badge = document.querySelector('#kho-lienquan .warehouse-total-badge');
+    if (!container) return;
+
+    let list = store.accounts.filter(a => a.game === 'lienquan' && a.status === 'AVAILABLE');
+
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
+    }
+
+    list = this.filterByPrice(list, store.filters.lienquan.priceRange);
+
+    if (store.searchQuery) {
+      list = list.filter(a => 
+        a.id.toLowerCase().includes(store.searchQuery) ||
+        a.title.toLowerCase().includes(store.searchQuery) ||
+        a.description.toLowerCase().includes(store.searchQuery)
+      );
+    }
+
+    list = this.sortList(list, store.filters.lienquan.sortBy);
+    container.innerHTML = this.buildWarehouseHTML('lienquan', list, "Kho Nick Liên Quân");
+    this.attachCardBuyTriggers(container);
+  }
+
+  renderFcMobileWarehouse() {
+    const container = document.getElementById('fc-accounts-container');
+    const badge = document.querySelector('#kho-fcmobile .warehouse-total-badge');
+    if (!container) return;
+
+    let list = store.accounts.filter(a => (a.game === 'fcmobile' || a.game === 'fc' || a.game === 'roblox') && a.status === 'AVAILABLE');
+
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
+    }
+
+    // 1. Lọc OVR
+    const ovrFilter = store.filters.fcmobile?.ovrLevel || 'all';
+    if (ovrFilter !== 'all') {
+      if (ovrFilter === '100-110') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 100 && v <= 110; });
+      else if (ovrFilter === '111-120') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 111 && v <= 120; });
+      else if (ovrFilter === '121-130') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 121 && v <= 130; });
+      else if (ovrFilter === 'over-130') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v > 130; });
+    }
+
+    // 2. Lọc Server
+    const serverFilter = store.filters.fcmobile?.server || 'all';
+    if (serverFilter !== 'all') {
+      list = list.filter(a => (a.server || '').toLowerCase().includes(serverFilter.toLowerCase()));
+    }
+
+    // 3. Lọc Mức giá
+    list = this.filterByPrice(list, store.filters.fcmobile?.priceRange);
+
+    // 4. Tìm kiếm
+    if (store.searchQuery) {
+      list = list.filter(a => 
+        a.id.toLowerCase().includes(store.searchQuery) ||
+        a.title.toLowerCase().includes(store.searchQuery) ||
+        a.description.toLowerCase().includes(store.searchQuery)
+      );
+    }
+
+    // 5. Sắp xếp
+    list = this.sortList(list, store.filters.fcmobile?.sortBy);
+    container.innerHTML = this.buildWarehouseHTML('fcmobile', list, "Kho Nick FC Mobile");
+    this.attachCardBuyTriggers(container);
+  }
+
+  filterByPrice(list, priceRangeId) {
+    if (!priceRangeId || priceRangeId === 'all') return list;
+    if (priceRangeId === 'under-50k') return list.filter(a => a.price < 50000);
+    if (priceRangeId === '50k-200k') return list.filter(a => a.price >= 50000 && a.price <= 200000);
+    if (priceRangeId === '200k-500k') return list.filter(a => a.price >= 200000 && a.price <= 500000);
+    if (priceRangeId === '500k-1m') return list.filter(a => a.price >= 500000 && a.price <= 1000000);
+    if (priceRangeId === '1m-5m') return list.filter(a => a.price >= 1000000 && a.price <= 5000000);
+    if (priceRangeId === '5m-10m') return list.filter(a => a.price >= 5000000 && a.price <= 10000000);
+    if (priceRangeId === '10m-15m') return list.filter(a => a.price >= 10000000 && a.price <= 15000000);
+    if (priceRangeId === '15m-20m') return list.filter(a => a.price >= 15000000 && a.price <= 20000000);
+    if (priceRangeId === 'over-20m') return list.filter(a => a.price > 20000000);
+    return list;
+  }
+
+  sortList(list, sortBy) {
+    const cloned = [...list];
+    if (sortBy === 'price-asc') return cloned.sort((a, b) => a.price - b.price);
+    if (sortBy === 'price-desc') return cloned.sort((a, b) => b.price - a.price);
+    if (sortBy === 'newest') return cloned.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (sortBy === 'oldest') return cloned.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    if (sortBy === 'random') return cloned.sort(() => Math.random() - 0.5);
+    return cloned;
+  }
+
+  buildWarehouseHTML(gameKey, list, warehouseName) {
+    if (!list || list.length === 0) {
+      const adminBtn = store.user.isAdmin ? `
+        <div style="margin-top: 16px;">
+          <button class="btn-admin-nav" onclick="document.getElementById('btn-admin-open-add-acc')?.click()">
+            <span>➕</span> Thêm Acc Vào Kho Này Ngay
+          </button>
+        </div>
+      ` : '';
+
+      return `
+        <div class="empty-warehouse-box" style="padding: 45px 20px;">
+          <div class="empty-icon" style="font-size: 3rem; margin-bottom: 12px;">📦</div>
+          <div class="empty-title" style="font-size: 1.2rem; font-weight: 800; text-transform: uppercase;">
+            HIỆN CHƯA CÓ TÀI KHOẢN NÀO TRONG KHO
+          </div>
+          <p class="empty-desc" style="color: var(--text-muted); font-size: 0.88rem; margin-top: 6px;">
+            Số lượng hiện tại: <strong style="color: var(--accent-gold);">0 tài khoản</strong>.<br>
+            Hệ thống đang sẵn sàng, tài khoản sẽ xuất hiện ngay khi Admin thêm vào kho!
+          </p>
+          ${adminBtn}
+        </div>
+      `;
+    }
+
+    return `
+      <div class="acc-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+        ${list.map(acc => `
+          <div class="acc-card-item" data-acc-id="${acc.id}">
+            <div class="acc-card-thumb-wrapper">
+              <img src="${acc.image}" class="acc-card-thumb-img" alt="${acc.title}">
+              <span class="acc-tag-code">#${acc.id}</span>
+              ${acc.prime ? `<span class="acc-tag-prime">${acc.prime}</span>` : ''}
+              ${acc.ovr ? `<span class="acc-tag-prime" style="background: #10b981; color: #fff;">${acc.ovr}</span>` : ''}
+              ${acc.server ? `<span class="acc-tag-prime" style="background: #0ea5e9; color: #fff;">${acc.server}</span>` : ''}
+              ${acc.subCategory ? `<span class="acc-tag-prime" style="background: var(--neon-cyan); color: #000;">${acc.subCategory === 'bloxfruits' ? 'Blox Fruits' : 'Steal an Egg'}</span>` : ''}
+            </div>
+            <div class="acc-card-info">
+              <h3 class="acc-card-name">${acc.title}</h3>
+              <div class="acc-meta-details">
+                <div class="acc-meta-item">Game: <strong>${acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile')}</strong></div>
+                <div class="acc-meta-item">Bảo mật: <strong>100% Trắng</strong></div>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                ${acc.description}
+              </p>
+              <div class="acc-card-footer">
+                <div class="acc-price-wrap">
+                  <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Giá bán:</span>
+                  <span class="acc-price-num">${acc.price.toLocaleString('vi-VN')} đ</span>
+                </div>
+                <button class="btn-action-buy-item" data-acc-id="${acc.id}" data-acc-price="${acc.price}" style="padding: 8px 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, #0084ff, #0056b3); color: #fff; font-weight: 700; border: none; cursor: pointer;">
+                  MUA NGAY
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // --- 5. MUA ACC VÀ BÀN GIAO THÔNG TIN ---
+  attachCardBuyTriggers(container) {
+    container.querySelectorAll('.btn-action-buy-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const accId = btn.dataset.accId;
+
+        // Bắt buộc đăng nhập
+        if (!store.user.isLoggedIn) {
+          this.openAuthModal('login', true);
+          return;
+        }
+
+        const res = store.purchaseAccount(accId);
+        if (!res.success) {
+          const goDeposit = await showConfirm(res.message + "\n\nBạn có muốn mở trang nạp tiền vào ví ngay không?", {
+            title: "Số Dư Không Đủ",
+            type: "warning",
+            confirmText: "Nạp Tiền Ngay",
+            cancelText: "Để Sau"
+          });
+          if (goDeposit) {
+            this.openDepositModal();
+          }
+          return;
+        }
+
+        showPopup({
+          title: "🎉 MUA TÀI KHOẢN THÀNH CÔNG!",
+          message: `Mã đơn hàng: #${res.order.orderId}\n` +
+                   `Mã nick: #${res.account.id}\n` +
+                   `Tiêu đề: ${res.account.title}\n` +
+                   `Số tiền đã trừ: ${res.account.price.toLocaleString('vi-VN')} đ\n\n` +
+                   `🔐 THÔNG TIN ĐĂNG NHẬP NICK:\n👉 ${res.account.credentials}\n\n` +
+                   `(Lưu ý: Bạn hãy lưu lại thông tin và đổi mật khẩu ngay nhé!)`,
+          type: "success",
+          confirmText: "Tuyệt Vời!"
+        });
+
+        this.renderWarehouses();
+      });
+    });
+  }
+
+  // --- 6. EVENT LỌC & SẮP XẾP ---
+  attachWarehouseFilterEvents() {
+    // Free Fire: Prime Chips
+    document.querySelectorAll('#ff-prime-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#ff-prime-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        store.filters.freefire.prime = chip.dataset.prime;
+        this.renderFreeFireWarehouse();
+      });
+    });
+
+    // Free Fire: Price Chips
+    document.querySelectorAll('#ff-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#ff-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        store.filters.freefire.priceRange = chip.dataset.price;
+        this.renderFreeFireWarehouse();
+      });
+    });
+
+    // Free Fire: Sort
+    document.getElementById('ff-sort-select')?.addEventListener('change', (e) => {
+      store.filters.freefire.sortBy = e.target.value;
+      this.renderFreeFireWarehouse();
+    });
+
+    // Liên Quân: Price Chips
+    document.querySelectorAll('#lq-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#lq-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        store.filters.lienquan.priceRange = chip.dataset.price;
+        this.renderLienQuanWarehouse();
+      });
+    });
+
+    // Liên Quân: Sort
+    document.getElementById('lq-sort-select')?.addEventListener('change', (e) => {
+      store.filters.lienquan.sortBy = e.target.value;
+      this.renderLienQuanWarehouse();
+    });
+
+    // FC Mobile: OVR Chips
+    document.querySelectorAll('#fc-ovr-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#fc-ovr-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.fcmobile) store.filters.fcmobile = {};
+        store.filters.fcmobile.ovrLevel = chip.dataset.ovr;
+        this.renderFcMobileWarehouse();
+      });
+    });
+
+    // FC Mobile: Server Chips
+    document.querySelectorAll('#fc-server-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#fc-server-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.fcmobile) store.filters.fcmobile = {};
+        store.filters.fcmobile.server = chip.dataset.server;
+        this.renderFcMobileWarehouse();
+      });
+    });
+
+    // FC Mobile: Price Chips
+    document.querySelectorAll('#fc-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#fc-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.fcmobile) store.filters.fcmobile = {};
+        store.filters.fcmobile.priceRange = chip.dataset.price;
+        this.renderFcMobileWarehouse();
+      });
+    });
+
+    // FC Mobile: Sort
+    document.getElementById('fc-sort-select')?.addEventListener('change', (e) => {
+      if (!store.filters.fcmobile) store.filters.fcmobile = {};
+      store.filters.fcmobile.sortBy = e.target.value;
+      this.renderFcMobileWarehouse();
+    });
+  }
+
+  // --- 7. MODAL ADMIN: THÊM ACC & BÁO CÁO DOANH THU ---
+  attachAdminEvents() {
+    // 1. Modal Thêm Acc
+    const addAccModal = document.getElementById('admin-add-acc-modal');
+    const addAccCloseBtn = document.getElementById('admin-add-acc-close-btn');
+    addAccCloseBtn?.addEventListener('click', () => addAccModal.classList.remove('active'));
+
+    const gameSelect = document.getElementById('admin-acc-game');
+    const primeGroup = document.getElementById('admin-prime-group');
+    const fcGroup = document.getElementById('admin-fcmobile-group');
+
+    gameSelect?.addEventListener('change', () => {
+      const val = gameSelect.value;
+      if (val === 'freefire') {
+        if (primeGroup) primeGroup.style.display = 'block';
+        if (fcGroup) fcGroup.style.display = 'none';
+      } else if (val === 'fcmobile') {
+        if (primeGroup) primeGroup.style.display = 'none';
+        if (fcGroup) fcGroup.style.display = 'block';
+      } else {
+        if (primeGroup) primeGroup.style.display = 'none';
+        if (fcGroup) fcGroup.style.display = 'none';
+      }
+    });
+
+    // Xử lý gửi form thêm acc
+    document.getElementById('form-admin-add-acc')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const game = document.getElementById('admin-acc-game').value;
+      const prime = document.getElementById('admin-acc-prime')?.value;
+      const ovr = document.getElementById('admin-acc-ovr')?.value;
+      const server = document.getElementById('admin-acc-server')?.value;
+      const id = document.getElementById('admin-acc-id').value.trim();
+      const title = document.getElementById('admin-acc-title').value.trim();
+      const price = Number(document.getElementById('admin-acc-price').value);
+      const image = document.getElementById('admin-acc-image').value.trim();
+      const credentials = document.getElementById('admin-acc-credentials').value.trim();
+      const description = document.getElementById('admin-acc-desc').value.trim();
+
+      const newAcc = store.addAccount({
+        id,
+        game,
+        prime,
+        ovr: ovr ? `OVR ${ovr}` : 'OVR 120+',
+        server: server === 'korea' ? 'Bản Hàn' : 'Bản Global',
+        title,
+        price,
+        image,
+        credentials,
+        description
+      });
+
+      showPopup({
+        title: "✅ ĐÃ THÊM ACC VÀO KHO!",
+        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công và xuất hiện trên website.`,
+        type: "success",
+        confirmText: "Đóng"
+      });
+      addAccModal.classList.remove('active');
+      e.target.reset();
+      this.renderWarehouses();
+    });
+
+    // 2. Modal Dashboard
+    const dashboardModal = document.getElementById('admin-dashboard-modal');
+    const dashboardCloseBtn = document.getElementById('admin-dashboard-close-btn');
+    dashboardCloseBtn?.addEventListener('click', () => dashboardModal.classList.remove('active'));
+
+    const tabRev = document.getElementById('tab-admin-revenue');
+    const tabDep = document.getElementById('tab-admin-deposits');
+    const tabHist = document.getElementById('tab-admin-history');
+    const tabInv = document.getElementById('tab-admin-inventory');
+    const panelRev = document.getElementById('panel-admin-revenue');
+    const panelDep = document.getElementById('panel-admin-deposits');
+    const panelHist = document.getElementById('panel-admin-history');
+    const panelInv = document.getElementById('panel-admin-inventory');
+
+    const switchAdminTab = (activeTab, activePanel) => {
+      [tabRev, tabDep, tabHist, tabInv].forEach(t => t?.classList.remove('active'));
+      [panelRev, panelDep, panelHist, panelInv].forEach(p => { if (p) p.style.display = 'none'; });
+      activeTab?.classList.add('active');
+      if (activePanel) activePanel.style.display = 'block';
+    };
+
+    tabRev?.addEventListener('click', () => switchAdminTab(tabRev, panelRev));
+    tabDep?.addEventListener('click', () => {
+      switchAdminTab(tabDep, panelDep);
+      this.renderAdminDeposits();
+    });
+    tabHist?.addEventListener('click', () => switchAdminTab(tabHist, panelHist));
+    tabInv?.addEventListener('click', () => switchAdminTab(tabInv, panelInv));
+
+    document.getElementById('btn-refresh-admin-deposits')?.addEventListener('click', () => {
+      this.renderAdminDeposits();
+      showToast("Đã làm mới danh sách nạp tiền!", "info");
+    });
+  }
+
+  openAddAccModal() {
+    const modal = document.getElementById('admin-add-acc-modal');
+    if (!modal) return;
+    const idInput = document.getElementById('admin-acc-id');
+    if (idInput && !idInput.value) {
+      idInput.value = 'TZ-' + Math.floor(1000 + Math.random() * 9000);
+    }
+    modal.classList.add('active');
+  }
+
+  openAdminDashboardModal() {
+    const modal = document.getElementById('admin-dashboard-modal');
+    if (!modal) return;
+    this.renderAdminDashboard();
+    modal.classList.add('active');
+  }
+
+  renderAdminDashboard() {
+    const stats = store.getMonthlyRevenue();
+    const availableCount = store.accounts.filter(a => a.status === 'AVAILABLE').length;
+
+    // 1. Thống kê tổng
+    document.getElementById('metric-total-revenue').textContent = stats.totalRevenue.toLocaleString('vi-VN') + ' đ';
+    document.getElementById('metric-total-sold').textContent = stats.totalSold + ' acc';
+    document.getElementById('metric-total-available').textContent = availableCount + ' acc';
+
+    // 2. Doanh thu theo từng game
+    const gameRevGrid = document.getElementById('admin-game-revenue-grid');
+    if (gameRevGrid) {
+      gameRevGrid.innerHTML = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+          <div style="font-size: 0.82rem; color: #ff6600; font-weight: 700;">🔥 Free Fire</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">${stats.gameStats.freefire.revenue.toLocaleString('vi-VN')} đ</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Đã bán: <strong>${stats.gameStats.freefire.count} acc</strong></div>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+          <div style="font-size: 0.82rem; color: #0084ff; font-weight: 700;">⚔️ Liên Quân</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">${stats.gameStats.lienquan.revenue.toLocaleString('vi-VN')} đ</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Đã bán: <strong>${stats.gameStats.lienquan.count} acc</strong></div>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+          <div style="font-size: 0.82rem; color: #10b981; font-weight: 700;">⚽ FC Mobile</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">${((stats.gameStats.fcmobile?.revenue || 0) + (stats.gameStats.roblox?.revenue || 0)).toLocaleString('vi-VN')} đ</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Đã bán: <strong>${(stats.gameStats.fcmobile?.count || 0) + (stats.gameStats.roblox?.count || 0)} acc</strong></div>
+        </div>
+      `;
+    }
+
+    // 3. Bảng Lịch sử giao dịch
+    const ordersTbody = document.getElementById('admin-orders-table-body');
+    if (ordersTbody) {
+      if (stats.orders.length === 0) {
+        ordersTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 28px; color: var(--text-muted);">Chưa có đơn hàng nào được mua trên hệ thống.</td></tr>`;
+      } else {
+        ordersTbody.innerHTML = stats.orders.map(ord => `
+          <tr>
+            <td><strong>#${ord.orderId}</strong></td>
+            <td>${ord.buyer}</td>
+            <td><strong>#${ord.accId}</strong> - ${ord.accTitle}</td>
+            <td><span style="font-weight: 700; color: var(--primary-blue);">${ord.game.toUpperCase()}</span></td>
+            <td style="font-weight: 700; color: var(--accent-gold);">${ord.price.toLocaleString('vi-VN')} đ</td>
+            <td>${ord.date}</td>
+            <td><span class="badge-order-success">Thành Công</span></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // 4. Bảng Quản lý kho nick
+    const invTbody = document.getElementById('admin-inventory-table-body');
+    if (invTbody) {
+      if (store.accounts.length === 0) {
+        invTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 28px; color: var(--text-muted);">Hiện chưa có tài khoản nào trong kho. Bấm "Thêm Acc Vào Kho" để đăng bán nick đầu tiên!</td></tr>`;
+      } else {
+        invTbody.innerHTML = store.accounts.map(acc => `
+          <tr>
+            <td><strong>#${acc.id}</strong></td>
+            <td>${acc.game.toUpperCase()}</td>
+            <td>${acc.title}</td>
+            <td style="font-weight: 700; color: var(--accent-gold);">${acc.price.toLocaleString('vi-VN')} đ</td>
+            <td>
+              ${acc.status === 'AVAILABLE' ? '<span style="color: #00e676; font-weight: 700;">🟢 Đang bán</span>' : '<span style="color: var(--accent-red); font-weight: 700;">🔴 Đã bán</span>'}
+            </td>
+            <td>
+              <button class="btn-delete-acc" data-del-id="${acc.id}" style="background: rgba(255, 51, 75, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-weight: 700; font-size: 0.72rem;">Xóa</button>
+            </td>
+          </tr>
+        `).join('');
+
+        invTbody.querySelectorAll('.btn-delete-acc').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.delId;
+            const ok = await showConfirm(`Bạn có chắc muốn xóa nick #${id} khỏi shop?`, {
+              title: "Xác Nhận Xóa Nick",
+              type: "danger",
+              confirmText: "Xóa Vĩnh Viễn",
+              cancelText: "Hủy Bỏ"
+            });
+            if (ok) {
+              store.deleteAccount(id);
+              this.renderAdminDashboard();
+              this.renderWarehouses();
+              showToast(`Đã xóa nick #${id} thành công!`, "info");
+            }
+          });
+        });
+      }
+    }
+
+    // 5. Cập nhật bảng nạp tiền & huy hiệu
+    this.renderAdminDeposits();
+  }
+
+  renderAdminDeposits() {
+    const tbody = document.getElementById('admin-deposits-table-body');
+    const badgeEl = document.getElementById('admin-pending-deposit-count');
+    const pendingCount = store.getPendingDepositsCount();
+    if (badgeEl) badgeEl.textContent = pendingCount;
+    if (!tbody) return;
+
+    const list = [...store.depositHistory].sort((a, b) => {
+      if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
+      if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
+      return new Date(b.date || 0) - new Date(a.date || 0);
+    });
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 28px; color: var(--text-muted);">Chưa có yêu cầu nạp tiền nào từ khách hàng.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(d => {
+      const isPending = d.status === 'PENDING';
+      const statusBadge = isPending 
+        ? `<span style="color: #ffb800; font-weight: 700; background: rgba(255,184,0,0.15); padding: 3px 8px; border-radius: 4px;">⏳ Chờ duyệt</span>`
+        : (d.status === 'SUCCESS'
+            ? `<span style="color: #00e676; font-weight: 700; background: rgba(0,230,118,0.15); padding: 3px 8px; border-radius: 4px;">✅ Đã duyệt</span>`
+            : `<span style="color: #ff3344; font-weight: 700; background: rgba(255,51,68,0.15); padding: 3px 8px; border-radius: 4px;">❌ Đã từ chối</span>`);
+
+      const methodText = d.type === 'card' 
+        ? `🎫 Thẻ cào (${d.telco || 'Thẻ'})` 
+        : `🏦 Vietcombank`;
+
+      const detailText = d.type === 'card'
+        ? `Mã: <code style="color: var(--neon-cyan);">${d.code || '-'}</code><br>Seri: ${d.serial || '-'}`
+        : `STK: ${d.accountNumber || BANK_CONFIG.accountNumber}`;
+
+      const actionButtons = isPending
+        ? `<button class="btn-action-approve-dep" data-id="${d.id}" style="background: #00e676; color: #000; border: none; font-weight: 700; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-right: 6px;">Duyệt</button>` +
+          `<button class="btn-action-reject-dep" data-id="${d.id}" style="background: rgba(255, 51, 68, 0.15); border: 1px solid #ff3344; color: #ff3344; font-weight: 700; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Từ chối</button>`
+        : `<span style="color: var(--text-muted); font-size: 0.78rem;">-</span>`;
+
+      return `
+        <tr>
+          <td><strong style="color: var(--primary-blue); font-family: var(--font-mono);">#${d.id}</strong></td>
+          <td><strong>${d.username || 'Khách'}</strong></td>
+          <td>${methodText}</td>
+          <td style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-gold);">+${(d.amount || 0).toLocaleString('vi-VN')} đ</td>
+          <td style="font-size: 0.78rem;">${detailText}</td>
+          <td style="font-size: 0.78rem; color: var(--text-muted);">${d.date || '-'}</td>
+          <td>${statusBadge}</td>
+          <td>${actionButtons}</td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-action-approve-dep').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const dep = store.depositHistory.find(x => x.id === id);
+        if (!dep) return;
+
+        const ok = await showConfirm(
+          `Bạn đã kiểm tra App Vietcombank và xác nhận đã nhận được ${(dep.amount || 0).toLocaleString('vi-VN')} đ từ khách "${dep.username}" chưa?`,
+          {
+            title: "Xác Nhận Đã Nhận Tiền",
+            type: "success",
+            confirmText: "Duyệt Nạp & Cộng Tiền",
+            cancelText: "Kiểm Tra Lại"
+          }
+        );
+
+        if (ok) {
+          const res = store.adminApproveDeposit(id);
+          if (res.success) {
+            showToast(res.message, "success");
+            this.renderAdminDashboard();
+            this.renderHeaderAuth();
+          } else {
+            showToast(res.message, "warning");
+          }
+        }
+      });
+    });
+
+    tbody.querySelectorAll('.btn-action-reject-dep').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const dep = store.depositHistory.find(x => x.id === id);
+        if (!dep) return;
+
+        const ok = await showConfirm(
+          `Từ chối yêu cầu nạp tiền #${id} của khách "${dep.username}"?`,
+          {
+            title: "Từ Chối Phiếu Nạp",
+            type: "danger",
+            confirmText: "Từ Chối",
+            cancelText: "Hủy Bỏ"
+          }
+        );
+
+        if (ok) {
+          const res = store.adminRejectDeposit(id);
+          if (res.success) {
+            showToast(res.message, "info");
+            this.renderAdminDashboard();
+          }
+        }
+      });
+    });
+  }
+
+  // --- 8. MODAL NẠP TIỀN ---
+  attachDepositModalEvents() {
+    const modal = document.getElementById('deposit-modal');
+    const openBtn = document.getElementById('btn-open-deposit-modal');
+    const closeBtn = document.getElementById('deposit-modal-close-btn');
+
+    openBtn?.addEventListener('click', () => this.openDepositModal());
+    closeBtn?.addEventListener('click', () => modal.classList.remove('active'));
+
+    const tabCard = document.getElementById('tab-deposit-card');
+    const tabBank = document.getElementById('tab-deposit-bank');
+    const panelCard = document.getElementById('panel-deposit-card');
+    const panelBank = document.getElementById('panel-deposit-bank');
+
+    tabCard?.addEventListener('click', () => {
+      tabCard.classList.add('active');
+      tabBank.classList.remove('active');
+      panelCard.style.display = 'block';
+      panelBank.style.display = 'none';
+    });
+
+    tabBank?.addEventListener('click', () => {
+      tabBank.classList.add('active');
+      tabCard.classList.remove('active');
+      panelBank.style.display = 'block';
+      panelCard.style.display = 'none';
+      this.updateBankQR();
+    });
+
+    document.querySelectorAll('.provider-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.provider-item-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        this.selectedTelco = btn.dataset.telco;
+      });
+    });
+
+    document.getElementById('form-deposit-card')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!store.user.isLoggedIn) {
+        modal.classList.remove('active');
+        this.openAuthModal('login', true);
+        return;
+      }
+
+      const amount = Number(document.getElementById('card-amount-select').value);
+      const serial = document.getElementById('card-serial-input').value.trim();
+      const code = document.getElementById('card-pin-input').value.trim();
+
+      if (!serial || !code) {
+        showToast("Vui lòng nhập đầy đủ số Seri và mã thẻ cào!", "warning");
+        return;
+      }
+
+      const dep = store.requestCardDeposit({
+        telco: this.selectedTelco,
+        amount: amount,
+        serial: serial,
+        code: code
+      });
+
+      showPopup({
+        title: "🎫 ĐÃ GỬI THẺ CÀO CHỜ DUYỆT!",
+        message: `Mã phiếu nạp: #${dep.id}\nNhà mạng: ${this.selectedTelco}\nMệnh giá: ${amount.toLocaleString('vi-VN')} đ\nSeri: ${serial}\n\nHệ thống đã tiếp nhận thẻ cào của bạn. Admin sẽ kiểm tra và cộng tiền vào ví trong 1 - 3 phút.\n\nNếu cần gấp, bạn có thể nhắn Zalo ${BANK_CONFIG.hotline} kèm mã phiếu nạp để được duyệt tức thì!`,
+        type: "success",
+        confirmText: "Kiểm Tra Trạng Thái"
+      });
+      modal.classList.remove('active');
+      e.target.reset();
+    });
+
+    document.getElementById('bank-deposit-amount')?.addEventListener('input', () => {
+      this.updateBankQR();
+    });
+
+    document.querySelectorAll('.btn-mini-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.copyVal || document.getElementById('bank-memo-syntax')?.textContent;
+        if (val) {
+          navigator.clipboard.writeText(val);
+          const oldText = btn.textContent;
+          btn.textContent = 'Đã chép!';
+          showToast("Đã chép thông tin vào bộ nhớ tạm!", "info", 2000);
+          setTimeout(() => btn.textContent = oldText, 1500);
+        }
+      });
+    });
+
+    document.getElementById('btn-confirm-bank-transferred')?.addEventListener('click', () => {
+      if (!store.user.isLoggedIn) {
+        modal.classList.remove('active');
+        this.openAuthModal('login', true);
+        return;
+      }
+
+      const amt = Number(document.getElementById('bank-deposit-amount')?.value) || 50000;
+      if (amt < 10000) {
+        showToast("Số tiền nạp tối thiểu là 10.000 VNĐ!", "warning");
+        return;
+      }
+
+      const dep = store.requestBankDeposit(amt);
+      modal.classList.remove('active');
+
+      showPopup({
+        title: "✅ ĐÃ TIẾP NHẬN YÊU CẦU NẠP TIỀN!",
+        message: `Mã phiếu nạp: #${dep.id}\nSố tiền: ${amt.toLocaleString('vi-VN')} đ\nNgân hàng: ${BANK_CONFIG.bankName}\nChủ TK: ${BANK_CONFIG.accountHolderDisplay}\nSố TK: ${BANK_CONFIG.accountNumber}\n\nSau khi bạn hoàn tất chuyển khoản trên App ngân hàng, Admin sẽ kiểm tra và duyệt cộng tiền vào ví của bạn trong 1 - 3 phút!\n\nNếu muốn duyệt ngay trong 30 giây, bạn hãy nhắn tin Zalo cho Admin nhé!`,
+        type: "success",
+        confirmText: "Xem Lịch Sử Nạp"
+      });
+    });
+  }
+
+  openDepositModal() {
+    const modal = document.getElementById('deposit-modal');
+    if (modal) {
+      modal.classList.add('active');
+      this.updateBankQR();
+    }
+  }
+
+  updateBankQR() {
+    const bankNameEl = document.getElementById('bank-display-name');
+    if (bankNameEl) {
+      bankNameEl.textContent = BANK_CONFIG.bankName;
+    }
+
+    const holderEl = document.getElementById('bank-acc-holder');
+    if (holderEl) {
+      holderEl.textContent = BANK_CONFIG.accountHolderDisplay;
+    }
+
+    const amount = Math.max(10000, Number(document.getElementById('bank-deposit-amount')?.value) || 50000);
+    const uname = store.user.isLoggedIn ? store.user.username : 'KHACH';
+    const memo = `NAP TUANZONE ${uname.toUpperCase()}`;
+    const accountNo = BANK_CONFIG.accountNumber;
+
+    const qrImg = document.getElementById('bank-qr-code-img');
+    if (qrImg) {
+      const accountName = encodeURIComponent(BANK_CONFIG.accountHolder);
+      const addInfo = encodeURIComponent(memo);
+      qrImg.src = `https://img.vietqr.io/image/${BANK_CONFIG.bankId}-${accountNo}-qr_only.png?amount=${amount}&addInfo=${addInfo}&accountName=${accountName}`;
+    }
+
+    const memoEl = document.getElementById('bank-memo-syntax');
+    if (memoEl) memoEl.textContent = memo;
+
+    const accNumEl = document.getElementById('bank-acc-num');
+    if (accNumEl) accNumEl.textContent = accountNo;
+
+    const copyAccBtn = document.querySelector('#panel-deposit-bank .btn-mini-copy[data-copy-val]');
+    if (copyAccBtn) copyAccBtn.setAttribute('data-copy-val', accountNo);
+  }
+
+  // --- 9. MODAL ĐĂNG NHẬP / ĐĂNG KÝ ---
+  attachAuthModalEvents() {
+    const modal = document.getElementById('auth-modal');
+    const closeBtn = document.getElementById('auth-modal-close-btn');
+    closeBtn?.addEventListener('click', () => modal.classList.remove('active'));
+
+    const tabLogin = document.getElementById('tab-auth-login');
+    const tabRegister = document.getElementById('tab-auth-register');
+    const repassGroup = document.getElementById('auth-repass-group');
+    const repassInput = document.getElementById('auth-repassword-field');
+    const actionBtn = document.getElementById('btn-auth-action-submit');
+    const modalTitle = document.getElementById('auth-modal-title');
+
+    tabLogin?.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister?.classList.remove('active');
+      if (repassGroup) repassGroup.style.display = 'none';
+      if (repassInput) repassInput.removeAttribute('required');
+      if (actionBtn) actionBtn.textContent = 'Đăng nhập';
+      if (modalTitle) modalTitle.textContent = 'Đăng nhập';
+    });
+
+    tabRegister?.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin?.classList.remove('active');
+      if (repassGroup) repassGroup.style.display = 'block';
+      if (repassInput) repassInput.setAttribute('required', 'required');
+      if (actionBtn) actionBtn.textContent = 'Đăng ký';
+      if (modalTitle) modalTitle.textContent = 'Đăng ký';
+    });
+
+    // Nút Hiện / Ẩn Mật Khẩu (Chính)
+    const toggleMain = document.getElementById('btn-toggle-pwd-main');
+    const pwdMain = document.getElementById('auth-password-field');
+    toggleMain?.addEventListener('click', () => {
+      if (!pwdMain) return;
+      const isPwd = pwdMain.type === 'password';
+      pwdMain.type = isPwd ? 'text' : 'password';
+      toggleMain.textContent = isPwd ? 'Ẩn' : 'Hiện';
+    });
+
+    // Nút Hiện / Ẩn Mật Khẩu (Xác nhận)
+    const toggleRepass = document.getElementById('btn-toggle-pwd-repass');
+    const pwdRepass = document.getElementById('auth-repassword-field');
+    toggleRepass?.addEventListener('click', () => {
+      if (!pwdRepass) return;
+      const isPwd = pwdRepass.type === 'password';
+      pwdRepass.type = isPwd ? 'text' : 'password';
+      toggleRepass.textContent = isPwd ? 'Ẩn' : 'Hiện';
+    });
+
+    document.getElementById('auth-submit-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = (document.getElementById('auth-username-field')?.value || '').trim();
+      const password = (document.getElementById('auth-password-field')?.value || '').trim();
+      const isRegister = tabRegister?.classList.contains('active');
+
+      if (!username || !password) {
+        showToast("Vui lòng điền đầy đủ thông tin!", "warning");
+        return;
+      }
+
+      if (isRegister) {
+        const repass = (document.getElementById('auth-repassword-field')?.value || '').trim();
+        if (password !== repass) {
+          showToast("Mật khẩu xác nhận không trùng khớp! Vui lòng nhập lại.", "danger");
+          return;
+        }
+
+        const res = store.register(username, password);
+        if (!res.success) {
+          showToast(res.message, "danger");
+          return;
+        }
+
+        showPopup({
+          title: "🎉 TẠO TÀI KHOẢN THÀNH CÔNG!",
+          message: `${res.message}\nBạn đã được tự động đăng nhập vào tuanzOne.com.`,
+          type: "success",
+          confirmText: "Bắt Đầu Ngay"
+        });
+      } else {
+        const res = store.login(username, password);
+        if (!res.success) {
+          showToast(res.message, "danger");
+          return;
+        }
+
+        if (res.isAdmin) {
+          showPopup({
+            title: "👑 QUẢN TRỊ VIÊN TUANZONE",
+            message: "Chào mừng Quản trị viên Huỳnh Tuấn!\nBạn có toàn quyền quản trị: Thêm acc vào kho, xem doanh thu tháng và kiểm tra toàn bộ lịch sử giao dịch.",
+            type: "success",
+            confirmText: "Vào Quản Trị"
+          });
+        } else {
+          showToast(`Xin chào ${store.user.displayName}! Bạn đã đăng nhập thành công.`, "success");
+        }
+      }
+
+      modal?.classList.remove('active');
+      e.target.reset();
+      this.renderHeaderAuth();
+      this.renderWarehouses();
+    });
+  }
+
+  openAuthModal(mode = 'login', isRequiredForBuy = false) {
+    const modal = document.getElementById('auth-modal');
+    const warning = document.getElementById('auth-login-required-msg');
+    if (!modal) return;
+
+    if (warning) {
+      warning.style.display = isRequiredForBuy ? 'flex' : 'none';
+    }
+
+    const tabLogin = document.getElementById('tab-auth-login');
+    const tabRegister = document.getElementById('tab-auth-register');
+    if (mode === 'login') {
+      tabLogin?.click();
+    } else {
+      tabRegister?.click();
+    }
+
+    modal.classList.add('active');
+  }
+
+  // --- 10. MODAL LỊCH SỬ GIAO DỊCH NGƯỜI DÙNG ---
+  attachUserHistoryModalEvents() {
+    const modal = document.getElementById('user-history-modal');
+    const closeBtn = document.getElementById('user-history-close-btn');
+    closeBtn?.addEventListener('click', () => modal?.classList.remove('active'));
+
+    const tabOrders = document.getElementById('tab-user-history-orders');
+    const tabDeposits = document.getElementById('tab-user-history-deposits');
+    const panelOrders = document.getElementById('panel-user-history-orders');
+    const panelDeposits = document.getElementById('panel-user-history-deposits');
+
+    tabOrders?.addEventListener('click', () => {
+      tabOrders.classList.add('active');
+      tabDeposits?.classList.remove('active');
+      if (panelOrders) panelOrders.style.display = 'block';
+      if (panelDeposits) panelDeposits.style.display = 'none';
+    });
+
+    tabDeposits?.addEventListener('click', () => {
+      tabDeposits.classList.add('active');
+      tabOrders?.classList.remove('active');
+      if (panelDeposits) panelDeposits.style.display = 'block';
+      if (panelOrders) panelOrders.style.display = 'none';
+    });
+  }
+
+  openUserHistoryModal() {
+    if (!store.user.isLoggedIn) {
+      this.openAuthModal('login');
+      return;
+    }
+    const modal = document.getElementById('user-history-modal');
+    if (modal) {
+      modal.classList.add('active');
+      this.renderUserHistory();
+    }
+  }
+
+  renderUserHistory() {
+    // 1. Render Orders (Nick Đã Mua & Thông Tin Bàn Giao)
+    const ordersContainer = document.getElementById('user-orders-list-container');
+    if (ordersContainer) {
+      const orders = store.getUserOrders();
+      if (!orders || orders.length === 0) {
+        ordersContainer.innerHTML = `
+          <div class="user-empty-history">
+            <div class="user-empty-icon">📦</div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 6px;">
+              Bạn chưa mua tài khoản nào trên tuanzOne.com
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+              Khi bạn mua acc, toàn bộ thông tin đăng nhập và mật khẩu nick sẽ được lưu trữ vĩnh viễn tại đây để bạn xem lại bất cứ lúc nào!
+            </p>
+            <button class="btn-topup-main" id="btn-empty-go-shop" style="margin: 0 auto;">
+              🛍️ Khám Phá Kho Nick Ngay
+            </button>
+          </div>
+        `;
+
+        document.getElementById('btn-empty-go-shop')?.addEventListener('click', () => {
+          document.getElementById('user-history-modal')?.classList.remove('active');
+          window.location.hash = '#kho-freefire';
+        });
+
+      } else {
+        ordersContainer.innerHTML = orders.map(ord => `
+          <div class="user-order-card">
+            <div class="user-order-header">
+              <div>
+                <span class="user-order-id">#${ord.orderId}</span>
+                <span style="color: var(--border-color); margin: 0 8px;">•</span>
+                <span class="user-order-date">${ord.date}</span>
+              </div>
+              <span style="font-size: 0.75rem; padding: 3px 10px; border-radius: 4px; background: rgba(0, 230, 118, 0.15); color: #00e676; font-weight: 700;">
+                ✅ ĐÃ THANH TOÁN
+              </span>
+            </div>
+            <div class="user-order-body">
+              <div class="user-order-title">${ord.accTitle}</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                <div>
+                  <span class="user-order-game-tag">${ord.game === 'freefire' ? 'Free Fire' : (ord.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile')}</span>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Mã nick: <strong>#${ord.accId}</strong></span>
+                </div>
+                <div class="user-order-price">${ord.price.toLocaleString('vi-VN')} đ</div>
+              </div>
+            </div>
+            <div class="user-credentials-box">
+              <div class="user-credentials-content">
+                <strong style="color: var(--text-main); font-family: var(--font-display);">🔑 THÔNG TIN NICK BÀN GIAO:</strong><br>
+                <span>${ord.credentials}</span>
+              </div>
+              <button class="btn-copy-creds" data-creds="${encodeURIComponent(ord.credentials)}">
+                📋 Sao Chép
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        ordersContainer.querySelectorAll('.btn-copy-creds').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const raw = decodeURIComponent(btn.dataset.creds);
+            navigator.clipboard.writeText(raw);
+            const oldText = btn.textContent;
+            btn.textContent = 'Đã chép! ✓';
+            setTimeout(() => btn.textContent = oldText, 2000);
+          });
+        });
+      }
+    }
+
+    // 2. Render Deposits (Lịch Sử Nạp Tiền Ví)
+    const depositsContainer = document.getElementById('user-deposits-list-container');
+    if (depositsContainer) {
+      const deposits = store.getUserDeposits();
+      if (!deposits || deposits.length === 0) {
+        depositsContainer.innerHTML = `
+          <div class="user-empty-history">
+            <div class="user-empty-icon">💳</div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 6px;">
+              Chưa có giao dịch nạp tiền nào
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+              Nạp tiền ngay qua Thẻ cào Viettel, Vina, Mobi hoặc Chuyển khoản ngân hàng ATM nhận tiền tự động 24/7.
+            </p>
+            <button class="btn-topup-main" id="btn-empty-go-deposit" style="margin: 0 auto;">
+              💳 Nạp Tiền Vào Ví Ngay
+            </button>
+          </div>
+        `;
+
+        document.getElementById('btn-empty-go-deposit')?.addEventListener('click', () => {
+          document.getElementById('user-history-modal')?.classList.remove('active');
+          document.getElementById('btn-open-deposit-modal')?.click();
+        });
+
+      } else {
+        depositsContainer.innerHTML = `
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã GD</th>
+                  <th>Hình Thức Nạp</th>
+                  <th>Số Tiền</th>
+                  <th>Thời Gian</th>
+                  <th>Trạng Thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${deposits.map(d => {
+                  const statusBadge = d.status === 'PENDING'
+                    ? `<span style="color: #ffb800; font-weight: 700; background: rgba(255,184,0,0.15); padding: 3px 8px; border-radius: 4px;">⏳ Đang chờ duyệt</span>`
+                    : (d.status === 'SUCCESS'
+                        ? `<span style="color: #00e676; font-weight: 700; background: rgba(0,230,118,0.15); padding: 3px 8px; border-radius: 4px;">✅ Thành công</span>`
+                        : `<span style="color: #ff3344; font-weight: 700; background: rgba(255,51,68,0.15); padding: 3px 8px; border-radius: 4px;">❌ Bị từ chối</span>`);
+
+                  const bankText = d.type === 'card'
+                    ? `Thẻ cào (${d.telco || 'Thẻ'})`
+                    : `Vietcombank (${BANK_CONFIG.accountNumber})`;
+
+                  return `
+                    <tr>
+                      <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary-blue);">#${d.id}</td>
+                      <td><strong>${bankText}</strong></td>
+                      <td style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-gold);">+${(d.amount || 0).toLocaleString('vi-VN')} đ</td>
+                      <td style="font-size: 0.8rem; color: var(--text-muted);">${d.date || '-'}</td>
+                      <td>${statusBadge}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+    }
+  }
+}
+
+// Khởi tạo ứng dụng an toàn trên mọi trình duyệt (Google Chrome, Cốc Cốc, Edge, Firefox)
+function startApp() {
+  if (window.__tuanzoneAppInitialized) return;
+  window.__tuanzoneAppInitialized = true;
+  const app = new TuanzoneApp();
+  app.init();
+  window.tuanzoneApp = app;
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp);
+} else {
+  startApp();
+}

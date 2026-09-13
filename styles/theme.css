@@ -1,0 +1,124 @@
+/* =========================================================
+   tuanzOne.com - Design System & Dual Theme (Dark / Light)
+   Standard Esports Gaming Marketplace
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Common Brand Colors */
+  --primary-blue: #0084ff;
+  --primary-blue-hover: #006ee6;
+  --accent-cyan: #00d2ff;
+  --accent-orange: #ff5500;
+  --accent-green: #00c853;
+  --accent-gold: #ffb703;
+  --accent-red: #ff334b;
+
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.3s ease;
+}
+
+/* =========================================================
+   DARK THEME (Default)
+   ========================================================= */
+body[data-theme="dark"] {
+  --bg-main: #0b0f19;
+  --bg-header: #101626;
+  --bg-surface: #141c30;
+  --bg-surface-elevated: #1a243c;
+  --bg-card: #12192b;
+  --bg-input: #0e1424;
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --bg-modal-overlay: rgba(5, 8, 15, 0.85);
+
+  --border-color: rgba(255, 255, 255, 0.09);
+  --border-active: rgba(0, 132, 255, 0.6);
+  --border-gold: rgba(255, 183, 3, 0.3);
+
+  --text-main: #f1f5f9;
+  --text-muted: #8492a6;
+  --text-dim: #505d74;
+  --text-inverse: #0b0f19;
+
+  --shadow-card: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-header: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-btn: 0 4px 14px rgba(0, 132, 255, 0.35);
+  --btn-topup-bg: linear-gradient(135deg, #0084ff 0%, #00b4d8 100%);
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+body[data-theme="light"] {
+  --bg-main: #f0f4f9;
+  --bg-header: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #f8fafc;
+  --bg-subtle: rgba(0, 0, 0, 0.04);
+  --bg-modal-overlay: rgba(15, 23, 42, 0.65);
+
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-active: #0084ff;
+  --border-gold: rgba(245, 158, 11, 0.3);
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.06);
+  --shadow-header: 0 2px 14px rgba(0, 0, 0, 0.05);
+  --shadow-btn: 0 4px 12px rgba(0, 132, 255, 0.25);
+  --btn-topup-bg: linear-gradient(135deg, #0070f3 0%, #00a8e8 100%);
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 4px;
+}

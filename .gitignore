@@ -1,0 +1,8 @@
+# IDE & System files
+.agent/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log

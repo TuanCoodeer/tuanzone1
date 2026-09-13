@@ -1,0 +1,859 @@
+/* =========================================================
+   tuanzOne.com - Modals Styles (Nạp Tiền 2 Phương Án, Auth Modal)
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-modal-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal-window {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.96) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active .modal-window {
+  transform: scale(1) translateY(0);
+}
+
+.modal-close-trigger {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  z-index: 10;
+}
+
+.modal-close-trigger:hover {
+  background: rgba(255, 51, 75, 0.15);
+  color: var(--accent-red);
+  border-color: var(--accent-red);
+}
+
+.modal-header-block {
+  padding: 24px 28px 16px 28px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title-text {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-sub-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.modal-body-content {
+  padding: 24px 28px;
+}
+
+/* --- TAB SELECTOR (Cho Nạp Tiền & Auth) --- */
+.segmented-tabs-bar {
+  display: flex;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 22px;
+}
+
+.seg-tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.seg-tab-btn.active {
+  background: var(--primary-blue);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 132, 255, 0.35);
+}
+
+/* Form Controls */
+.modal-form-group {
+  margin-bottom: 16px;
+}
+
+.modal-field-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.modal-input-field, .modal-select-field {
+  width: 100%;
+  padding: 11px 14px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.modal-input-field:focus, .modal-select-field:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.15);
+}
+
+/* Card Provider Logos/Selector */
+.card-provider-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.provider-item-btn {
+  padding: 8px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.provider-item-btn:hover {
+  border-color: var(--primary-blue);
+}
+
+.provider-item-btn.selected {
+  border-color: var(--primary-blue);
+  background: rgba(0, 132, 255, 0.15);
+  color: var(--primary-blue);
+}
+
+/* Bank Transfer Box Details */
+.bank-qr-layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.qr-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-code-view {
+  width: 160px;
+  height: 160px;
+  background: #fff;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.qr-caption {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 6px;
+}
+
+.bank-info-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.info-data-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-data-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.info-data-value-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-data-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.btn-mini-copy {
+  padding: 2px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--primary-blue);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-mini-copy:hover {
+  background: var(--primary-blue);
+  color: #fff;
+}
+
+.btn-submit-modal-action {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary-blue);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: var(--transition-fast);
+}
+
+.btn-submit-modal-action:hover {
+  background: var(--primary-blue-hover);
+  transform: translateY(-1px);
+}
+
+/* Must Login Alert Box */
+.must-login-warning {
+  background: rgba(255, 51, 75, 0.1);
+  border: 1px solid var(--accent-red);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent-red);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* =========================================================
+   AUTH MODAL STYLES (MATCHING USER SCREENSHOT SPEC)
+   ========================================================= */
+.auth-window-styled {
+  max-width: 440px !important;
+  border-radius: 20px !important;
+  padding: 32px 28px !important;
+}
+
+.auth-header-centered {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-brand-logo-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.auth-logo-badge {
+  width: 52px;
+  height: 52px;
+  font-size: 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 132, 255, 0.4);
+}
+
+.auth-logo-text {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.auth-member-pill {
+  display: inline-block;
+  color: var(--primary-blue);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.auth-form-headline {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+  margin-bottom: 6px;
+  font-family: var(--font-display);
+}
+
+.auth-form-subline {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Segmented Control - Giống ảnh mẫu */
+.auth-segmented-control {
+  display: flex;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+
+.auth-seg-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-seg-btn.active {
+  background: var(--bg-surface);
+  color: var(--primary-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Form Fields */
+.auth-field-wrap {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.auth-field-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.auth-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: var(--bg-input);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.18);
+}
+
+.auth-helper-hint {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 5px;
+  line-height: 1.35;
+}
+
+.auth-pwd-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.auth-pwd-toggle-btn:hover {
+  color: var(--primary-blue);
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 132, 255, 0.35);
+  transition: transform 0.2s, filter 0.2s;
+  margin-top: 10px;
+}
+
+.auth-submit-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+/* =========================================================
+   USER TRANSACTION HISTORY STYLES
+   ========================================================= */
+.user-order-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.user-order-card:hover {
+  border-color: rgba(0, 132, 255, 0.35);
+}
+
+.user-order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-order-id {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--primary-blue);
+}
+
+.user-order-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.user-order-body {
+  margin-bottom: 12px;
+}
+
+.user-order-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.user-order-game-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(0, 132, 255, 0.12);
+  color: var(--primary-blue);
+  margin-right: 8px;
+}
+
+.user-order-price {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+}
+
+.user-credentials-box {
+  background: var(--bg-input);
+  border: 1px dashed rgba(255, 184, 0, 0.5);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.user-credentials-content {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--accent-gold);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.btn-copy-creds {
+  padding: 6px 12px;
+  background: var(--primary-blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.btn-copy-creds:hover {
+  background: var(--primary-blue-hover);
+}
+
+.user-empty-history {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.user-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   CUSTOM POPUP & TOAST NOTIFICATION SYSTEM
+   Thay thế hoàn toàn alert() và confirm() mặc định của trình duyệt
+   ========================================================= */
+
+.custom-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 9, 20, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.custom-popup-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.custom-popup-card {
+  background: linear-gradient(160deg, #131c31 0%, #0c1222 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+  width: 100%;
+  max-width: 440px;
+  padding: 28px 24px;
+  position: relative;
+  text-align: center;
+  transform: scale(0.92) translateY(16px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+}
+
+.custom-popup-overlay.active .custom-popup-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Biến thể màu theo Type */
+.custom-popup-card.type-warning {
+  border-color: rgba(255, 170, 0, 0.4);
+  box-shadow: 0 0 35px rgba(255, 170, 0, 0.12), 0 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+.custom-popup-card.type-success {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.14), 0 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+.custom-popup-card.type-danger {
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.14), 0 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+.custom-popup-card.type-info {
+  border-color: rgba(0, 132, 255, 0.45);
+  box-shadow: 0 0 35px rgba(0, 132, 255, 0.14), 0 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* Icon Huy Hiệu */
+.custom-popup-icon-badge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.custom-popup-card.type-warning .custom-popup-icon-badge {
+  background: rgba(255, 170, 0, 0.12);
+  border-color: rgba(255, 170, 0, 0.3);
+}
+
+.custom-popup-card.type-success .custom-popup-icon-badge {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.custom-popup-card.type-danger .custom-popup-icon-badge {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.custom-popup-card.type-info .custom-popup-icon-badge {
+  background: rgba(0, 132, 255, 0.12);
+  border-color: rgba(0, 132, 255, 0.3);
+}
+
+.custom-popup-title {
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+.custom-popup-message {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  white-space: pre-line;
+  margin-bottom: 24px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 0 4px;
+  text-align: center;
+}
+
+.custom-popup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.custom-popup-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-popup-btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.custom-popup-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-main);
+}
+
+.custom-popup-btn-confirm {
+  background: linear-gradient(135deg, #0084ff, #0056b3);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 132, 255, 0.3);
+}
+
+.custom-popup-btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 132, 255, 0.45);
+}
+
+.custom-popup-card.type-warning .custom-popup-btn-confirm {
+  background: linear-gradient(135deg, #ff9900, #e67e00);
+  box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+}
+
+.custom-popup-card.type-danger .custom-popup-btn-confirm {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.custom-popup-card.type-success .custom-popup-btn-confirm {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.custom-popup-close-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.custom-popup-close-x:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+}
+
+/* Toast Container & Items */
+.custom-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.custom-toast-item {
+  pointer-events: auto;
+  background: rgba(17, 26, 46, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+  max-width: 360px;
+}
+
+.custom-toast-item.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.custom-toast-item.toast-success {
+  border-left: 4px solid #10b981;
+}
+
+.custom-toast-item.toast-warning {
+  border-left: 4px solid #ffaa00;
+}
+
+.custom-toast-item.toast-danger {
+  border-left: 4px solid #ef4444;
+}
+
+.custom-toast-item.toast-info {
+  border-left: 4px solid #0084ff;
+}
