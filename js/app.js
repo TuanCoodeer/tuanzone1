@@ -837,30 +837,10 @@ class TuanzoneApp {
       });
     });
 
-    // Free Fire: Price Chips
-    document.querySelectorAll('#ff-price-chips .filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('#ff-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        store.filters.freefire.priceRange = chip.dataset.price;
-        this.renderFreeFireWarehouse();
-      });
-    });
-
     // Free Fire: Sort
     document.getElementById('ff-sort-select')?.addEventListener('change', (e) => {
       store.filters.freefire.sortBy = e.target.value;
       this.renderFreeFireWarehouse();
-    });
-
-    // Liên Quân: Price Chips
-    document.querySelectorAll('#lq-price-chips .filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('#lq-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        store.filters.lienquan.priceRange = chip.dataset.price;
-        this.renderLienQuanWarehouse();
-      });
     });
 
     // Liên Quân: Sort
@@ -887,17 +867,6 @@ class TuanzoneApp {
         chip.classList.add('active');
         if (!store.filters.fcmobile) store.filters.fcmobile = {};
         store.filters.fcmobile.server = chip.dataset.server;
-        this.renderFcMobileWarehouse();
-      });
-    });
-
-    // FC Mobile: Price Chips
-    document.querySelectorAll('#fc-price-chips .filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('#fc-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        if (!store.filters.fcmobile) store.filters.fcmobile = {};
-        store.filters.fcmobile.priceRange = chip.dataset.price;
         this.renderFcMobileWarehouse();
       });
     });
