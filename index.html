@@ -603,21 +603,48 @@
               <input type="text" class="modal-input-field" id="admin-acc-title" placeholder="VD: Nick FF Prime 6 Full Skin VIP Giá Học Sinh" value="Nick Free Fire VIP Đẹp Giá Rẻ" required>
             </div>
 
-            <div class="modal-form-group">
-              <label class="modal-field-label">Link Ảnh Đại Diện Chính (Cover URL):</label>
-              <input type="url" class="modal-input-field" id="admin-acc-image" placeholder="https://..." value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700" required>
-            </div>
-
-            <div class="modal-form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <!-- KHU VỰC TẢI ẢNH TỪ FOLDER MÁY TÍNH (DRAG & DROP ẢNH BÌA & ALBUM KHO ĐỒ) -->
+            <div class="modal-form-group admin-upload-master-group">
+              <div class="admin-upload-header-row">
                 <label class="modal-field-label" style="margin-bottom: 0;">
-                  📸 Album Ảnh Kho Đồ Chi Tiết (Mỗi link 1 dòng):
+                  🖼️ TẢI ẢNH NICK TỪ FOLDER MÁY TÍNH (ẢNH BÌA & ALBUM KHO ĐỒ):
                 </label>
-                <button type="button" class="btn-mini-helper" id="btn-admin-fill-sample-imgs">
-                  ⚡ Dán nhanh 4 ảnh kho đồ mẫu
+                <button type="button" class="btn-mini-helper" id="btn-admin-fill-sample-imgs" title="Sử dụng 4 ảnh mẫu nhanh nếu không muốn chọn ảnh">
+                  ⚡ Dùng 4 ảnh mẫu demo
                 </button>
               </div>
-              <textarea class="modal-input-field" id="admin-acc-images" rows="3" placeholder="https://link-anh-1.jpg&#10;https://link-anh-2.jpg&#10;https://link-anh-3.jpg" style="resize: vertical; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4;"></textarea>
+
+              <!-- Vùng Dropzone Kéo Thả Ảnh Từ Máy Tính -->
+              <div class="admin-dropzone-box" id="admin-acc-dropzone">
+                <input type="file" id="admin-acc-file-input" accept="image/png, image/jpeg, image/jpg, image/webp" multiple style="display: none;">
+                <div class="admin-dropzone-content">
+                  <div class="admin-dropzone-icon">📁</div>
+                  <div class="admin-dropzone-title">
+                    Kéo & thả ảnh từ thư mục máy tính vào đây
+                  </div>
+                  <div class="admin-dropzone-desc">
+                    hoặc <span class="admin-dropzone-browse">bấm vào đây để chọn tệp từ máy tính</span>
+                  </div>
+                  <div class="admin-dropzone-note">
+                    📌 <strong>Quy tắc:</strong> Ảnh đầu tiên sẽ làm <b>Ảnh Bìa Chính</b>, các ảnh sau làm <b>Album Kho Đồ</b>. Bạn có thể kéo nhiều ảnh cùng lúc!
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quản lý danh sách các ảnh đã tải lên -->
+              <div class="admin-uploaded-manager" id="admin-uploaded-manager">
+                <div class="admin-uploaded-bar">
+                  <span class="admin-uploaded-count" id="admin-uploaded-count-label">Danh sách ảnh đã chọn (1 ảnh):</span>
+                  <button type="button" class="btn-mini-danger" id="btn-admin-clear-all-imgs">🗑️ Xóa tất cả</button>
+                </div>
+                <div class="admin-uploaded-strip" id="admin-uploaded-strip">
+                  <!-- JS sẽ render các thumbnail ở đây kèm nút xóa & đặt làm cover -->
+                </div>
+              </div>
+
+              <!-- Input ẩn để lưu trữ URL/Base64 tương thích 100% với hệ thống lưu trữ -->
+              <input type="hidden" id="admin-acc-image" value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700" required>
+              <textarea id="admin-acc-images" style="display: none;"></textarea>
             </div>
 
             <div class="modal-form-group">

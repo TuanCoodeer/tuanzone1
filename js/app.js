@@ -12,6 +12,7 @@ class TuanzoneApp {
     this.activeDetailAccId = null;
     this.currentGalleryImages = [];
     this.currentGalleryIndex = 0;
+    this.adminUploadedImages = [];
   }
 
   init() {
@@ -940,6 +941,12 @@ class TuanzoneApp {
       idInput.value = 'TZ-' + Math.floor(100000 + Math.random() * 900000);
     }
 
+    // Nếu chưa có ảnh nào thì khởi tạo 1 ảnh mặc định ban đầu
+    if (!this.adminUploadedImages || this.adminUploadedImages.length === 0) {
+      this.adminUploadedImages = ['https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700'];
+    }
+
+    this.renderAdminUploadedStrip();
     this.updateAdminLivePreview();
   }
 
@@ -959,6 +966,143 @@ class TuanzoneApp {
     if (shopView) shopView.style.display = 'block';
   }
 
+  // Nén ảnh từ file người dùng chọn trên máy tính (sắc nét & chống tràn localStorage)
+  compressAndReadImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Nén JPEG chất lượng 0.82 siêu sắc nét mà dung lượng cực nhẹ (~60-120KB)
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+          resolve(compressedBase64);
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Xử lý nạp danh sách tệp ảnh từ Drag & Drop hoặc File Input
+  async handleAdminFilesUpload(fileList) {
+    if (!fileList || fileList.length === 0) return;
+    const validFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    if (validFiles.length === 0) {
+      showToast("Vui lòng chỉ kéo thả tệp hình ảnh (PNG, JPG, JPEG, WEBP)!", "warning");
+      return;
+    }
+
+    showToast(`Đang tải & xử lý ${validFiles.length} ảnh từ máy tính...`, "info");
+
+    // Nếu hiện tại chỉ có 1 ảnh mẫu unsplash khởi tạo thì thay thế bằng ảnh của máy
+    if (this.adminUploadedImages.length === 1 && this.adminUploadedImages[0].includes('images.unsplash.com')) {
+      this.adminUploadedImages = [];
+    }
+
+    try {
+      const readPromises = validFiles.map(file => this.compressAndReadImage(file));
+      const results = await Promise.all(readPromises);
+      results.forEach(url => {
+        this.adminUploadedImages.push(url);
+      });
+      this.renderAdminUploadedStrip();
+      showToast(`Đã thêm thành công ${results.length} ảnh từ thư mục máy tính!`, "success");
+    } catch (err) {
+      console.error("Lỗi đọc file ảnh:", err);
+      showToast("Không thể xử lý tệp ảnh vừa chọn!", "error");
+    }
+  }
+
+  // Render dải thumbnail quản lý ảnh đã upload của Admin
+  renderAdminUploadedStrip() {
+    const strip = document.getElementById('admin-uploaded-strip');
+    const countLabel = document.getElementById('admin-uploaded-count-label');
+    const mainImgHidden = document.getElementById('admin-acc-image');
+    const galleryHidden = document.getElementById('admin-acc-images');
+
+    const total = this.adminUploadedImages.length;
+    if (countLabel) {
+      countLabel.textContent = `Danh sách ảnh đã chọn (${total} ảnh):`;
+    }
+
+    // Đồng bộ vào input ẩn
+    if (mainImgHidden) mainImgHidden.value = this.adminUploadedImages[0] || '';
+    if (galleryHidden) galleryHidden.value = this.adminUploadedImages.slice(1).join('\n');
+
+    if (!strip) return;
+
+    if (total === 0) {
+      strip.innerHTML = `
+        <div style="font-size: 0.8rem; color: var(--text-muted); padding: 8px 4px;">
+          Chưa có ảnh nào được chọn. Hãy kéo thả ảnh từ máy tính hoặc bấm nút "Dùng 4 ảnh mẫu demo".
+        </div>
+      `;
+      this.updateAdminLivePreview();
+      return;
+    }
+
+    strip.innerHTML = this.adminUploadedImages.map((imgUrl, idx) => {
+      const isCover = idx === 0;
+      return `
+        <div class="admin-upload-card ${isCover ? 'is-cover' : ''}" data-idx="${idx}">
+          <img src="${imgUrl}" alt="Ảnh ${idx + 1}" onerror="this.style.opacity='0.2'">
+          ${isCover ? '<span class="badge-cover-tag">⭐ ẢNH BÌA</span>' : ''}
+          <button type="button" class="btn-card-del" data-del-idx="${idx}" title="Xóa ảnh này">✕</button>
+          ${!isCover ? `<button type="button" class="btn-set-cover" data-cover-idx="${idx}">⭐ Đặt làm bìa</button>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Gắn sự kiện xóa ảnh
+    strip.querySelectorAll('.btn-card-del').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const delIdx = Number(btn.dataset.delIdx);
+        this.adminUploadedImages.splice(delIdx, 1);
+        this.renderAdminUploadedStrip();
+        showToast("Đã xóa 1 ảnh khỏi danh sách!", "info");
+      });
+    });
+
+    // Gắn sự kiện đặt làm ảnh bìa chính
+    strip.querySelectorAll('.btn-set-cover').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const coverIdx = Number(btn.dataset.coverIdx);
+        if (coverIdx > 0 && coverIdx < this.adminUploadedImages.length) {
+          const selectedImg = this.adminUploadedImages.splice(coverIdx, 1)[0];
+          this.adminUploadedImages.unshift(selectedImg); // Đưa lên đầu làm ảnh bìa
+          this.renderAdminUploadedStrip();
+          showToast("Đã chuyển ảnh này thành Ảnh Bìa Chính!", "success");
+        }
+      });
+    });
+
+    this.updateAdminLivePreview();
+  }
+
   updateAdminLivePreview() {
     const game = document.getElementById('admin-acc-game')?.value || 'freefire';
     const prime = document.getElementById('admin-acc-prime')?.value || '';
@@ -969,8 +1113,12 @@ class TuanzoneApp {
     const id = (document.getElementById('admin-acc-id')?.value || 'TZ-1029').replace(/^#/, '');
     const priceVal = Number(document.getElementById('admin-acc-price')?.value || 0);
     const title = document.getElementById('admin-acc-title')?.value || `Tài khoản ${game} #${id}`;
-    const mainImg = (document.getElementById('admin-acc-image')?.value || '').trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700';
-    const rawImages = (document.getElementById('admin-acc-images')?.value || '').trim();
+    
+    // Lấy ảnh bìa chính từ mảng ảnh đã upload hoặc fallback
+    const mainImg = (this.adminUploadedImages && this.adminUploadedImages.length > 0)
+      ? this.adminUploadedImages[0]
+      : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700';
+
     const desc = document.getElementById('admin-acc-desc')?.value || 'Trắng thông tin 100%, bảo mật tuyệt đối, nhận nick tự động đổi mật khẩu được ngay.';
 
     const gameNames = {
@@ -1010,14 +1158,10 @@ class TuanzoneApp {
     if (priceEl) priceEl.innerHTML = `${priceVal.toLocaleString('vi-VN')} <span class="currency-symbol">đ</span>`;
     if (descEl) descEl.textContent = desc;
 
-    // Thumbnails strip
-    let allThumbs = [mainImg];
-    if (rawImages) {
-      const parts = rawImages.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 0);
-      parts.forEach(p => {
-        if (!allThumbs.includes(p)) allThumbs.push(p);
-      });
-    }
+    // Thumbnails strip trên Live Preview
+    const allThumbs = (this.adminUploadedImages && this.adminUploadedImages.length > 0)
+      ? this.adminUploadedImages
+      : [mainImg];
 
     const thumbsContainer = document.getElementById('admin-live-thumbs-strip');
     if (thumbsContainer) {
@@ -1061,6 +1205,7 @@ class TuanzoneApp {
       }
     });
 
+    // Phân loại Game động (Prime cho FF, OVR & Server cho FC Mobile)
     const gameSelect = document.getElementById('admin-acc-game');
     const primeGroup = document.getElementById('admin-prime-group');
     const fcGroup = document.getElementById('admin-fcmobile-group');
@@ -1080,16 +1225,55 @@ class TuanzoneApp {
       this.updateAdminLivePreview();
     });
 
-    // Live update khi gõ vào bất kỳ trường nào trong form
-    const formAdminAdd = document.getElementById('form-admin-add-acc');
-    formAdminAdd?.addEventListener('input', () => {
-      this.updateAdminLivePreview();
-    });
-    formAdminAdd?.addEventListener('change', () => {
-      this.updateAdminLivePreview();
+    // --- KÉO THẢ ẢNH TỪ FOLDER MÁY TÍNH (DRAG & DROP ZONE) ---
+    const dropzone = document.getElementById('admin-acc-dropzone');
+    const fileInput = document.getElementById('admin-acc-file-input');
+
+    dropzone?.addEventListener('click', () => {
+      fileInput?.click();
     });
 
-    // Nút dán nhanh 4 ảnh kho đồ mẫu chất lượng cao
+    fileInput?.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        this.handleAdminFilesUpload(e.target.files);
+        e.target.value = ''; // Reset input để có thể chọn lại cùng file nếu muốn
+      }
+    });
+
+    // Xử lý sự kiện kéo thả từ folder máy tính
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone?.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'dragend'].forEach(eventName => {
+      dropzone?.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('dragover');
+      });
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        this.handleAdminFilesUpload(e.dataTransfer.files);
+      }
+    });
+
+    // Nút xóa tất cả ảnh đã chọn
+    document.getElementById('btn-admin-clear-all-imgs')?.addEventListener('click', () => {
+      this.adminUploadedImages = [];
+      this.renderAdminUploadedStrip();
+      showToast("Đã xóa tất cả ảnh vừa chọn!", "info");
+    });
+
+    // Nút nạp nhanh 4 ảnh kho đồ mẫu demo chất lượng cao
     document.getElementById('btn-admin-fill-sample-imgs')?.addEventListener('click', () => {
       const g = gameSelect ? gameSelect.value : 'freefire';
       let sampleList = [];
@@ -1115,17 +1299,29 @@ class TuanzoneApp {
           'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800'
         ];
       }
-      const galleryInput = document.getElementById('admin-acc-images');
-      if (galleryInput) {
-        galleryInput.value = sampleList.join('\n');
-        this.updateAdminLivePreview();
-        showToast("Đã dán nhanh 4 ảnh kho đồ mẫu!", "info");
-      }
+      this.adminUploadedImages = [...sampleList];
+      this.renderAdminUploadedStrip();
+      showToast("Đã nạp nhanh 4 ảnh kho đồ mẫu demo!", "info");
+    });
+
+    // Live update khi gõ vào các trường text/số trong form
+    const formAdminAdd = document.getElementById('form-admin-add-acc');
+    formAdminAdd?.addEventListener('input', () => {
+      this.updateAdminLivePreview();
+    });
+    formAdminAdd?.addEventListener('change', () => {
+      this.updateAdminLivePreview();
     });
 
     // Xử lý gửi form thêm acc
     formAdminAdd?.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      if (!this.adminUploadedImages || this.adminUploadedImages.length === 0) {
+        showToast("Vui lòng tải lên ít nhất 1 ảnh (kéo từ máy tính hoặc bấm dùng ảnh mẫu)!", "warning");
+        return;
+      }
+
       const game = document.getElementById('admin-acc-game').value;
       const prime = document.getElementById('admin-acc-prime')?.value;
       const ovr = document.getElementById('admin-acc-ovr')?.value;
@@ -1135,8 +1331,11 @@ class TuanzoneApp {
       const id = document.getElementById('admin-acc-id').value.trim();
       const title = document.getElementById('admin-acc-title').value.trim();
       const price = Number(document.getElementById('admin-acc-price').value);
-      const image = document.getElementById('admin-acc-image').value.trim();
-      const rawImages = document.getElementById('admin-acc-images')?.value.trim() || '';
+      
+      // Ảnh bìa chính là ảnh đầu tiên, các ảnh sau là album
+      const image = this.adminUploadedImages[0];
+      const rawImages = this.adminUploadedImages.slice(1).join('\n');
+
       const credentials = document.getElementById('admin-acc-credentials').value.trim();
       const description = document.getElementById('admin-acc-desc').value.trim();
 
@@ -1158,7 +1357,7 @@ class TuanzoneApp {
 
       showPopup({
         title: "✅ ĐÃ THÊM ACC VÀO KHO!",
-        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công với album ảnh kho đồ đầy đủ.\nHệ thống đang chuyển sang trang chi tiết để bạn xem ngay!`,
+        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công với toàn bộ ảnh tải từ máy tính của bạn.\nHệ thống đang chuyển sang trang chi tiết để bạn xem ngay!`,
         type: "success",
         confirmText: "Xem Ngay"
       });
