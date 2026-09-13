@@ -104,7 +104,7 @@ class TuanzoneApp {
         `;
 
         document.getElementById('btn-admin-open-add-acc')?.addEventListener('click', () => {
-          this.openAddAccModal();
+          this.openAddAccView();
         });
 
         document.getElementById('btn-admin-open-dashboard')?.addEventListener('click', () => {
@@ -472,8 +472,20 @@ class TuanzoneApp {
         if (accId) {
           this.openAccountDetail(accId, false);
         }
-      } else if (this.activeDetailAccId && !hash.startsWith('#acc-')) {
-        this.closeAccountDetail(false);
+      } else if (hash === '#admin-add-acc') {
+        if (store.user?.isAdmin) {
+          this.openAddAccView(false);
+        } else {
+          this.closeAddAccView(false);
+        }
+      } else {
+        if (this.activeDetailAccId) {
+          this.closeAccountDetail(false);
+        }
+        const adminAddView = document.getElementById('view-admin-add-acc');
+        if (adminAddView && adminAddView.style.display !== 'none') {
+          this.closeAddAccView(false);
+        }
       }
     };
 
@@ -590,8 +602,10 @@ class TuanzoneApp {
 
     const shopView = document.getElementById('view-shop-warehouses');
     const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
 
     if (shopView) shopView.style.display = 'none';
+    if (adminAddView) adminAddView.style.display = 'none';
     if (detailView) detailView.style.display = 'block';
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -608,8 +622,10 @@ class TuanzoneApp {
 
     const shopView = document.getElementById('view-shop-warehouses');
     const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
 
     if (detailView) detailView.style.display = 'none';
+    if (adminAddView) adminAddView.style.display = 'none';
     if (shopView) shopView.style.display = 'block';
   }
 
@@ -893,12 +909,157 @@ class TuanzoneApp {
     });
   }
 
-  // --- 7. MODAL ADMIN: THÊM ACC & BÁO CÁO DOANH THU ---
+  // --- 7. KHU VỰC QUẢN TRỊ VIÊN: THÊM ACC (DEDICATED VIEW) & BÁO CÁO DOANH THU ---
+  openAddAccView(updateHash = true) {
+    if (!store.user?.isAdmin) {
+      showToast("Chức năng chỉ dành riêng cho Quản Trị Viên!", "warning");
+      return;
+    }
+
+    if (this.activeDetailAccId) {
+      this.activeDetailAccId = null;
+    }
+
+    if (updateHash) {
+      window.location.hash = 'admin-add-acc';
+    }
+
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
+
+    if (shopView) shopView.style.display = 'none';
+    if (detailView) detailView.style.display = 'none';
+    if (adminAddView) adminAddView.style.display = 'block';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Tự sinh ID ban đầu nếu chưa có
+    const idInput = document.getElementById('admin-acc-id');
+    if (idInput && !idInput.value) {
+      idInput.value = 'TZ-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    this.updateAdminLivePreview();
+  }
+
+  closeAddAccView(updateHash = true) {
+    if (updateHash) {
+      if (window.location.hash === '#admin-add-acc') {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+      }
+    }
+
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
+
+    if (adminAddView) adminAddView.style.display = 'none';
+    if (detailView) detailView.style.display = 'none';
+    if (shopView) shopView.style.display = 'block';
+  }
+
+  updateAdminLivePreview() {
+    const game = document.getElementById('admin-acc-game')?.value || 'freefire';
+    const prime = document.getElementById('admin-acc-prime')?.value || '';
+    const ovr = document.getElementById('admin-acc-ovr')?.value || '';
+    const server = document.getElementById('admin-acc-server')?.value || '';
+    const type = document.getElementById('admin-acc-type')?.value || 'Tự chọn';
+    const rank = document.getElementById('admin-acc-rank')?.value || 'Sẵn sàng';
+    const id = (document.getElementById('admin-acc-id')?.value || 'TZ-1029').replace(/^#/, '');
+    const priceVal = Number(document.getElementById('admin-acc-price')?.value || 0);
+    const title = document.getElementById('admin-acc-title')?.value || `Tài khoản ${game} #${id}`;
+    const mainImg = (document.getElementById('admin-acc-image')?.value || '').trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700';
+    const rawImages = (document.getElementById('admin-acc-images')?.value || '').trim();
+    const desc = document.getElementById('admin-acc-desc')?.value || 'Trắng thông tin 100%, bảo mật tuyệt đối, nhận nick tự động đổi mật khẩu được ngay.';
+
+    const gameNames = {
+      freefire: "Free Fire",
+      lienquan: "Liên Quân Mobile",
+      fcmobile: "FC Mobile",
+      roblox: "Roblox"
+    };
+    const gameName = gameNames[game] || 'Game Online';
+
+    // Tag badge
+    let tag = 'FLASH SALE';
+    if (game === 'freefire' && prime) tag = prime;
+    else if (game === 'fcmobile') tag = ovr ? `OVR ${ovr}` : 'OVR VIP';
+    else if (rank && rank !== 'Sẵn sàng') tag = rank;
+
+    // Cập nhật DOM Live Preview
+    const imgEl = document.getElementById('admin-live-img');
+    const badgeIdEl = document.getElementById('admin-live-badge-id');
+    const badgeTagEl = document.getElementById('admin-live-badge-tag');
+    const titleEl = document.getElementById('admin-live-title');
+    const codeEl = document.getElementById('admin-live-code');
+    const gameEl = document.getElementById('admin-live-game');
+    const typeEl = document.getElementById('admin-live-type');
+    const rankEl = document.getElementById('admin-live-rank');
+    const priceEl = document.getElementById('admin-live-price');
+    const descEl = document.getElementById('admin-live-desc');
+
+    if (imgEl) imgEl.src = mainImg;
+    if (badgeIdEl) badgeIdEl.textContent = `#${id}`;
+    if (badgeTagEl) badgeTagEl.textContent = tag;
+    if (titleEl) titleEl.textContent = title;
+    if (codeEl) codeEl.textContent = `#${id}`;
+    if (gameEl) gameEl.textContent = gameName;
+    if (typeEl) typeEl.textContent = type;
+    if (rankEl) rankEl.textContent = rank;
+    if (priceEl) priceEl.innerHTML = `${priceVal.toLocaleString('vi-VN')} <span class="currency-symbol">đ</span>`;
+    if (descEl) descEl.textContent = desc;
+
+    // Thumbnails strip
+    let allThumbs = [mainImg];
+    if (rawImages) {
+      const parts = rawImages.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 0);
+      parts.forEach(p => {
+        if (!allThumbs.includes(p)) allThumbs.push(p);
+      });
+    }
+
+    const thumbsContainer = document.getElementById('admin-live-thumbs-strip');
+    if (thumbsContainer) {
+      thumbsContainer.innerHTML = allThumbs.map((url, idx) => `
+        <div class="detail-thumb-item ${idx === 0 ? 'active' : ''}" data-url="${url}" style="width: 58px; height: 42px; border-radius: 4px; overflow: hidden; border: 2px solid ${idx === 0 ? 'var(--primary-color)' : 'rgba(255,255,255,0.1)'}; cursor: pointer; flex-shrink: 0;">
+          <img src="${url}" alt="thumb ${idx + 1}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.opacity='0.3'">
+        </div>
+      `).join('');
+
+      thumbsContainer.querySelectorAll('.detail-thumb-item').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          thumbsContainer.querySelectorAll('.detail-thumb-item').forEach(t => {
+            t.classList.remove('active');
+            t.style.borderColor = 'rgba(255,255,255,0.1)';
+          });
+          thumb.classList.add('active');
+          thumb.style.borderColor = 'var(--primary-color)';
+          if (imgEl) imgEl.src = thumb.dataset.url;
+        });
+      });
+    }
+  }
+
   attachAdminEvents() {
-    // 1. Modal Thêm Acc
-    const addAccModal = document.getElementById('admin-add-acc-modal');
-    const addAccCloseBtn = document.getElementById('admin-add-acc-close-btn');
-    addAccCloseBtn?.addEventListener('click', () => addAccModal.classList.remove('active'));
+    // 1. Điều hướng Khu Vực Thêm Acc Admin (Dedicated Workspace)
+    document.getElementById('btn-admin-add-back-shop')?.addEventListener('click', () => {
+      this.closeAddAccView();
+    });
+    document.getElementById('bc-admin-home-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.closeAddAccView();
+    });
+
+    // Nút sinh mã ID ngẫu nhiên
+    document.getElementById('btn-admin-gen-id')?.addEventListener('click', () => {
+      const idInput = document.getElementById('admin-acc-id');
+      if (idInput) {
+        idInput.value = 'TZ-' + Math.floor(100000 + Math.random() * 900000);
+        this.updateAdminLivePreview();
+        showToast("Đã tạo mã nick ngẫu nhiên mới!", "info");
+      }
+    });
 
     const gameSelect = document.getElementById('admin-acc-game');
     const primeGroup = document.getElementById('admin-prime-group');
@@ -916,37 +1077,17 @@ class TuanzoneApp {
         if (primeGroup) primeGroup.style.display = 'none';
         if (fcGroup) fcGroup.style.display = 'none';
       }
+      this.updateAdminLivePreview();
     });
 
-    // Live Preview Album Ảnh & Nút dán ảnh mẫu
-    const mainImgInput = document.getElementById('admin-acc-image');
-    const galleryInput = document.getElementById('admin-acc-images');
-    const previewContainer = document.getElementById('admin-gallery-preview');
-    const previewCount = document.getElementById('admin-preview-count');
-
-    const updateAdminGalleryPreview = () => {
-      if (!previewContainer) return;
-      const mainUrl = (mainImgInput?.value || '').trim();
-      const rawGallery = (galleryInput?.value || '').trim();
-      let urls = [];
-      if (mainUrl) urls.push(mainUrl);
-      if (rawGallery) {
-        const parts = rawGallery.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 0);
-        parts.forEach(p => {
-          if (!urls.includes(p)) urls.push(p);
-        });
-      }
-      if (urls.length === 0) {
-        urls.push('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700');
-      }
-      if (previewCount) previewCount.textContent = urls.length;
-      previewContainer.innerHTML = urls.map(u => `
-        <img src="${u}" class="admin-preview-thumb-img" alt="Preview" onerror="this.style.opacity='0.2'">
-      `).join('');
-    };
-
-    mainImgInput?.addEventListener('input', updateAdminGalleryPreview);
-    galleryInput?.addEventListener('input', updateAdminGalleryPreview);
+    // Live update khi gõ vào bất kỳ trường nào trong form
+    const formAdminAdd = document.getElementById('form-admin-add-acc');
+    formAdminAdd?.addEventListener('input', () => {
+      this.updateAdminLivePreview();
+    });
+    formAdminAdd?.addEventListener('change', () => {
+      this.updateAdminLivePreview();
+    });
 
     // Nút dán nhanh 4 ảnh kho đồ mẫu chất lượng cao
     document.getElementById('btn-admin-fill-sample-imgs')?.addEventListener('click', () => {
@@ -974,15 +1115,16 @@ class TuanzoneApp {
           'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800'
         ];
       }
+      const galleryInput = document.getElementById('admin-acc-images');
       if (galleryInput) {
         galleryInput.value = sampleList.join('\n');
-        updateAdminGalleryPreview();
+        this.updateAdminLivePreview();
         showToast("Đã dán nhanh 4 ảnh kho đồ mẫu!", "info");
       }
     });
 
     // Xử lý gửi form thêm acc
-    document.getElementById('form-admin-add-acc')?.addEventListener('submit', (e) => {
+    formAdminAdd?.addEventListener('submit', (e) => {
       e.preventDefault();
       const game = document.getElementById('admin-acc-game').value;
       const prime = document.getElementById('admin-acc-prime')?.value;
@@ -1016,14 +1158,14 @@ class TuanzoneApp {
 
       showPopup({
         title: "✅ ĐÃ THÊM ACC VÀO KHO!",
-        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công với album ảnh kho đồ đầy đủ.`,
+        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công với album ảnh kho đồ đầy đủ.\nHệ thống đang chuyển sang trang chi tiết để bạn xem ngay!`,
         type: "success",
-        confirmText: "Đóng"
+        confirmText: "Xem Ngay"
       });
-      addAccModal.classList.remove('active');
-      e.target.reset();
-      updateAdminGalleryPreview();
+
+      this.closeAddAccView(false);
       this.renderWarehouses();
+      this.openAccountDetail(newAcc.id);
     });
 
     // 2. Modal Dashboard
@@ -1062,20 +1204,7 @@ class TuanzoneApp {
   }
 
   openAddAccModal() {
-    const modal = document.getElementById('admin-add-acc-modal');
-    if (!modal) return;
-    const idInput = document.getElementById('admin-acc-id');
-    if (idInput && !idInput.value) {
-      idInput.value = 'TZ-' + Math.floor(1000 + Math.random() * 9000);
-    }
-    // Update live preview in modal
-    const mainImgInput = document.getElementById('admin-acc-image');
-    const previewContainer = document.getElementById('admin-gallery-preview');
-    if (previewContainer && mainImgInput) {
-      const url = mainImgInput.value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700';
-      previewContainer.innerHTML = `<img src="${url}" class="admin-preview-thumb-img" alt="Preview">`;
-    }
-    modal.classList.add('active');
+    this.openAddAccView();
   }
 
   openAdminDashboardModal() {

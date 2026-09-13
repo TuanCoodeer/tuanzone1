@@ -480,6 +480,231 @@
         </div>
       </div>
 
+    </div><!-- /#view-account-detail -->
+
+    <!-- =========================================================
+         VIEW 3: KHU VỰC THÊM TÀI KHOẢN CỦA ADMIN (DEDICATED ADMIN WORKSPACE)
+         Chuyển sang một khu riêng biệt có live preview thời gian thực
+         ========================================================= -->
+    <div id="view-admin-add-acc" class="view-admin-add-acc" style="display: none;">
+      
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs Admin -->
+      <div class="detail-nav-bar">
+        <button class="btn-detail-back" id="btn-admin-add-back-shop">
+          <span>←</span> Quay lại trang chủ shop
+        </button>
+        <div class="detail-breadcrumbs">
+          <a href="#" class="bc-link" id="bc-admin-home-link">Trang chủ</a>
+          <span class="bc-sep">›</span>
+          <span class="bc-game">Quản Trị Viên</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Đăng bán tài khoản mới vào kho</span>
+        </div>
+        <div class="admin-workspace-pill">
+          <span>👑</span> Chế độ Quản trị viên (Admin Workspace)
+        </div>
+      </div>
+
+      <!-- Tiêu Đề Khu Vực -->
+      <div class="admin-workspace-header">
+        <h1 class="admin-workspace-title">
+          <span>👑</span> KHU VỰC ĐĂNG BÁN TÀI KHOẢN MỚI
+        </h1>
+        <p class="admin-workspace-subtitle">
+          Điền thông số tài khoản và xem trước trực tiếp giao diện hiển thị trên website tuanzOne.com
+        </p>
+      </div>
+
+      <!-- Bố Cục 2 Cột: Cột Trái Form Nhập, Cột Phải Live Preview Showcase -->
+      <div class="admin-add-acc-grid">
+        
+        <!-- CỘT TRÁI: FORM NHẬP THÔNG SỐ -->
+        <div class="admin-form-panel">
+          <div class="admin-panel-heading">
+            <span>📝</span> Nhập Thông Tin Tài Khoản
+          </div>
+          
+          <form id="form-admin-add-acc">
+            <div class="admin-form-row-2">
+              <div class="modal-form-group">
+                <label class="modal-field-label">Chọn Tựa Game:</label>
+                <select class="modal-select-field" id="admin-acc-game" required>
+                  <option value="freefire">🔥 Free Fire</option>
+                  <option value="lienquan">⚔️ Liên Quân Mobile</option>
+                  <option value="fcmobile">⚽ FC Mobile</option>
+                </select>
+              </div>
+
+              <!-- Phân loại Free Fire: Prime -->
+              <div class="modal-form-group" id="admin-prime-group">
+                <label class="modal-field-label">Cấp Độ Prime:</label>
+                <select class="modal-select-field" id="admin-acc-prime">
+                  <option value="Prime 1">Prime 1</option>
+                  <option value="Prime 2">Prime 2</option>
+                  <option value="Prime 3">Prime 3</option>
+                  <option value="Prime 4">Prime 4</option>
+                  <option value="Prime 5">Prime 5</option>
+                  <option value="Prime 6">Prime 6</option>
+                  <option value="Prime 7">Prime 7</option>
+                  <option value="Prime 8">Prime 8</option>
+                </select>
+              </div>
+
+              <!-- Phân loại FC Mobile: OVR & Server -->
+              <div class="modal-form-group" id="admin-fcmobile-group" style="display: none;">
+                <label class="modal-field-label">Phân Loại FC Mobile:</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <select class="modal-select-field" id="admin-acc-ovr">
+                    <option value="100-110">OVR 100 - 110</option>
+                    <option value="111-120">OVR 111 - 120</option>
+                    <option value="121-130" selected>OVR 121 - 130</option>
+                    <option value="over-130">OVR 130+</option>
+                  </select>
+                  <select class="modal-select-field" id="admin-acc-server">
+                    <option value="global" selected>Bản Global</option>
+                    <option value="korea">Bản Hàn Quốc</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-form-row-2">
+              <div class="modal-form-group">
+                <label class="modal-field-label">Loại Tài Khoản:</label>
+                <select class="modal-select-field" id="admin-acc-type">
+                  <option value="Tự chọn" selected>Tự chọn</option>
+                  <option value="VIP Trắng Thông Tin">VIP Trắng Thông Tin</option>
+                  <option value="Siêu Phẩm Full Skin">Siêu Phẩm Full Skin</option>
+                  <option value="Acc Giá Học Sinh">Acc Giá Học Sinh</option>
+                </select>
+              </div>
+              <div class="modal-form-group">
+                <label class="modal-field-label">Bậc Rank / Cấp Độ:</label>
+                <input type="text" class="modal-input-field" id="admin-acc-rank" placeholder="VD: Thách Đấu / Huyền Thoại" value="Sẵn sàng">
+              </div>
+            </div>
+
+            <div class="admin-form-row-2">
+              <div class="modal-form-group">
+                <label class="modal-field-label">Mã Nick (ID):</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" class="modal-input-field" id="admin-acc-id" placeholder="VD: TZ-1029" required>
+                  <button type="button" class="btn-mini-helper" id="btn-admin-gen-id" style="white-space: nowrap; padding: 0 12px; font-weight: 700;" title="Tạo mã ID ngẫu nhiên">⚡ Đổi mã</button>
+                </div>
+              </div>
+              <div class="modal-form-group">
+                <label class="modal-field-label">Giá Bán (VNĐ):</label>
+                <input type="number" class="modal-input-field" id="admin-acc-price" placeholder="VD: 150000" min="10000" step="5000" value="150000" required>
+              </div>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Tiêu Đề Nick (Hiển thị nổi bật):</label>
+              <input type="text" class="modal-input-field" id="admin-acc-title" placeholder="VD: Nick FF Prime 6 Full Skin VIP Giá Học Sinh" value="Nick Free Fire VIP Đẹp Giá Rẻ" required>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Link Ảnh Đại Diện Chính (Cover URL):</label>
+              <input type="url" class="modal-input-field" id="admin-acc-image" placeholder="https://..." value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700" required>
+            </div>
+
+            <div class="modal-form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="modal-field-label" style="margin-bottom: 0;">
+                  📸 Album Ảnh Kho Đồ Chi Tiết (Mỗi link 1 dòng):
+                </label>
+                <button type="button" class="btn-mini-helper" id="btn-admin-fill-sample-imgs">
+                  ⚡ Dán nhanh 4 ảnh kho đồ mẫu
+                </button>
+              </div>
+              <textarea class="modal-input-field" id="admin-acc-images" rows="3" placeholder="https://link-anh-1.jpg&#10;https://link-anh-2.jpg&#10;https://link-anh-3.jpg" style="resize: vertical; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4;"></textarea>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Thông Tin Đăng Nhập (Tự động gửi cho khách sau khi mua):</label>
+              <textarea class="modal-input-field" id="admin-acc-credentials" rows="2" placeholder="Tài khoản: xxx | Mật khẩu: yyy | Mã 2FA/Ghi chú: zzz" required style="resize: vertical; font-family: var(--font-mono); font-size: 0.85rem;">Tài khoản: gamer_vip | Mật khẩu: Tuanzone@2026</textarea>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-field-label">Mô Tả Chi Tiết Về Nick:</label>
+              <textarea class="modal-input-field" id="admin-acc-desc" rows="3" placeholder="VD: Trắng thông tin 100%, rank Kim Cương, nhiều skin súng sịn..." style="resize: vertical; font-size: 0.85rem;">Trắng thông tin 100%, bảo mật tuyệt đối, nhận nick tự động đổi mật khẩu được ngay.</textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-modal-action" style="background: linear-gradient(135deg, #ff6b00, #ff8800); margin-top: 12px; font-size: 1.05rem; padding: 14px;">
+              ⚡ ĐĂNG BÁN ACC VÀO KHO NGAY
+            </button>
+          </form>
+        </div>
+
+        <!-- CỘT PHẢI: LIVE PREVIEW SHOWCASE -->
+        <div class="admin-preview-panel">
+          <div class="admin-panel-heading">
+            <span>👁️</span> Xem Trước Giao Diện Khách Hàng Thấy (Live Preview)
+          </div>
+          <div class="admin-preview-showcase-box">
+            
+            <!-- Live Preview Gallery Viewport -->
+            <div class="admin-preview-viewport">
+              <img src="" id="admin-live-img" class="detail-main-img" alt="Xem trước ảnh">
+              <div class="gallery-overlay-badges">
+                <span class="detail-badge-id" id="admin-live-badge-id">#TZ-1029</span>
+                <span class="detail-badge-tag" id="admin-live-badge-tag">FLASH SALE</span>
+              </div>
+            </div>
+
+            <!-- Live Preview Thumbnail Strip -->
+            <div class="admin-live-thumbs-strip" id="admin-live-thumbs-strip">
+              <!-- Rendered via JS preview -->
+            </div>
+
+            <!-- Live Preview Info Card -->
+            <div class="admin-live-info-card">
+              <h2 class="admin-live-title" id="admin-live-title">Nick Free Fire VIP Đẹp Giá Rẻ</h2>
+              <div class="admin-live-meta-row">
+                <span>Mã số: <strong id="admin-live-code">#TZ-1029</strong></span>
+                <span>Game: <strong id="admin-live-game">Free Fire</strong></span>
+                <span>Loại: <strong id="admin-live-type">Tự chọn</strong></span>
+              </div>
+
+              <!-- Live Specs -->
+              <div class="admin-live-specs-box">
+                <div class="spec-row">
+                  <span class="spec-label">Rank / Bậc</span>
+                  <span class="spec-value" id="admin-live-rank">Sẵn sàng</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-label">Bảo mật</span>
+                  <span class="spec-value" style="color: #00c853; font-weight: 700;">100% Trắng thông tin</span>
+                </div>
+              </div>
+
+              <!-- Live Price Box -->
+              <div class="detail-pricing-panel" style="margin: 14px 0 10px; padding: 12px 16px;">
+                <div class="detail-price-headline" id="admin-live-price" style="font-size: 1.8rem;">
+                  150.000 <span class="currency-symbol">đ</span>
+                </div>
+                <div class="detail-price-slogan" style="font-size: 0.75rem;">
+                  Rẻ vô đối, giá tốt nhất thị trường • Nhận nick trong 3 giây
+                </div>
+              </div>
+
+              <!-- Live Mock Buy Button -->
+              <button type="button" class="btn-detail-primary-buy" style="padding: 10px; font-size: 0.95rem; opacity: 0.9; cursor: default;">
+                <span>⚡</span> Mua Ngay (Giao diện khách)
+              </button>
+
+              <!-- Live Description Box -->
+              <div style="margin-top: 14px; padding: 12px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                <strong style="color: var(--text-main); display: block; margin-bottom: 4px;">Chi tiết dịch vụ:</strong>
+                <span id="admin-live-desc">Trắng thông tin 100%, bảo mật tuyệt đối...</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -744,146 +969,7 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       MODAL ADMIN: THÊM ACC VÀO KHO (CHỈ ADMIN THẤY)
-       Hỗ trợ Album Ảnh Kho Đồ, Loại Nick, Rank, Live Preview
-       ========================================================= -->
-  <div class="modal-overlay" id="admin-add-acc-modal">
-    <div class="modal-window" style="max-width: 680px;">
-      <button class="modal-close-trigger" id="admin-add-acc-close-btn">✕</button>
-      
-      <div class="modal-header-block" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
-        <div class="modal-title-text" style="color: var(--accent-gold);">
-          <span>👑</span> Thêm Tài Khoản Mới Vào Kho
-        </div>
-        <div class="modal-sub-text">Đăng bán acc game mới lên website tuanzOne.com với đầy đủ album ảnh kho đồ</div>
-      </div>
 
-      <div class="modal-body-content" style="padding-top: 18px;">
-        <form id="form-admin-add-acc">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-            <div class="modal-form-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Chọn Tựa Game:</label>
-              <select class="modal-select-field" id="admin-acc-game" required>
-                <option value="freefire">🔥 Free Fire</option>
-                <option value="lienquan">⚔️ Liên Quân Mobile</option>
-                <option value="fcmobile">⚽ FC Mobile</option>
-              </select>
-            </div>
-
-            <!-- Phân loại Free Fire: Prime -->
-            <div class="modal-form-group" id="admin-prime-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Cấp Độ Prime:</label>
-              <select class="modal-select-field" id="admin-acc-prime">
-                <option value="Prime 1">Prime 1</option>
-                <option value="Prime 2">Prime 2</option>
-                <option value="Prime 3">Prime 3</option>
-                <option value="Prime 4">Prime 4</option>
-                <option value="Prime 5">Prime 5</option>
-                <option value="Prime 6">Prime 6</option>
-                <option value="Prime 7">Prime 7</option>
-                <option value="Prime 8">Prime 8</option>
-              </select>
-            </div>
-
-            <!-- Phân loại FC Mobile: OVR & Server -->
-            <div class="modal-form-group" id="admin-fcmobile-group" style="display: none; margin-bottom: 0;">
-              <label class="modal-field-label">Phân Loại FC Mobile:</label>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <select class="modal-select-field" id="admin-acc-ovr">
-                  <option value="100-110">OVR 100 - 110</option>
-                  <option value="111-120">OVR 111 - 120</option>
-                  <option value="121-130" selected>OVR 121 - 130</option>
-                  <option value="over-130">OVR 130+</option>
-                </select>
-                <select class="modal-select-field" id="admin-acc-server">
-                  <option value="global" selected>Bản Global</option>
-                  <option value="korea">Bản Hàn Quốc</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phân Loại Nick & Bậc Rank -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-            <div class="modal-form-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Loại Tài Khoản:</label>
-              <select class="modal-select-field" id="admin-acc-type">
-                <option value="Tự chọn" selected>Tự chọn</option>
-                <option value="VIP Trắng Thông Tin">VIP Trắng Thông Tin</option>
-                <option value="Siêu Phẩm Full Skin">Siêu Phẩm Full Skin</option>
-                <option value="Acc Giá Học Sinh">Acc Giá Học Sinh</option>
-              </select>
-            </div>
-            <div class="modal-form-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Bậc Rank / Cấp Độ:</label>
-              <input type="text" class="modal-input-field" id="admin-acc-rank" placeholder="VD: Thách Đấu / Huyền Thoại / OVR 130+" value="Sẵn sàng">
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px; margin-bottom: 14px;">
-            <div class="modal-form-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Mã Nick (ID):</label>
-              <input type="text" class="modal-input-field" id="admin-acc-id" placeholder="VD: TZ-1029" required>
-            </div>
-            <div class="modal-form-group" style="margin-bottom: 0;">
-              <label class="modal-field-label">Giá Bán (VNĐ):</label>
-              <input type="number" class="modal-input-field" id="admin-acc-price" placeholder="VD: 150000" min="10000" step="5000" required>
-            </div>
-          </div>
-
-          <div class="modal-form-group">
-            <label class="modal-field-label">Tiêu Đề Nick (Hiển thị nổi bật):</label>
-            <input type="text" class="modal-input-field" id="admin-acc-title" placeholder="VD: Nick FF Prime 6 Full Skin VIP Giá Học Sinh" required>
-          </div>
-
-          <!-- Ảnh Đại Diện Chính (Cover) -->
-          <div class="modal-form-group">
-            <label class="modal-field-label">Link Ảnh Đại Diện Chính (Cover URL):</label>
-            <input type="url" class="modal-input-field" id="admin-acc-image" placeholder="https://..." value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700">
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
-              * Ảnh hiển thị ở thẻ danh sách ngoài shop và ảnh đại diện đầu tiên.
-            </div>
-          </div>
-
-          <!-- Album Danh Sách Ảnh Kho Đồ (Gallery) -->
-          <div class="modal-form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label class="modal-field-label" style="margin-bottom: 0;">
-                📸 Album Ảnh Kho Đồ / Chi Tiết (Mỗi link 1 dòng):
-              </label>
-              <button type="button" class="btn-mini-helper" id="btn-admin-fill-sample-imgs" style="font-size: 0.74rem; padding: 3px 8px; background: rgba(0, 132, 255, 0.15); border: 1px solid rgba(0, 132, 255, 0.35); border-radius: 4px; color: #00d2ff; cursor: pointer;">
-                ⚡ Dán nhanh 4 ảnh kho đồ mẫu
-              </button>
-            </div>
-            <textarea class="modal-input-field" id="admin-acc-images" rows="3" placeholder="https://link-anh-1.jpg&#10;https://link-anh-2.jpg&#10;https://link-anh-3.jpg" style="resize: vertical; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4;"></textarea>
-            
-            <!-- Khung Live Preview Album Ảnh -->
-            <div class="admin-gallery-preview-wrapper" style="margin-top: 8px;">
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Xem trước Album ảnh (<span id="admin-preview-count">1</span> ảnh):</div>
-              <div class="admin-preview-thumbs-grid" id="admin-gallery-preview">
-                <!-- Live preview thumbnails via JS -->
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-form-group">
-            <label class="modal-field-label">Thông Tin Đăng Nhập (Tự động gửi cho khách sau khi mua):</label>
-            <textarea class="modal-input-field" id="admin-acc-credentials" rows="2" placeholder="Tài khoản: xxx | Mật khẩu: yyy | Mã 2FA/Ghi chú: zzz" required style="resize: vertical; font-family: var(--font-mono); font-size: 0.85rem;"></textarea>
-          </div>
-
-          <div class="modal-form-group">
-            <label class="modal-field-label">Mô Tả Chi Tiết Về Nick:</label>
-            <textarea class="modal-input-field" id="admin-acc-desc" rows="2" placeholder="VD: Trắng thông tin 100%, rank Kim Cương, nhiều skin súng sịn..." style="resize: vertical; font-size: 0.85rem;"></textarea>
-          </div>
-
-          <button type="submit" class="btn-submit-modal-action" style="background: linear-gradient(135deg, #ff6b00, #ff8800); margin-top: 8px;">
-            ⚡ ĐĂNG BÁN ACC VÀO KHO NGAY
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <!-- =========================================================
        MODAL ADMIN: TRUNG TÂM QUẢN TRỊ & BÁO CÁO DOANH THU
