@@ -56,6 +56,9 @@ class AppStore {
       displayName: "Khách",
       balance: 0
     };
+    if (this.user.isAdmin) {
+      this.user.balance = 0;
+    }
 
     // 3. Kho tài khoản thực tế do Admin thêm vào (mặc định rỗng)
     const savedAccounts = localStorage.getItem('tuanzone_warehouse_accounts');
@@ -246,7 +249,7 @@ class AppStore {
         isAdmin: true,
         username: ADMIN_CONFIG.username,
         displayName: "Huỳnh Tuấn (Quản Trị Viên)",
-        balance: 999999999
+        balance: 0 // Admin thực tế: 0đ và không mua nick
       };
       this.save();
       return { success: true, isAdmin: true, message: "Chào mừng Quản trị viên Huỳnh Tuấn!" };
@@ -384,15 +387,22 @@ class AppStore {
       return { success: false, message: "Bạn cần đăng nhập để thực hiện mua nick!" };
     }
 
-    // Nếu không phải Admin và số dư không đủ
-    if (!this.user.isAdmin && this.user.balance < acc.price) {
+    // Admin tuyệt đối không được phép mua tài khoản (kinh doanh thực tế)
+    if (this.user.isAdmin) {
+      return { 
+        success: false, 
+        isAdminBlocked: true,
+        message: "Tài khoản Quản trị viên (Admin) không được phép mua nick trong shop! Bạn là chủ shop, vui lòng đăng xuất và sử dụng tài khoản khách hàng để mua thử nghiệm." 
+      };
+    }
+
+    // Kiểm tra số dư người mua
+    if (this.user.balance < acc.price) {
       return { success: false, message: `Số dư không đủ! Cần thêm ${(acc.price - this.user.balance).toLocaleString('vi-VN')} đ.` };
     }
 
     // Trừ tiền người mua
-    if (!this.user.isAdmin) {
-      this.user.balance -= acc.price;
-    }
+    this.user.balance -= acc.price;
 
     // Cập nhật trạng thái acc
     acc.status = 'SOLD';

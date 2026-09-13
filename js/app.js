@@ -393,6 +393,17 @@ class TuanzoneApp {
           return;
         }
 
+        // Chặn tuyệt đối Quản trị viên không được mua tài khoản trong shop
+        if (store.user.isAdmin) {
+          showPopup({
+            title: "⛔ QUẢN TRỊ VIÊN KHÔNG THỂ MUA NICK",
+            message: "Tài khoản Quản trị viên (Admin) không được phép thực hiện giao dịch mua nick trong shop!\n\nBạn là chủ shop, để trải nghiệm luồng mua hàng như khách hàng thực tế, vui lòng Đăng xuất và sử dụng một tài khoản khách thông thường.",
+            type: "warning",
+            confirmText: "Đã Hiểu"
+          });
+          return;
+        }
+
         const res = store.purchaseAccount(accId);
         if (!res.success) {
           const goDeposit = await showConfirm(res.message + "\n\nBạn có muốn mở trang nạp tiền vào ví ngay không?", {
@@ -874,6 +885,11 @@ class TuanzoneApp {
         return;
       }
 
+      if (store.user.isAdmin) {
+        showToast("Tài khoản Quản trị viên không cần nạp tiền vào ví!", "warning");
+        return;
+      }
+
       const amount = Number(document.getElementById('card-amount-select').value);
       const serial = document.getElementById('card-serial-input').value.trim();
       const code = document.getElementById('card-pin-input').value.trim();
@@ -921,6 +937,11 @@ class TuanzoneApp {
       if (!store.user.isLoggedIn) {
         modal.classList.remove('active');
         this.openAuthModal('login', true);
+        return;
+      }
+
+      if (store.user.isAdmin) {
+        showToast("Tài khoản Quản trị viên không cần nạp tiền vào ví!", "warning");
         return;
       }
 
