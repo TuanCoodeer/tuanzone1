@@ -66,7 +66,9 @@
        HERO WRAPPER: TOP NẠP TIỀN THÁNG & BANNER SLIDER
        ========================================================= -->
   <main class="container">
-    <section class="hero-wrapper">
+    <!-- VIEW 1: TOÀN BỘ KHO NICK & HERO BANNER (DANH SÁCH SHOP) -->
+    <div id="view-shop-warehouses" class="view-shop-active">
+      <section class="hero-wrapper">
       
       <!-- Cột Trái: TOP NẠP TIỀN THÁNG -->
       <div class="topup-leaderboard">
@@ -304,8 +306,181 @@
       <div id="fc-accounts-container">
         <!-- Rendered via JS -->
       </div>
-    </section>
+    </div><!-- /#view-shop-warehouses -->
 
+    <!-- =========================================================
+         VIEW 2: KHU VỰC CHI TIẾT TÀI KHOẢN (ACCOUNT DETAIL SHOWCASE)
+         Bố cục chuẩn tham khảo theo Ảnh 3: Cột trái Gallery Thumbnails,
+         Cột phải Thông số + Giá đỏ lớn + Mua Ngay + Nạp Thẻ/ATM,
+         Bên dưới Mô tả dịch vụ & Tài khoản liên quan
+         ========================================================= -->
+    <div id="view-account-detail" class="view-account-detail" style="display: none;">
+      
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="detail-nav-bar">
+        <button class="btn-detail-back" id="btn-detail-back-shop">
+          <span>←</span> Quay lại danh sách nick
+        </button>
+        <div class="detail-breadcrumbs" id="detail-breadcrumbs-container">
+          <a href="#" class="bc-link" id="bc-home-link">Trang chủ</a>
+          <span class="bc-sep">›</span>
+          <a href="#" class="bc-link" id="bc-shop-link">Shop Account</a>
+          <span class="bc-sep">›</span>
+          <span class="bc-game" id="bc-game-name">Free Fire</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current" id="bc-acc-title">Chi tiết nick</span>
+        </div>
+      </div>
+
+      <!-- Khung Trưng Bày 2 Cột Chính -->
+      <div class="detail-showcase-grid">
+        
+        <!-- CỘT TRÁI: THƯ VIỆN ẢNH NICK (HIGH-RES SHOWCASE & THUMBNAILS) -->
+        <div class="detail-gallery-box">
+          <div class="gallery-main-viewport" id="gallery-main-viewport">
+            <img src="" id="detail-main-img" class="detail-main-img" alt="Ảnh chi tiết tài khoản">
+            <div class="gallery-overlay-badges">
+              <span class="detail-badge-id" id="detail-badge-id">#ID</span>
+              <span class="detail-badge-tag" id="detail-badge-tag">FLASH SALE</span>
+            </div>
+            <button class="btn-gallery-zoom" id="btn-gallery-zoom-img" type="button" title="Phóng to ảnh toàn màn hình">
+              <span>🔍</span> Xem ảnh lớn
+            </button>
+          </div>
+
+          <!-- Băng chuyền Thumbnails & Bộ đếm ảnh -->
+          <div class="gallery-thumb-carousel">
+            <button class="thumb-arrow-btn" id="btn-gallery-prev" type="button" title="Ảnh trước">‹</button>
+            <div class="thumb-track-container" id="detail-thumb-track">
+              <!-- Rendered via JS -->
+            </div>
+            <button class="thumb-arrow-btn" id="btn-gallery-next" type="button" title="Ảnh tiếp theo">›</button>
+            <div class="gallery-counter-badge" id="detail-gallery-counter">
+              <span>🖼️</span> <span id="gallery-current-index">1</span>/<span id="gallery-total-count">1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CỘT PHẢI: THÔNG TIN NICK, GIÁ ĐỎ, MUA NGAY & NẠP NHANH -->
+        <div class="detail-info-box">
+          <h1 class="detail-acc-title" id="detail-acc-title">Tài khoản Free Fire #050166</h1>
+          
+          <div class="detail-acc-code-row">
+            <span>Mã số: <strong id="detail-acc-code-val">#050166</strong></span>
+            <button class="btn-copy-code-mini" id="btn-copy-acc-id" type="button" title="Sao chép mã nick">
+              <span>📋</span> Sao chép
+            </button>
+          </div>
+
+          <!-- Bảng Thông Tin Acc -->
+          <div class="detail-specs-card">
+            <div class="specs-card-header">Thông tin acc</div>
+            <div class="specs-card-rows">
+              <div class="spec-row">
+                <span class="spec-label">Game</span>
+                <span class="spec-value" id="detail-spec-game">Free Fire</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Loại</span>
+                <span class="spec-value" id="detail-spec-type">Tự chọn</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label" id="detail-spec-rank-label">Rank / Cấp độ</span>
+                <span class="spec-value" id="detail-spec-rank-val">Sẵn sàng</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Bảo mật</span>
+                <span class="spec-value" style="color: #00c853; font-weight: 700;">100% Trắng thông tin</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Tình trạng</span>
+                <span class="spec-value" id="detail-spec-status" style="color: var(--accent-cyan); font-weight: 700;">Sẵn sàng giao dịch</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Khung Giá Bán Lớn Màu Đỏ Nổi Bật -->
+          <div class="detail-pricing-panel">
+            <div class="detail-price-headline" id="detail-price-headline">
+              15.800.000 <span class="currency-symbol">đ</span>
+            </div>
+            <div class="detail-price-slogan">
+              Rẻ vô đối, giá tốt nhất thị trường • Nhận thông tin tức thì 100%
+            </div>
+          </div>
+
+          <!-- Nút Mua Ngay Chính (Kích hoạt luồng mua tài khoản an toàn) -->
+          <button class="btn-detail-primary-buy" id="btn-detail-action-buy" type="button">
+            <span>⚡</span> Mua Ngay
+          </button>
+
+          <!-- Divider hoặc -->
+          <div class="detail-action-divider">
+            <span>— hoặc —</span>
+          </div>
+
+          <!-- Cụm 2 Nút Nạp Nhanh: Nạp Thẻ (Hồng) & Nạp ATM (Xanh) -->
+          <div class="detail-topup-actions-grid">
+            <button class="btn-quick-topup btn-topup-card-action" id="btn-detail-open-topup-card" type="button">
+              <span class="topup-btn-title">Nạp thẻ</span>
+              <span class="topup-btn-sub" id="detail-topup-card-sub">Nạp qua thẻ cào</span>
+            </button>
+            <button class="btn-quick-topup btn-topup-atm-action" id="btn-detail-open-topup-atm" type="button">
+              <span class="topup-btn-title">Nạp ATM</span>
+              <span class="topup-btn-sub" id="detail-topup-atm-sub">Chuyển khoản Vietcombank</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Khối Chi Tiết Dịch Vụ / Mô Tả Acc -->
+      <div class="detail-service-desc-card">
+        <div class="service-desc-header">
+          <span>📜</span> Chi tiết dịch vụ
+        </div>
+        <div class="service-desc-body" id="detail-service-desc-text">
+          Đang tải thông tin chi tiết tài khoản...
+        </div>
+        <div class="service-guarantee-badges">
+          <div class="guarantee-item">
+            <span class="guarantee-icon">🛡️</span>
+            <div>
+              <strong>Bảo Hành Tuyệt Đối</strong>
+              <p>Cam kết 100% nick đúng như mô tả và hình ảnh.</p>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <span class="guarantee-icon">⚡</span>
+            <div>
+              <strong>Giao Dịch Siêu Tốc</strong>
+              <p>Hệ thống tự động xuất tài khoản và mật khẩu sau 3 giây.</p>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <span class="guarantee-icon">🔒</span>
+            <div>
+              <strong>Trắng Thông Tin</strong>
+              <p>Khách hàng toàn quyền đổi mật khẩu và bảo mật riêng.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khối Tài Khoản Liên Quan -->
+      <div class="detail-related-section">
+        <div class="related-section-header">
+          <div class="related-header-title">
+            <span>🎮</span> Tài khoản liên quan
+          </div>
+          <div class="related-header-sub">Các tài khoản cùng tựa game đang có giá tốt nhất</div>
+        </div>
+        <div class="related-cards-grid" id="detail-related-accounts-container">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+    </div>
   </main>
 
   <!-- =========================================================
@@ -559,17 +734,29 @@
   </div>
 
   <!-- =========================================================
+       MODAL LIGHTBOX: XEM ẢNH LỚN TOÀN MÀN HÌNH
+       ========================================================= -->
+  <div class="modal-overlay" id="lightbox-modal">
+    <div class="lightbox-modal-content">
+      <button class="lightbox-close-trigger" id="lightbox-close-btn" type="button">✕</button>
+      <img src="" id="lightbox-full-img" alt="Ảnh chi tiết tài khoản phóng to">
+      <div class="lightbox-caption" id="lightbox-img-caption"></div>
+    </div>
+  </div>
+
+  <!-- =========================================================
        MODAL ADMIN: THÊM ACC VÀO KHO (CHỈ ADMIN THẤY)
+       Hỗ trợ Album Ảnh Kho Đồ, Loại Nick, Rank, Live Preview
        ========================================================= -->
   <div class="modal-overlay" id="admin-add-acc-modal">
-    <div class="modal-window" style="max-width: 620px;">
+    <div class="modal-window" style="max-width: 680px;">
       <button class="modal-close-trigger" id="admin-add-acc-close-btn">✕</button>
       
       <div class="modal-header-block" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
         <div class="modal-title-text" style="color: var(--accent-gold);">
           <span>👑</span> Thêm Tài Khoản Mới Vào Kho
         </div>
-        <div class="modal-sub-text">Đăng bán acc game mới lên website tuanzOne.com</div>
+        <div class="modal-sub-text">Đăng bán acc game mới lên website tuanzOne.com với đầy đủ album ảnh kho đồ</div>
       </div>
 
       <div class="modal-body-content" style="padding-top: 18px;">
@@ -617,6 +804,23 @@
             </div>
           </div>
 
+          <!-- Phân Loại Nick & Bậc Rank -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Loại Tài Khoản:</label>
+              <select class="modal-select-field" id="admin-acc-type">
+                <option value="Tự chọn" selected>Tự chọn</option>
+                <option value="VIP Trắng Thông Tin">VIP Trắng Thông Tin</option>
+                <option value="Siêu Phẩm Full Skin">Siêu Phẩm Full Skin</option>
+                <option value="Acc Giá Học Sinh">Acc Giá Học Sinh</option>
+              </select>
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 0;">
+              <label class="modal-field-label">Bậc Rank / Cấp Độ:</label>
+              <input type="text" class="modal-input-field" id="admin-acc-rank" placeholder="VD: Thách Đấu / Huyền Thoại / OVR 130+" value="Sẵn sàng">
+            </div>
+          </div>
+
           <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 14px; margin-bottom: 14px;">
             <div class="modal-form-group" style="margin-bottom: 0;">
               <label class="modal-field-label">Mã Nick (ID):</label>
@@ -633,11 +837,33 @@
             <input type="text" class="modal-input-field" id="admin-acc-title" placeholder="VD: Nick FF Prime 6 Full Skin VIP Giá Học Sinh" required>
           </div>
 
+          <!-- Ảnh Đại Diện Chính (Cover) -->
           <div class="modal-form-group">
-            <label class="modal-field-label">Link Ảnh Mô Tả (URL):</label>
+            <label class="modal-field-label">Link Ảnh Đại Diện Chính (Cover URL):</label>
             <input type="url" class="modal-input-field" id="admin-acc-image" placeholder="https://..." value="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700">
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
-              * Mặc định dùng ảnh mẫu đẹp. Bạn có thể đổi sang link ảnh nick thực tế.
+              * Ảnh hiển thị ở thẻ danh sách ngoài shop và ảnh đại diện đầu tiên.
+            </div>
+          </div>
+
+          <!-- Album Danh Sách Ảnh Kho Đồ (Gallery) -->
+          <div class="modal-form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="modal-field-label" style="margin-bottom: 0;">
+                📸 Album Ảnh Kho Đồ / Chi Tiết (Mỗi link 1 dòng):
+              </label>
+              <button type="button" class="btn-mini-helper" id="btn-admin-fill-sample-imgs" style="font-size: 0.74rem; padding: 3px 8px; background: rgba(0, 132, 255, 0.15); border: 1px solid rgba(0, 132, 255, 0.35); border-radius: 4px; color: #00d2ff; cursor: pointer;">
+                ⚡ Dán nhanh 4 ảnh kho đồ mẫu
+              </button>
+            </div>
+            <textarea class="modal-input-field" id="admin-acc-images" rows="3" placeholder="https://link-anh-1.jpg&#10;https://link-anh-2.jpg&#10;https://link-anh-3.jpg" style="resize: vertical; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4;"></textarea>
+            
+            <!-- Khung Live Preview Album Ảnh -->
+            <div class="admin-gallery-preview-wrapper" style="margin-top: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Xem trước Album ảnh (<span id="admin-preview-count">1</span> ảnh):</div>
+              <div class="admin-preview-thumbs-grid" id="admin-gallery-preview">
+                <!-- Live preview thumbnails via JS -->
+              </div>
             </div>
           </div>
 
@@ -648,7 +874,7 @@
 
           <div class="modal-form-group">
             <label class="modal-field-label">Mô Tả Chi Tiết Về Nick:</label>
-            <textarea class="modal-input-field" id="admin-acc-desc" rows="2" placeholder="VD: Trắng thông tin 100%, rank Kim Cương, nhiều skin súng..." style="resize: vertical; font-size: 0.85rem;"></textarea>
+            <textarea class="modal-input-field" id="admin-acc-desc" rows="2" placeholder="VD: Trắng thông tin 100%, rank Kim Cương, nhiều skin súng sịn..." style="resize: vertical; font-size: 0.85rem;"></textarea>
           </div>
 
           <button type="submit" class="btn-submit-modal-action" style="background: linear-gradient(135deg, #ff6b00, #ff8800); margin-top: 8px;">

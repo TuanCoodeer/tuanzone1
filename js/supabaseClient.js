@@ -45,7 +45,7 @@ export async function dbInsertAccount(account) {
   const sb = getSupabase();
   if (!sb) return false;
   try {
-    const { error } = await sb.from('accounts').insert([{
+    const payload = {
       id: account.id,
       game: account.game,
       prime: account.prime || '',
@@ -60,7 +60,30 @@ export async function dbInsertAccount(account) {
       status: account.status || 'AVAILABLE',
       createdAt: account.createdAt || new Date().toISOString(),
       createdDate: account.createdDate || new Date().toLocaleDateString('vi-VN')
-    }]);
+    };
+
+    // Thử gửi kèm các trường mở rộng nếu có
+    if (account.images && Array.isArray(account.images)) {
+      payload.images = account.images;
+    }
+    if (account.rank) {
+      payload.rank = account.rank;
+    }
+    if (account.accountType) {
+      payload.accountType = account.accountType;
+    }
+
+    let { error } = await sb.from('accounts').insert([payload]);
+    
+    // Nếu bảng Supabase chưa có cột mở rộng (schema strict) thì tự động fallback chỉ lưu các cột chuẩn
+    if (error && error.message && (error.message.includes('column') && error.message.includes('does not exist'))) {
+      delete payload.images;
+      delete payload.rank;
+      delete payload.accountType;
+      const retry = await sb.from('accounts').insert([payload]);
+      error = retry.error;
+    }
+
     if (error) {
       console.error('[Supabase] dbInsertAccount error:', error.message);
       return false;

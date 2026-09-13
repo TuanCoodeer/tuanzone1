@@ -335,6 +335,27 @@ class AppStore {
 
   // --- ADMIN: THÊM TÀI KHOẢN VÀO KHO ---
   addAccount(data) {
+    const defaultImg = this.getDefaultGameImage(data.game);
+    const mainImg = data.image ? data.image.trim() : defaultImg;
+
+    // Xử lý danh sách ảnh album (gallery)
+    let galleryImages = [];
+    if (Array.isArray(data.images) && data.images.length > 0) {
+      galleryImages = data.images.filter(url => typeof url === 'string' && url.trim().length > 0);
+    } else if (typeof data.images === 'string' && data.images.trim().length > 0) {
+      galleryImages = data.images
+        .split(/[\n,]+/)
+        .map(u => u.trim())
+        .filter(u => u.length > 0);
+    }
+
+    // Đảm bảo có ít nhất ảnh chính trong album
+    if (galleryImages.length === 0) {
+      galleryImages = [mainImg];
+    } else if (!galleryImages.includes(mainImg)) {
+      galleryImages.unshift(mainImg);
+    }
+
     const newAcc = {
       id: data.id || ('TZ-' + Math.floor(1000 + Math.random() * 9000)),
       game: data.game, // 'freefire' | 'lienquan' | 'fcmobile'
@@ -342,11 +363,14 @@ class AppStore {
       ovr: data.ovr || '125 OVR',
       server: data.server || 'Global',
       subCategory: data.subCategory || 'bloxfruits',
+      rank: data.rank || 'Sẵn sàng',
+      accountType: data.accountType || 'VIP Tự Chọn',
       title: data.title,
       price: Number(data.price) || 50000,
-      image: data.image || this.getDefaultGameImage(data.game),
+      image: mainImg,
+      images: galleryImages,
       credentials: data.credentials || 'Tài khoản: [Chưa có] | Mật khẩu: [Chưa có]',
-      description: data.description || 'Tài khoản chính chủ, bảo mật tuyệt đối.',
+      description: data.description || 'Tài khoản chính chủ, bảo mật tuyệt đối 100%.',
       status: 'AVAILABLE', // 'AVAILABLE' | 'SOLD'
       createdAt: new Date().toISOString(),
       createdDate: new Date().toLocaleDateString('vi-VN')

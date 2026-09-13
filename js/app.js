@@ -9,6 +9,9 @@ import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from '.
 class TuanzoneApp {
   constructor() {
     this.selectedTelco = 'VIETTEL';
+    this.activeDetailAccId = null;
+    this.currentGalleryImages = [];
+    this.currentGalleryIndex = 0;
   }
 
   init() {
@@ -23,10 +26,18 @@ class TuanzoneApp {
     this.attachWarehouseFilterEvents();
     this.attachAdminEvents();
     this.attachUserHistoryModalEvents();
+    this.attachAccountDetailEvents();
+    this.initRouteHash();
 
     store.subscribe(() => {
       this.renderHeaderAuth();
       this.renderWarehouses();
+      if (this.activeDetailAccId) {
+        const currentAcc = store.accounts.find(a => a.id === this.activeDetailAccId);
+        if (currentAcc) {
+          this.renderAccountDetail(currentAcc);
+        }
+      }
     });
   }
 
@@ -347,20 +358,21 @@ class TuanzoneApp {
     return `
       <div class="acc-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
         ${list.map(acc => `
-          <div class="acc-card-item" data-acc-id="${acc.id}">
-            <div class="acc-card-thumb-wrapper">
+          <div class="acc-card-item" data-acc-id="${acc.id}" title="Bấm để xem chi tiết tài khoản #${acc.id}">
+            <div class="acc-card-thumb-wrapper" style="position: relative; overflow: hidden; border-radius: var(--radius-md) var(--radius-md) 0 0;">
               <img src="${acc.image}" class="acc-card-thumb-img" alt="${acc.title}">
               <span class="acc-tag-code">#${acc.id}</span>
               ${acc.prime ? `<span class="acc-tag-prime">${acc.prime}</span>` : ''}
               ${acc.ovr ? `<span class="acc-tag-prime" style="background: #10b981; color: #fff;">${acc.ovr}</span>` : ''}
               ${acc.server ? `<span class="acc-tag-prime" style="background: #0ea5e9; color: #fff;">${acc.server}</span>` : ''}
-              ${acc.subCategory ? `<span class="acc-tag-prime" style="background: var(--neon-cyan); color: #000;">${acc.subCategory === 'bloxfruits' ? 'Blox Fruits' : 'Steal an Egg'}</span>` : ''}
+              <span class="acc-card-badge-flash">⚡ FLASH SALE</span>
+              ${acc.rank && acc.rank !== 'Sẵn sàng' ? `<span class="acc-card-badge-rank-corner">${acc.rank}</span>` : ''}
             </div>
             <div class="acc-card-info">
               <h3 class="acc-card-name">${acc.title}</h3>
               <div class="acc-meta-details">
                 <div class="acc-meta-item">Game: <strong>${acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile')}</strong></div>
-                <div class="acc-meta-item">Bảo mật: <strong>100% Trắng</strong></div>
+                <div class="acc-meta-item">Loại: <strong>${acc.accountType || 'VIP'}</strong></div>
               </div>
               <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                 ${acc.description}
@@ -368,10 +380,10 @@ class TuanzoneApp {
               <div class="acc-card-footer">
                 <div class="acc-price-wrap">
                   <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Giá bán:</span>
-                  <span class="acc-price-num">${acc.price.toLocaleString('vi-VN')} đ</span>
+                  <span class="acc-price-num" style="color: #ff2a44; font-weight: 800; font-size: 1.15rem;">${acc.price.toLocaleString('vi-VN')} đ</span>
                 </div>
-                <button class="btn-action-buy-item" data-acc-id="${acc.id}" data-acc-price="${acc.price}" style="padding: 8px 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, #0084ff, #0056b3); color: #fff; font-weight: 700; border: none; cursor: pointer;">
-                  MUA NGAY
+                <button class="btn-action-buy-item btn-action-view-detail" data-acc-id="${acc.id}" style="padding: 8px 16px; border-radius: var(--radius-md); background: linear-gradient(135deg, #0084ff, #0056b3); color: #fff; font-weight: 700; border: none; cursor: pointer;">
+                  XEM CHI TIẾT
                 </button>
               </div>
             </div>
@@ -381,56 +393,417 @@ class TuanzoneApp {
     `;
   }
 
-  // --- 5. MUA ACC VÀ BÀN GIAO THÔNG TIN ---
+  // --- 5. BẤM VÀO THẺ ACC -> CHUYỂN SANG KHU VỰC CHI TIẾT NICK ---
   attachCardBuyTriggers(container) {
-    container.querySelectorAll('.btn-action-buy-item').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const accId = btn.dataset.accId;
-
-        // Bắt buộc đăng nhập
-        if (!store.user.isLoggedIn) {
-          this.openAuthModal('login', true);
-          return;
+    container.querySelectorAll('.acc-card-item').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const accId = card.dataset.accId;
+        if (accId) {
+          this.openAccountDetail(accId);
         }
+      });
+    });
+  }
 
-        // Chặn tuyệt đối Quản trị viên không được mua tài khoản trong shop
-        if (store.user.isAdmin) {
-          showPopup({
-            title: "⛔ QUẢN TRỊ VIÊN KHÔNG THỂ MUA NICK",
-            message: "Tài khoản Quản trị viên (Admin) không được phép thực hiện giao dịch mua nick trong shop!\n\nBạn là chủ shop, để trải nghiệm luồng mua hàng như khách hàng thực tế, vui lòng Đăng xuất và sử dụng một tài khoản khách thông thường.",
-            type: "warning",
-            confirmText: "Đã Hiểu"
-          });
-          return;
+  // --- 5B. XỬ LÝ MUA ACC AN TOÀN (TỪ KHU VỰC CHI TIẾT HOẶC SHOP) ---
+  async handleBuyAccount(accId) {
+    if (!accId) return;
+
+    // 1. Bắt buộc đăng nhập
+    if (!store.user.isLoggedIn) {
+      this.openAuthModal('login', true);
+      return;
+    }
+
+    // 2. Chặn tuyệt đối Quản trị viên không được mua tài khoản trong shop
+    if (store.user.isAdmin) {
+      showPopup({
+        title: "⛔ QUẢN TRỊ VIÊN KHÔNG THỂ MUA NICK",
+        message: "Tài khoản Quản trị viên (Admin) không được phép thực hiện giao dịch mua nick trong shop!\n\nBạn là chủ shop, để trải nghiệm luồng mua hàng như khách hàng thực tế, vui lòng Đăng xuất và sử dụng một tài khoản khách thông thường.",
+        type: "warning",
+        confirmText: "Đã Hiểu"
+      });
+      return;
+    }
+
+    // 3. Thực hiện mua
+    const res = store.purchaseAccount(accId);
+    if (!res.success) {
+      const goDeposit = await showConfirm(res.message + "\n\nBạn có muốn mở trang nạp tiền vào ví ngay không?", {
+        title: "Số Dư Không Đủ",
+        type: "warning",
+        confirmText: "Nạp Tiền Ngay",
+        cancelText: "Để Sau"
+      });
+      if (goDeposit) {
+        this.openDepositModal();
+      }
+      return;
+    }
+
+    // 4. Bàn giao tài khoản thành công
+    showPopup({
+      title: "🎉 MUA TÀI KHOẢN THÀNH CÔNG!",
+      message: `Mã đơn hàng: #${res.order.orderId}\n` +
+               `Mã nick: #${res.account.id}\n` +
+               `Tiêu đề: ${res.account.title}\n` +
+               `Số tiền đã trừ: ${res.account.price.toLocaleString('vi-VN')} đ\n\n` +
+               `🔐 THÔNG TIN ĐĂNG NHẬP NICK:\n👉 ${res.account.credentials}\n\n` +
+               `(Lưu ý: Bạn hãy lưu lại thông tin và đổi mật khẩu ngay nhé!)`,
+      type: "success",
+      confirmText: "Tuyệt Vời!"
+    });
+
+    this.renderWarehouses();
+    const updatedAcc = store.accounts.find(a => a.id === accId);
+    if (updatedAcc && updatedAcc.status === 'AVAILABLE') {
+      this.renderAccountDetail(updatedAcc);
+    } else {
+      this.closeAccountDetail();
+    }
+  }
+
+  // --- 5C. KHU VỰC CHI TIẾT TÀI KHOẢN (ACCOUNT DETAIL SHOWCASE) ---
+  initRouteHash() {
+    const checkHash = () => {
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#acc-')) {
+        const accId = hash.replace('#acc-', '').trim();
+        if (accId) {
+          this.openAccountDetail(accId, false);
         }
+      } else if (this.activeDetailAccId && !hash.startsWith('#acc-')) {
+        this.closeAccountDetail(false);
+      }
+    };
 
-        const res = store.purchaseAccount(accId);
-        if (!res.success) {
-          const goDeposit = await showConfirm(res.message + "\n\nBạn có muốn mở trang nạp tiền vào ví ngay không?", {
-            title: "Số Dư Không Đủ",
-            type: "warning",
-            confirmText: "Nạp Tiền Ngay",
-            cancelText: "Để Sau"
-          });
-          if (goDeposit) {
-            this.openDepositModal();
-          }
-          return;
-        }
+    window.addEventListener('hashchange', checkHash);
+    setTimeout(checkHash, 150);
+  }
 
-        showPopup({
-          title: "🎉 MUA TÀI KHOẢN THÀNH CÔNG!",
-          message: `Mã đơn hàng: #${res.order.orderId}\n` +
-                   `Mã nick: #${res.account.id}\n` +
-                   `Tiêu đề: ${res.account.title}\n` +
-                   `Số tiền đã trừ: ${res.account.price.toLocaleString('vi-VN')} đ\n\n` +
-                   `🔐 THÔNG TIN ĐĂNG NHẬP NICK:\n👉 ${res.account.credentials}\n\n` +
-                   `(Lưu ý: Bạn hãy lưu lại thông tin và đổi mật khẩu ngay nhé!)`,
-          type: "success",
-          confirmText: "Tuyệt Vời!"
+  attachAccountDetailEvents() {
+    // 1. Nút Quay Lại & Breadcrumbs
+    document.getElementById('btn-detail-back-shop')?.addEventListener('click', () => {
+      this.closeAccountDetail();
+    });
+    document.getElementById('bc-home-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.closeAccountDetail();
+    });
+    document.getElementById('bc-shop-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.closeAccountDetail();
+    });
+
+    // 2. Nút Copy Mã Nick
+    document.getElementById('btn-copy-acc-id')?.addEventListener('click', () => {
+      if (this.activeDetailAccId) {
+        navigator.clipboard.writeText(this.activeDetailAccId).then(() => {
+          showToast(`Đã sao chép mã nick #${this.activeDetailAccId}!`, 'info');
+        }).catch(() => {
+          showToast(`Mã nick: #${this.activeDetailAccId}`, 'info');
         });
+      }
+    });
 
-        this.renderWarehouses();
+    // 3. Nút Phóng To Ảnh (Lightbox Modal)
+    const lightboxModal = document.getElementById('lightbox-modal');
+    const lightboxImg = document.getElementById('lightbox-full-img');
+    const lightboxCaption = document.getElementById('lightbox-img-caption');
+    const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
+
+    document.getElementById('btn-gallery-zoom-img')?.addEventListener('click', () => {
+      if (this.currentGalleryImages.length > 0 && lightboxModal && lightboxImg) {
+        lightboxImg.src = this.currentGalleryImages[this.currentGalleryIndex];
+        if (lightboxCaption) {
+          lightboxCaption.textContent = `Tài khoản #${this.activeDetailAccId} - Ảnh ${this.currentGalleryIndex + 1} / ${this.currentGalleryImages.length}`;
+        }
+        lightboxModal.classList.add('active');
+      }
+    });
+
+    lightboxCloseBtn?.addEventListener('click', () => {
+      lightboxModal?.classList.remove('active');
+    });
+
+    lightboxModal?.addEventListener('click', (e) => {
+      if (e.target === lightboxModal) {
+        lightboxModal.classList.remove('active');
+      }
+    });
+
+    // 4. Mũi tên chuyển ảnh Gallery Trái / Phải
+    document.getElementById('btn-gallery-prev')?.addEventListener('click', () => {
+      if (this.currentGalleryImages.length > 0) {
+        this.currentGalleryIndex = (this.currentGalleryIndex - 1 + this.currentGalleryImages.length) % this.currentGalleryImages.length;
+        this.updateGalleryView();
+      }
+    });
+
+    document.getElementById('btn-gallery-next')?.addEventListener('click', () => {
+      if (this.currentGalleryImages.length > 0) {
+        this.currentGalleryIndex = (this.currentGalleryIndex + 1) % this.currentGalleryImages.length;
+        this.updateGalleryView();
+      }
+    });
+
+    // 5. Nút MUA NGAY trong trang chi tiết
+    document.getElementById('btn-detail-action-buy')?.addEventListener('click', () => {
+      if (this.activeDetailAccId) {
+        this.handleBuyAccount(this.activeDetailAccId);
+      }
+    });
+
+    // 6. Nút Nạp Thẻ Cào & Nạp ATM từ trang chi tiết
+    document.getElementById('btn-detail-open-topup-card')?.addEventListener('click', () => {
+      this.openDepositModal();
+      document.getElementById('tab-deposit-card')?.click();
+    });
+
+    document.getElementById('btn-detail-open-topup-atm')?.addEventListener('click', () => {
+      this.openDepositModal();
+      document.getElementById('tab-deposit-bank')?.click();
+      if (this.activeDetailAccId) {
+        const acc = store.accounts.find(a => a.id === this.activeDetailAccId);
+        if (acc) {
+          const bankAmt = document.getElementById('bank-deposit-amount');
+          if (bankAmt) {
+            bankAmt.value = acc.price;
+            bankAmt.dispatchEvent(new Event('input'));
+          }
+        }
+      }
+    });
+  }
+
+  openAccountDetail(accId, updateHash = true) {
+    const acc = store.accounts.find(a => a.id === accId);
+    if (!acc) {
+      showToast("Tài khoản không tồn tại hoặc đã được gỡ!", "error");
+      return;
+    }
+
+    this.activeDetailAccId = accId;
+    if (updateHash) {
+      window.location.hash = 'acc-' + accId;
+    }
+
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+
+    if (shopView) shopView.style.display = 'none';
+    if (detailView) detailView.style.display = 'block';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.renderAccountDetail(acc);
+  }
+
+  closeAccountDetail(updateHash = true) {
+    this.activeDetailAccId = null;
+    if (updateHash) {
+      if (window.location.hash.startsWith('#acc-')) {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+      }
+    }
+
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+
+    if (detailView) detailView.style.display = 'none';
+    if (shopView) shopView.style.display = 'block';
+  }
+
+  renderAccountDetail(acc) {
+    const gameNames = {
+      freefire: "Free Fire",
+      lienquan: "Liên Quân Mobile",
+      fcmobile: "FC Mobile",
+      roblox: "Roblox"
+    };
+    const gameName = gameNames[acc.game] || 'Game Online';
+
+    // 1. Breadcrumbs
+    const bcGame = document.getElementById('bc-game-name');
+    const bcAcc = document.getElementById('bc-acc-title');
+    if (bcGame) bcGame.textContent = gameName;
+    if (bcAcc) bcAcc.textContent = `Chi tiết nick #${acc.id}`;
+
+    // 2. Titles & Codes
+    const titleEl = document.getElementById('detail-acc-title');
+    const codeEl = document.getElementById('detail-acc-code-val');
+    const badgeId = document.getElementById('detail-badge-id');
+    const badgeTag = document.getElementById('detail-badge-tag');
+
+    if (titleEl) titleEl.textContent = acc.title || `Tài khoản ${gameName} #${acc.id}`;
+    if (codeEl) codeEl.textContent = `#${acc.id}`;
+    if (badgeId) badgeId.textContent = `#${acc.id}`;
+    if (badgeTag) badgeTag.textContent = acc.prime || acc.ovr || (acc.rank && acc.rank !== 'Sẵn sàng' ? acc.rank : 'FLASH SALE');
+
+    // 3. Specs
+    const specGame = document.getElementById('detail-spec-game');
+    const specType = document.getElementById('detail-spec-type');
+    const rankLabel = document.getElementById('detail-spec-rank-label');
+    const rankVal = document.getElementById('detail-spec-rank-val');
+    const specStatus = document.getElementById('detail-spec-status');
+
+    if (specGame) specGame.textContent = gameName;
+    if (specType) specType.textContent = acc.accountType || 'Tự chọn';
+    if (rankLabel) {
+      rankLabel.textContent = acc.game === 'fcmobile' ? 'Chỉ số OVR' : (acc.game === 'freefire' ? 'Bậc Prime / Rank' : 'Bậc Rank');
+    }
+    if (rankVal) {
+      rankVal.textContent = acc.rank || acc.prime || acc.ovr || 'Sẵn sàng';
+    }
+    if (specStatus) {
+      if (acc.status === 'AVAILABLE') {
+        specStatus.textContent = 'Sẵn sàng giao dịch';
+        specStatus.style.color = 'var(--accent-cyan)';
+      } else {
+        specStatus.textContent = 'Đã bán';
+        specStatus.style.color = '#ff3b53';
+      }
+    }
+
+    // 4. Giá & Nút hành động
+    const priceEl = document.getElementById('detail-price-headline');
+    const topupCardSub = document.getElementById('detail-topup-card-sub');
+    const topupAtmSub = document.getElementById('detail-topup-atm-sub');
+    const buyBtn = document.getElementById('btn-detail-action-buy');
+
+    if (priceEl) {
+      priceEl.innerHTML = `${acc.price.toLocaleString('vi-VN')} <span class="currency-symbol">đ</span>`;
+    }
+    if (topupCardSub) {
+      const cardEst = Math.round(acc.price * 1.25);
+      topupCardSub.textContent = `Cần ~${cardEst.toLocaleString('vi-VN')} đ thẻ`;
+    }
+    if (topupAtmSub) {
+      topupAtmSub.textContent = `Cần ${acc.price.toLocaleString('vi-VN')} đ ATM`;
+    }
+    if (buyBtn) {
+      if (acc.status === 'AVAILABLE') {
+        buyBtn.disabled = false;
+        buyBtn.innerHTML = `<span>⚡</span> MUA NGAY`;
+        buyBtn.style.opacity = '1';
+        buyBtn.style.cursor = 'pointer';
+      } else {
+        buyBtn.disabled = true;
+        buyBtn.innerHTML = `<span>🔒</span> TÀI KHOẢN ĐÃ ĐƯỢC BÁN`;
+        buyBtn.style.opacity = '0.6';
+        buyBtn.style.cursor = 'not-allowed';
+      }
+    }
+
+    // 5. Mô tả chi tiết dịch vụ
+    const descText = document.getElementById('detail-service-desc-text');
+    if (descText) {
+      descText.textContent = acc.description || 'Tài khoản chính chủ, bảo mật tuyệt đối 100%. Nhận nick tự động và có bảo hành chuẩn sàn.';
+    }
+
+    // 6. Gallery Album Ảnh
+    let imgs = [];
+    if (Array.isArray(acc.images) && acc.images.length > 0) {
+      imgs = acc.images.filter(u => typeof u === 'string' && u.trim().length > 0);
+    }
+    if (imgs.length === 0 && acc.image) {
+      imgs = [acc.image];
+    }
+    if (imgs.length === 0) {
+      imgs = [store.getDefaultGameImage(acc.game)];
+    }
+
+    this.currentGalleryImages = imgs;
+    this.currentGalleryIndex = 0;
+    this.updateGalleryView();
+
+    // 7. Render Tài Khoản Liên Quan
+    this.renderRelatedAccounts(acc.game, acc.id);
+  }
+
+  updateGalleryView() {
+    const mainImg = document.getElementById('detail-main-img');
+    const curIdxEl = document.getElementById('gallery-current-index');
+    const totalEl = document.getElementById('gallery-total-count');
+    const track = document.getElementById('detail-thumb-track');
+
+    if (this.currentGalleryImages.length === 0) return;
+
+    if (this.currentGalleryIndex >= this.currentGalleryImages.length) {
+      this.currentGalleryIndex = 0;
+    }
+
+    if (mainImg) {
+      mainImg.style.opacity = '0.4';
+      mainImg.src = this.currentGalleryImages[this.currentGalleryIndex];
+      setTimeout(() => { mainImg.style.opacity = '1'; }, 50);
+    }
+
+    if (curIdxEl) curIdxEl.textContent = this.currentGalleryIndex + 1;
+    if (totalEl) totalEl.textContent = this.currentGalleryImages.length;
+
+    // Render thumbnail track
+    if (track) {
+      track.innerHTML = this.currentGalleryImages.map((url, idx) => `
+        <img src="${url}" class="gallery-thumb-item ${idx === this.currentGalleryIndex ? 'active' : ''}" data-thumb-idx="${idx}" alt="Thumbnail ${idx + 1}">
+      `).join('');
+
+      track.querySelectorAll('.gallery-thumb-item').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          this.currentGalleryIndex = Number(thumb.dataset.thumbIdx);
+          this.updateGalleryView();
+        });
+      });
+    }
+  }
+
+  renderRelatedAccounts(game, currentAccId) {
+    const container = document.getElementById('detail-related-accounts-container');
+    if (!container) return;
+
+    let related = store.accounts.filter(a => a.game === game && a.id !== currentAccId && a.status === 'AVAILABLE');
+    if (related.length === 0) {
+      related = store.accounts.filter(a => a.id !== currentAccId && a.status === 'AVAILABLE');
+    }
+
+    if (related.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--text-muted); background: var(--bg-surface); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+          Hiện chưa có thêm tài khoản nào khác trong kho này.
+        </div>
+      `;
+      return;
+    }
+
+    const displayList = related.slice(0, 5);
+    container.innerHTML = displayList.map(acc => `
+      <div class="acc-card-item" data-acc-id="${acc.id}">
+        <div class="acc-card-thumb-wrapper" style="position: relative; overflow: hidden; border-radius: var(--radius-md) var(--radius-md) 0 0;">
+          <img src="${acc.image}" class="acc-card-thumb-img" alt="${acc.title}">
+          <span class="acc-tag-code">#${acc.id}</span>
+          ${acc.prime ? `<span class="acc-tag-prime">${acc.prime}</span>` : ''}
+          ${acc.ovr ? `<span class="acc-tag-prime" style="background: #10b981; color: #fff;">${acc.ovr}</span>` : ''}
+          ${acc.rank && acc.rank !== 'Sẵn sàng' ? `<span class="acc-card-badge-rank-corner">${acc.rank}</span>` : ''}
+        </div>
+        <div class="acc-card-info">
+          <h3 class="acc-card-name" style="font-size: 0.92rem;">${acc.title}</h3>
+          <div class="acc-card-footer" style="margin-top: 8px;">
+            <div class="acc-price-wrap">
+              <span class="acc-price-num" style="color: #ff2a44; font-weight: 800; font-size: 1.05rem;">${acc.price.toLocaleString('vi-VN')} đ</span>
+            </div>
+            <button class="btn-action-view-detail" data-acc-id="${acc.id}" style="padding: 6px 12px; border-radius: var(--radius-sm); background: rgba(0, 132, 255, 0.15); border: 1px solid rgba(0, 132, 255, 0.35); color: #00d2ff; font-weight: 700; font-size: 0.78rem; cursor: pointer;">
+              Xem Nick
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.acc-card-item').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.accId;
+        if (id) {
+          this.openAccountDetail(id);
+        }
       });
     });
   }
@@ -545,6 +918,69 @@ class TuanzoneApp {
       }
     });
 
+    // Live Preview Album Ảnh & Nút dán ảnh mẫu
+    const mainImgInput = document.getElementById('admin-acc-image');
+    const galleryInput = document.getElementById('admin-acc-images');
+    const previewContainer = document.getElementById('admin-gallery-preview');
+    const previewCount = document.getElementById('admin-preview-count');
+
+    const updateAdminGalleryPreview = () => {
+      if (!previewContainer) return;
+      const mainUrl = (mainImgInput?.value || '').trim();
+      const rawGallery = (galleryInput?.value || '').trim();
+      let urls = [];
+      if (mainUrl) urls.push(mainUrl);
+      if (rawGallery) {
+        const parts = rawGallery.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 0);
+        parts.forEach(p => {
+          if (!urls.includes(p)) urls.push(p);
+        });
+      }
+      if (urls.length === 0) {
+        urls.push('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700');
+      }
+      if (previewCount) previewCount.textContent = urls.length;
+      previewContainer.innerHTML = urls.map(u => `
+        <img src="${u}" class="admin-preview-thumb-img" alt="Preview" onerror="this.style.opacity='0.2'">
+      `).join('');
+    };
+
+    mainImgInput?.addEventListener('input', updateAdminGalleryPreview);
+    galleryInput?.addEventListener('input', updateAdminGalleryPreview);
+
+    // Nút dán nhanh 4 ảnh kho đồ mẫu chất lượng cao
+    document.getElementById('btn-admin-fill-sample-imgs')?.addEventListener('click', () => {
+      const g = gameSelect ? gameSelect.value : 'freefire';
+      let sampleList = [];
+      if (g === 'freefire') {
+        sampleList = [
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800',
+          'https://images.unsplash.com/photo-1563089145-599997674d42?w=800',
+          'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800',
+          'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800'
+        ];
+      } else if (g === 'lienquan') {
+        sampleList = [
+          'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
+          'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800',
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800',
+          'https://images.unsplash.com/photo-1563089145-599997674d42?w=800'
+        ];
+      } else {
+        sampleList = [
+          'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800',
+          'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800',
+          'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=800',
+          'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800'
+        ];
+      }
+      if (galleryInput) {
+        galleryInput.value = sampleList.join('\n');
+        updateAdminGalleryPreview();
+        showToast("Đã dán nhanh 4 ảnh kho đồ mẫu!", "info");
+      }
+    });
+
     // Xử lý gửi form thêm acc
     document.getElementById('form-admin-add-acc')?.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -552,10 +988,13 @@ class TuanzoneApp {
       const prime = document.getElementById('admin-acc-prime')?.value;
       const ovr = document.getElementById('admin-acc-ovr')?.value;
       const server = document.getElementById('admin-acc-server')?.value;
+      const accountType = document.getElementById('admin-acc-type')?.value || 'Tự chọn';
+      const rank = document.getElementById('admin-acc-rank')?.value.trim() || 'Sẵn sàng';
       const id = document.getElementById('admin-acc-id').value.trim();
       const title = document.getElementById('admin-acc-title').value.trim();
       const price = Number(document.getElementById('admin-acc-price').value);
       const image = document.getElementById('admin-acc-image').value.trim();
+      const rawImages = document.getElementById('admin-acc-images')?.value.trim() || '';
       const credentials = document.getElementById('admin-acc-credentials').value.trim();
       const description = document.getElementById('admin-acc-desc').value.trim();
 
@@ -565,21 +1004,25 @@ class TuanzoneApp {
         prime,
         ovr: ovr ? `OVR ${ovr}` : 'OVR 120+',
         server: server === 'korea' ? 'Bản Hàn' : 'Bản Global',
+        accountType,
+        rank,
         title,
         price,
         image,
+        images: rawImages,
         credentials,
         description
       });
 
       showPopup({
         title: "✅ ĐÃ THÊM ACC VÀO KHO!",
-        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công và xuất hiện trên website.`,
+        message: `Tài khoản #${newAcc.id} đã được thêm vào kho thành công với album ảnh kho đồ đầy đủ.`,
         type: "success",
         confirmText: "Đóng"
       });
       addAccModal.classList.remove('active');
       e.target.reset();
+      updateAdminGalleryPreview();
       this.renderWarehouses();
     });
 
@@ -624,6 +1067,13 @@ class TuanzoneApp {
     const idInput = document.getElementById('admin-acc-id');
     if (idInput && !idInput.value) {
       idInput.value = 'TZ-' + Math.floor(1000 + Math.random() * 9000);
+    }
+    // Update live preview in modal
+    const mainImgInput = document.getElementById('admin-acc-image');
+    const previewContainer = document.getElementById('admin-gallery-preview');
+    if (previewContainer && mainImgInput) {
+      const url = mainImgInput.value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700';
+      previewContainer.innerHTML = `<img src="${url}" class="admin-preview-thumb-img" alt="Preview">`;
     }
     modal.classList.add('active');
   }

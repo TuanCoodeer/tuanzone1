@@ -1,120 +1,89 @@
-# Kế Hoạch Triển Khai Nền Tảng Thương Mại Điện Tử Gaming tuanzOne.com
+# Kế Hoạch Triển Khai: Khu Vực Chi Tiết Tài Khoản (Account Detail View) & Nâng Cấp Form Thêm Acc Album Kho Đồ
 
-Dự án xây dựng nền tảng thương mại điện tử chuyên biệt cho tài khoản game và dịch vụ game all-in-one mang tên **tuanzOne.com**, định hình phong cách **Cyber Esports Minimalist** với độ hoàn thiện cao, tập trung vào tốc độ giao dịch, trải nghiệm thị giác và bảo mật "không chạm" (Zero-touch).
-
----
-
-## 1. Thiết Kế Nhận Diện Thương Hiệu & Trải Nghiệm (Design System)
-
-- **Chủ đạo**: Cyber Esports Minimalist (Tối giản thể thao điện tử, phong cách vị lai).
-- **Màu nền (Canvas)**: Đen than Obsidian (`#0b0d14` / `#10141f`).
-- **Màu nhấn công nghệ (Accent & Glow)**: Neon Cyan (`#00f2fe`) kết hợp Electric Blue (`#4facfe`).
-- **Nút hành động chính (CTA)**: Cam rực rỡ neon / Amber Blaze (`#ff5500` -> `#ff7a00`) tạo độ tương phản cực mạnh kích thích chuyển đổi.
-- **Bề mặt (Surfaces)**: Glassmorphism cao cấp (kính mờ, blur 16px, viền kim loại xước mờ `rgba(255, 255, 255, 0.08)` và viền phát sáng cyan khi hover).
-- **Typography**: Google Fonts hiện đại (Font tiêu đề công nghệ: `Outfit` / `Orbitron`, font hiển thị số liệu & nội dung: `Inter` / `JetBrains Mono`).
-
----
-
-## 2. Phân Chia Giai Đoạn Thực Hiện (Phased Task Roadmap)
-
-```mermaid
-graph TD
-    P1[Phase 1: Design System & Data Core] --> P2[Phase 2: Auth & Navigation Shell]
-    P2 --> P3[Phase 3: Curated Market & Minimalist Cards]
-    P3 --> P4[Phase 4: Quick-Slide Fullscreen Inventory]
-    P4 --> P5[Phase 5: 5-Minute Concurrency Lock & Checkout]
-    P5 --> P6[Phase 6: Zero-Touch Delivery & TuanZone Shield]
-    P6 --> P7[Phase 7: Top-up Hub & User Trade Zone C2C]
-```
-
-### Phase 1: Nền tảng Kiến trúc & Design System Core
-- **Mục tiêu**: Thiết lập hệ thống biến CSS (Design Tokens), Typography, Grid responsive và mock database store linh hoạt.
-- **Nhiệm vụ cụ thể**:
-  - `styles/theme.css`: Cấu hình toàn bộ bảng màu Obsidian, Cyan Neon, Orange CTA, hiệu ứng kính mờ (frosted glass), viền xước và glow animation.
-  - `data/games.js`: Bộ dữ liệu chuẩn cho 4 tựa game cốt lõi: Free Fire, FC Mobile, Liên Quân, Roblox (kèm màu sắc nhận diện đặc trưng cho từng phân khu game).
-  - `data/mockAccounts.js`: Danh mục tài khoản mẫu với 3 thông số vàng (Rank, Top Item, Trạng thái liên kết), danh sách ảnh kho đồ chất lượng cao.
-  - `js/store.js`: Quản lý State tập trung (User, Giỏ hàng/Khóa giữ chỗ, Bộ lọc, Lịch sử giao dịch).
-
-### Phase 2: Shell Giao Diện, Header & Hệ Thống Xác Thực
-- **Mục tiêu**: Xây dựng khung ứng dụng hoàn chỉnh, thanh điều hướng gaming hub và modal Đăng nhập / Đăng ký.
-- **Nhiệm vụ cụ thể**:
-  - `Header & Sub-header`: Logo `tuanzOne.com` phát sáng neon, widget số dư ví, chuông thông báo real-time, nút Đăng nhập / Đăng ký.
-  - `Game Selector Tabs`: Thanh chuyển đổi phân khu game với hiệu ứng ánh sáng đổi màu theo game (Cam/Vàng cho Free Fire, Xanh sân cỏ neon cho FC Mobile, Xanh vương giả cho Liên Quân, Tím/Đỏ cho Roblox).
-  - `Auth Modal`: Form đăng nhập / đăng ký tối giản, chuyển tab mượt mà, lưu trạng thái đăng nhập vào LocalStorage.
-
-### Phase 3: Kho Acc Tuyển Chọn (Curated Market) & Thẻ Acc 3 Thông Số Vàng
-- **Mục tiêu**: Hiển thị danh sách tài khoản chuẩn phong cách tối giản thể thao điện tử, tích hợp bộ lọc món đồ biểu tượng.
-- **Nhiệm vụ cụ thể**:
-  - **Thẻ sản phẩm chuẩn 3 Thông Số Vàng**:
-    1. *Bậc Rank*: Huy hiệu Rank sắc nét (Thách Đấu, Tinh Anh, Huyền Thoại, FIFA Champion...).
-    2. *Vũ khí / Trang phục VIP nhất*: Tag nổi bật (vd: `AK47 Rồng Xanh Lv7`, `Gullit ICON`, `Nakroth SS`, `Kitsune Perm`).
-    3. *Tình trạng liên kết*: Huy hiệu xanh "Trắng thông tin 100%" hoặc cam "Đã liên kết (Có bảo hành)".
-  - **Iconic Gear Filter (Bộ lọc 2-Click)**:
-    - Chip chọn nhanh các trang phục/vũ khí hot meta theo từng game. Người dùng chỉ cần click 1 món là lọc ngay không cần gõ tìm kiếm.
-  - **Bộ lọc bổ trợ**: Lọc theo tầm giá, bậc rank, phương thức liên kết.
-
-### Phase 4: Trình Xem Kho Đồ Toàn Màn Hình (Quick-Slide Inventory Story)
-- **Mục tiêu**: Trải nghiệm xem trước tài khoản không ngắt quãng trải nghiệm lướt web.
-- **Nhiệm vụ cụ thể**:
-  - Modal toàn màn hình dạng Instagram Story / Carousel với animation mượt mà.
-  - Thanh tiến trình (progress bar) hiển thị số lượng ảnh kho đồ (vũ khí, nhân vật, bảng ngọc, thông tin tài khoản).
-  - Điều khiển linh hoạt: Chạm/Click hai bên trái/phải, phím mũi tên bàn phím, vuốt swipe trên mobile.
-  - Nút "Khóa giữ chỗ & Mua ngay" ghim cố định với hiệu ứng neon pulse.
-
-### Phase 5: Cơ Chế Khóa Giao Dịch 5 Phút (5-Minute Lock) & Thanh Toán
-- **Mục tiêu**: Ngăn chặn tình trạng tranh mua đồng thời (race condition / double-spending).
-- **Nhiệm vụ cụ thể**:
-  - Khi ấn "Mua ngay", tài khoản lập tức chuyển trạng thái sang `LOCKED (Đang giữ chỗ)` trong 5:00 phút.
-  - Hiển thị thanh đếm ngược visual cyber timer. Các người dùng khác nhìn thấy thẻ sẽ bị mờ và hiển thị "Đang có giao dịch giữ chỗ".
-  - Nếu sau 5 phút không hoàn tất thanh toán, hệ thống tự động giải phóng trạng thái về `AVAILABLE`.
-  - Giả lập cổng thanh toán QR Code (VietQR chuẩn động) kèm nút thanh toán tức thì bằng số dư ví.
-
-### Phase 6: Bàn Giao Tự Động Không Chạm (Zero-Touch) & TuanZone Shield
-- **Mục tiêu**: Tự động hóa hoàn toàn việc xuất nick và cơ chế bảo vệ quyền lợi người mua.
-- **Nhiệm vụ cụ thể**:
-  - **Zero-touch Delivery Modal**:
-    - Khi thanh toán thành công, hệ thống bung ngay cửa sổ bàn giao bảo mật: Tài khoản, Mật khẩu, Mã dự phòng 2FA, Email liên kết.
-    - Nút 1-Click Copy từng thông số và nút "Tải file hướng dẫn bảo mật (.txt/pdf)".
-  - **TuanZone Shield Tracker**:
-    - Đồng hồ bảo hành 24 giờ đếm ngược trực quan trong lịch sử đơn hàng.
-    - Nút "Kích hoạt bảo hành / Yêu cầu đổi trả 100% hoàn tiền ví" nếu có sai lệch so với ảnh mô tả.
-  - **Verified Reviews (Đánh giá xác thực)**:
-    - Tab đánh giá chỉ mở khóa cho tài khoản đã có trạng thái đơn hàng `COMPLETED`. Chấm sao, gửi ảnh thực tế và huy hiệu "Người mua xác thực".
-
-### Phase 7: Hệ Sinh Thái Mở Rộng - Trạm Nạp Tự Động & Ký Gửi C2C (User Trade Zone)
-- **Mục tiêu**: Hoàn thiện định vị All-in-One Gaming Hub.
-- **Nhiệm vụ cụ thể**:
-  - **Trạm Nạp Tự Động (Top-up Hub)**:
-    - Form nhập ID Ingame và Tên máy chủ/Server.
-    - Danh sách gói nạp Kim Cương (Free Fire), Quân Huy (Liên Quân), FC Points (FC Mobile), Robux (Roblox) kèm chiết khấu tự động (5% - 15%).
-  - **Ký Gửi Tài Khoản (User Trade Zone)**:
-    - Giao diện cho phép user đăng bán tài khoản: tải ảnh, nhập 3 thông số vàng, định giá.
-    - Tự động tính phí sàn trung gian (5% - 7%) hiển thị minh bạch cho người bán.
-    - Cơ chế sàn giữ tiền trung gian (Escrow) đảm bảo an toàn 100%.
+## Tổng quan mục tiêu
+Nâng cấp trải nghiệm người dùng trên website `tuanzOne.com`:
+1. **Chuyển đổi luồng click tài khoản (Ảnh 2 -> Ảnh 3)**: Khi khách hàng bấm vào một thẻ tài khoản bất kỳ trong shop, thay vì chỉ mở popup mua đơn điệu, trang web sẽ chuyển mượt mà sang **Khu Vực Xem Chi Tiết Tài Khoản (Account Detail View)** chuyên nghiệp:
+   - **Thanh Breadcrumb & Nút điều hướng**: `Trang chủ > Kho [Game] > Chi tiết nick #[ID]` + Nút `← Quay lại kho nick`.
+   - **Cột Trái (Gallery Kho Đồ Gaming)**: Khung ảnh lớn sắc nét (High-res Viewport), nút "🔍 Xem ảnh lớn" (Lightbox phóng to), kèm thanh trượt danh sách thumbnail bên dưới (`<` `>` và bộ đếm `(1/N)`), click vào ảnh nào sẽ hiển thị ngay ảnh đó.
+   - **Cột Phải (Thông tin chi tiết & Mua sắm)**: Tiêu đề nick, mã số `#ID`, bảng thông số (Game, Loại nick, Rank/Prime/OVR, Tình trạng bảo mật), khung giá bán nổi bật màu đỏ rực rỡ (`15.800.000 đ` hoặc giá nick thực tế), nút CTA lớn **"Mua Ngay"**, hàng nút phụ tiện ích: **"Nạp thẻ"** (hồng tím) và **"Nạp ATM"** (xanh cyan).
+   - **Khối Mô tả dịch vụ**: Chi tiết thông tin súng/skin/acc và cam kết bảo hành.
+   - **Khối Tài khoản liên quan**: Danh sách 4-5 tài khoản cùng game để khách dễ dàng xem thêm.
+2. **Nâng cấp Form "Thêm Acc Vào Kho" của Admin (Ảnh 1)**:
+   - Bổ sung trường nhập **Album ảnh kho đồ** (cho phép Admin dán nhiều link ảnh URL, mỗi dòng 1 ảnh hoặc cách nhau dấu phẩy).
+   - Hỗ trợ thêm trường **Cấp độ/Rank**, **Loại nick**.
+   - Bổ sung **Live Preview Thumbnail**: Xem trước ngay album ảnh vừa dán trực quan trước khi bấm "Đăng bán acc vào kho ngay".
+   - Tự động sinh danh sách ảnh album cho các nick hiện có hoặc nick tạo mới.
+3. **Nguyên tắc tôn trọng dữ liệu**:
+   - Tuân thủ nghiêm ngặt lưu ý của người dùng: *(LƯU Ý KO LÀM Y CHANG HAY ĐỔI DỮ LIỆU WEB ĐỂ Y CHANG TRONG ẢNH, ẢNH CHỈ MANG TÍNH CHẤT THAM KHẢO)*.
+   - Giữ nguyên cấu trúc dữ liệu hiện tại (Free Fire, Liên Quân, FC Mobile), không bịa dữ liệu giả đè lên hệ thống, phong cách thiết kế Cyber Esports Minimalist đặc trưng của tuanzOne.com.
 
 ---
 
-## 3. User Review Required
+## User Review Required
 
 > [!IMPORTANT]
-> **Lựa chọn Tech Stack triển khai mẫu (Interactive Prototype vs Full Framework):**
-> 1. **Option A (Khuyến nghị để review trực quan nhanh, siêu mượt, không phụ thuộc môi trường build nặng)**: Xây dựng Single Page App thuần (HTML5, Vanilla CSS kiến trúc hiện đại, JavaScript ES6+ Modular). Chạy mượt mà trực tiếp trên mọi trình duyệt, dễ dàng kiểm thử toàn bộ UI/UX, Story modal, 5-minute lock, Zero-touch modal.
-> 2. **Option B**: Sử dụng Vite + React / Next.js nếu bạn định hướng kết nối trực tiếp với backend NodeJS/NestJS/Go sau này.
-
-> [!TIP]
-> Toàn bộ logic giao dịch (5-minute lock, Zero-touch credentials, TuanZone Shield 24h timer, Top-up rate) sẽ được xây dựng mô phỏng với LocalStorage State để có thể trải nghiệm thực tế ngay lập tức.
+> - **Điều hướng linh hoạt**: Sử dụng SPA View Switcher kết hợp URL hash `#acc-{id}`:
+>   - Khi người dùng bấm vào thẻ acc: Web ẩn giao diện kho shop và cuộn mượt mở khu vực Chi Tiết Nick.
+>   - Khách có thể bấm nút "← Quay lại kho nick", bấm Breadcrumb "Trang chủ" / "Shop", hoặc nút Back của trình duyệt để quay về danh sách shop bất cứ lúc nào mà không bị reload trang.
+> - **Chính sách tài khoản Admin**: Vẫn áp dụng nghiêm ngặt quy tắc Admin không có số dư ảo và không được mua nick, bảo toàn logic an toàn kinh doanh thực tế.
 
 ---
 
-## 4. Kế Hoạch Kiểm Thử (Verification Plan)
+## Chi tiết các bước triển khai
 
-### Kiểm thử Giao diện & Trải nghiệm (UI/UX)
-- Kiểm tra độ tương phản màu chuẩn WCAG trên nền đen Obsidian `#0b0d14` với Cyan Neon và Cam CTA.
-- Kiểm tra tính năng Quick-Slide Story modal với phím mũi tên và click.
-- Kiểm tra tính trực quan của thẻ 3 thông số vàng (Rank, VIP item, Tình trạng thông tin).
+### 1. Cấu trúc Giao diện HTML (`index.html`)
+- Thêm section `#view-account-detail` vào trong `<main class="container">` (ẩn mặc định).
+- Cấu trúc gồm:
+  - `.detail-nav-bar`: Nút back + Breadcrumbs.
+  - `.account-detail-grid`:
+    - `.detail-gallery-column`:
+      - `.main-showcase-box`: `<img>` lớn + nút `btn-zoom-image` + badge rank/id.
+      - `.thumb-carousel-wrap`: Nút Prev, container `.thumb-list`, nút Next, badge số ảnh `(1/N)`.
+    - `.detail-info-column`:
+      - Tiêu đề & Mã nick (kèm nút copy nhanh).
+      - Bảng `.detail-spec-table`: Tựa game, Loại tài khoản, Rank/Prime/OVR, Bảo mật (100% Trắng thông tin), Tình trạng.
+      - Khung giá `.detail-price-box`: Giá lớn màu đỏ cam/neon rực rỡ + câu slogan cam kết.
+      - Nút hành động chính `.btn-detail-buy-now` ("MUA NGAY").
+      - Cụm nút phụ: `.btn-detail-topup-card` ("Nạp thẻ") và `.btn-detail-topup-atm` ("Nạp ATM").
+  - `.detail-desc-card`: Khối "Chi tiết dịch vụ" hiển thị mô tả acc và cam kết shop.
+  - `.related-accounts-section`: Khối "Tài khoản liên quan" render danh sách acc cùng thể loại.
+- Nâng cấp Modal `#admin-add-acc-modal`:
+  - Thêm ô chọn Loại tài khoản (`Tự chọn`, `VIP Trắng Thông Tin`, `Siêu Phẩm`).
+  - Thêm ô nhập Rank/Bậc Hạng.
+  - Thay vì 1 ô link ảnh đơn, cung cấp ô nhập **Ảnh đại diện** + Textarea nhập **Danh sách link ảnh kho đồ / chi tiết** (mỗi dòng 1 ảnh).
+  - Thêm khung Live Preview xem trước ảnh ngay trong modal.
 
-### Kiểm thử Luồng Nghiệp vụ (Business Logic)
-- **5-Minute Concurrency Lock**: Kích hoạt nút mua -> kiểm tra đồng hồ 5 phút đếm ngược -> kiểm tra trạng thái khóa ở tab khác / session khác.
-- **Zero-touch Delivery**: Thanh toán đơn -> kiểm tra thông tin đăng nhập xuất hiện ngay lập tức kèm hướng dẫn bảo mật.
-- **TuanZone Shield**: Kiểm tra đồng hồ bảo hành 24h và form khiếu nại hoàn tiền.
-- **Iconic Gear Filter**: Bấm chọn 1 món trang phục biểu tượng -> danh sách nick tự động lọc chính xác chỉ sau 1-2 click.
+### 2. Giao diện & Hiệu ứng CSS (`styles/components.css` & `styles/modals.css`)
+- Thiết kế layout 2 cột chuẩn tỉ lệ như ảnh 3 (Left: 58% Gallery, Right: 42% Info) trên Desktop, tự động co về 1 cột trên Mobile/Tablet.
+- Hiệu ứng chuyển ảnh thumbnail mượt mà, thumbnail đang chọn có viền sáng neon active.
+- Styling khung giá tiền đỏ rực rỡ với font chữ Outfit số to sắc nét.
+- Nút "Nạp thẻ" (hồng cánh sen `#ff2d75`) và "Nạp ATM" (xanh cyan `#00a8ff`) với hiệu ứng hover bóng bẩy.
+- Styling khối "Tài khoản liên quan" với grid thẻ acc chuẩn đẹp.
+- Thêm Lightbox modal để phóng to ảnh toàn màn hình khi bấm "🔍 Xem ảnh lớn".
+
+### 3. Logic Xử lý & Dữ liệu (`js/app.js` & `js/store.js`)
+- **`js/store.js`**:
+  - Nâng cấp `addAccount(data)` để hỗ trợ mảng `images` (album ảnh kho đồ).
+  - Tự động fallback nếu acc chỉ có 1 ảnh thì sinh gallery tối thiểu hoặc hỗ trợ xem ảnh chính.
+- **`js/app.js`**:
+  - Gắn sự kiện click vào thẻ acc (ảnh, tiêu đề, nút chi tiết) -> gọi `openAccountDetail(accId)`.
+  - Hàm `renderAccountDetail(acc)`: Điền đầy đủ thông tin, khởi tạo gallery, bắt sự kiện click thumbnail đổi ảnh lớn, cập nhật bộ đếm ảnh.
+  - Hàm `renderRelatedAccounts(currentGame, currentAccId)`: Lấy các nick cùng game và render danh sách tài khoản liên quan.
+  - Sự kiện nút "Mua Ngay" từ view chi tiết: Tái sử dụng luồng kiểm tra số dư và bàn giao nick an toàn.
+  - Sự kiện nút "Nạp Thẻ" và "Nạp ATM": Mở modal nạp tiền tương ứng với số tiền cần nạp.
+  - Sự kiện Admin: Cập nhật form thêm acc để lấy danh sách ảnh album, cập nhật live preview.
+  - Xử lý URL hash `#acc-{id}` và nút quay lại (`closeAccountDetail()`).
+
+---
+
+## Verification Plan
+
+### Automated / Browser Verification
+1. Kiểm tra không có lỗi syntax trong JS / CSS / HTML.
+2. Kiểm tra giao diện qua Browser subagent hoặc dev server:
+   - Click vào thẻ tài khoản bất kỳ -> View chuyển sang Trang Chi Tiết Nick mượt mà.
+   - Thử chuyển qua lại các ảnh trong album kho đồ -> Ảnh lớn cập nhật chính xác.
+   - Bấm nút "Quay lại kho nick" hoặc Breadcrumb -> Quay về danh sách kho nick ban đầu.
+   - Mở modal Thêm Acc của Admin -> Kiểm tra trường nhập album ảnh và live preview.
+   - Bấm thử nút Mua Ngay, Nạp thẻ, Nạp ATM từ trang chi tiết -> Hoạt động trơn tru.
+3. Commit Git sạch sẽ và đẩy lên GitHub `TuanCoodeer/tuanzone1`.
