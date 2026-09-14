@@ -82,9 +82,8 @@ class AppStore {
         sortBy: 'default'
       },
       fcmobile: {
-        ovrLevel: 'all',
+        category: 'all',
         server: 'all',
-        priceRange: 'all',
         sortBy: 'default'
       },
       roblox: {

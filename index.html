@@ -211,15 +211,13 @@
 
       <!-- Thanh Lọc Kho FC Mobile -->
       <div class="filter-toolbar">
-        <!-- 1. Lọc Theo OVR Đội Hình -->
+        <!-- 1. Phân Loại Theo Mức Acc FC Mobile -->
         <div class="filter-row">
-          <span class="filter-label">Chỉ Số OVR:</span>
-          <div class="chip-group" id="fc-ovr-chips">
-            <button class="filter-chip active" data-ovr="all">Tất cả OVR</button>
-            <button class="filter-chip" data-ovr="100-110">OVR 100 - 110</button>
-            <button class="filter-chip" data-ovr="111-120">OVR 111 - 120</button>
-            <button class="filter-chip" data-ovr="121-130">OVR 121 - 130</button>
-            <button class="filter-chip" data-ovr="over-130">OVR 130+</button>
+          <span class="filter-label">Phân Loại:</span>
+          <div class="chip-group" id="fc-category-chips">
+            <button class="filter-chip active" data-category="all">Tất cả tài khoản</button>
+            <button class="filter-chip" data-category="over-1m">🔥 Acc FC Siêu Ngon Trên 1 Triệu</button>
+            <button class="filter-chip" data-category="under-1m">⚡ Acc FC Ngon Giá Rẻ Dưới 1 Triệu</button>
           </div>
         </div>
 
@@ -236,7 +234,7 @@
         <!-- Thanh điều khiển: Sắp xếp -->
         <div class="filter-sub-bar">
           <div class="filter-counter-hint">
-            <span>💡 Chọn chỉ số OVR, server và sắp xếp theo nhu cầu của bạn</span>
+            <span>💡 Chọn phân loại FC Mobile và sắp xếp theo nhu cầu của bạn</span>
           </div>
           <div class="filter-sort-wrapper">
             <span class="sort-label">Sắp xếp:</span>
@@ -500,15 +498,13 @@
                 </select>
               </div>
 
-              <!-- Phân loại FC Mobile: OVR & Server -->
+              <!-- Phân loại FC Mobile: Phân loại Siêu Ngon / Giá Rẻ & Server -->
               <div class="modal-form-group" id="admin-fcmobile-group" style="display: none;">
                 <label class="modal-field-label">Phân Loại FC Mobile:</label>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                  <select class="modal-select-field" id="admin-acc-ovr">
-                    <option value="100-110">OVR 100 - 110</option>
-                    <option value="111-120">OVR 111 - 120</option>
-                    <option value="121-130" selected>OVR 121 - 130</option>
-                    <option value="over-130">OVR 130+</option>
+                  <select class="modal-select-field" id="admin-acc-fc-category">
+                    <option value="over-1m">🔥 Acc Siêu Ngon (> 1 Triệu)</option>
+                    <option value="under-1m">⚡ Acc Giá Rẻ (< 1 Triệu)</option>
                   </select>
                   <select class="modal-select-field" id="admin-acc-server">
                     <option value="global" selected>Bản Global</option>

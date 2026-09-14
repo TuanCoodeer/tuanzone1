@@ -274,16 +274,16 @@ class TuanzoneApp {
       badge.textContent = `${list.length} tài khoản`;
     }
 
-    // 1. Lọc OVR
-    const ovrFilter = store.filters.fcmobile?.ovrLevel || 'all';
-    if (ovrFilter !== 'all') {
-      if (ovrFilter === '100-110') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 100 && v <= 110; });
-      else if (ovrFilter === '111-120') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 111 && v <= 120; });
-      else if (ovrFilter === '121-130') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v >= 121 && v <= 130; });
-      else if (ovrFilter === 'over-130') list = list.filter(a => { const v = parseInt(a.ovr?.replace(/\D/g, '') || '0'); return v > 130; });
+    // 1. Lọc Phân Loại FC Mobile (Giá)
+    const categoryFilter = store.filters.fcmobile?.category || 'all';
+    if (categoryFilter !== 'all') {
+      if (categoryFilter === 'over-1m') list = list.filter(a => a.price > 1000000);
+      else if (categoryFilter === 'under-1m') list = list.filter(a => a.price <= 1000000);
     }
 
-    // 2. Lọc Server
+
+
+    // 3. Lọc Server
     const serverFilter = store.filters.fcmobile?.server || 'all';
     if (serverFilter !== 'all') {
       list = list.filter(a => (a.server || '').toLowerCase().includes(serverFilter.toLowerCase()));
@@ -849,13 +849,13 @@ class TuanzoneApp {
       this.renderLienQuanWarehouse();
     });
 
-    // FC Mobile: OVR Chips
-    document.querySelectorAll('#fc-ovr-chips .filter-chip').forEach(chip => {
+    // FC Mobile: Category Chips (Siêu ngon / Giá rẻ)
+    document.querySelectorAll('#fc-category-chips .filter-chip').forEach(chip => {
       chip.addEventListener('click', () => {
-        document.querySelectorAll('#fc-ovr-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#fc-category-chips .filter-chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
         if (!store.filters.fcmobile) store.filters.fcmobile = {};
-        store.filters.fcmobile.ovrLevel = chip.dataset.ovr;
+        store.filters.fcmobile.category = chip.dataset.category;
         this.renderFcMobileWarehouse();
       });
     });
@@ -1076,6 +1076,7 @@ class TuanzoneApp {
     const game = document.getElementById('admin-acc-game')?.value || 'freefire';
     const prime = document.getElementById('admin-acc-prime')?.value || '';
     const ovr = document.getElementById('admin-acc-ovr')?.value || '';
+    const fcCat = document.getElementById('admin-acc-fc-category')?.value || '';
     const server = document.getElementById('admin-acc-server')?.value || '';
     const type = document.getElementById('admin-acc-type')?.value || 'Tự chọn';
     const rank = document.getElementById('admin-acc-rank')?.value || 'Sẵn sàng';
@@ -1101,7 +1102,7 @@ class TuanzoneApp {
     // Tag badge
     let tag = 'FLASH SALE';
     if (game === 'freefire' && prime) tag = prime;
-    else if (game === 'fcmobile') tag = ovr ? `OVR ${ovr}` : 'OVR VIP';
+    else if (game === 'fcmobile') tag = fcCat === 'over-1m' ? 'SIÊU PHẨM' : (fcCat === 'under-1m' ? 'GIÁ RẺ' : (ovr ? `OVR ${ovr}` : 'OVR VIP'));
     else if (rank && rank !== 'Sẵn sàng') tag = rank;
 
     // Cập nhật DOM Live Preview
@@ -1294,6 +1295,7 @@ class TuanzoneApp {
       const game = document.getElementById('admin-acc-game').value;
       const prime = document.getElementById('admin-acc-prime')?.value;
       const ovr = document.getElementById('admin-acc-ovr')?.value;
+      const fcCat = document.getElementById('admin-acc-fc-category')?.value;
       const server = document.getElementById('admin-acc-server')?.value;
       const accountType = document.getElementById('admin-acc-type')?.value || 'Tự chọn';
       const rank = document.getElementById('admin-acc-rank')?.value.trim() || 'Sẵn sàng';
@@ -1312,7 +1314,7 @@ class TuanzoneApp {
         id,
         game,
         prime,
-        ovr: ovr ? `OVR ${ovr}` : 'OVR 120+',
+        ovr: game === 'fcmobile' ? (fcCat === 'over-1m' ? 'Acc Siêu Ngon (>1M)' : 'Acc Giá Rẻ (<1M)') : (ovr ? `OVR ${ovr}` : 'Sẵn sàng'),
         server: server === 'korea' ? 'Bản Hàn' : 'Bản Global',
         accountType,
         rank,
