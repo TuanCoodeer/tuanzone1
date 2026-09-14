@@ -160,3 +160,24 @@
     box-shadow: 0 0 12px rgba(255, 184, 0, 0.4);
   }
 }
+
+/* =========================================================
+   Hiệu Ứng Viền LED Khung Banner Chính (Border Beam & Ken Burns)
+   ========================================================= */
+@keyframes borderBeamRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bannerKenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.07);
+  }
+}

@@ -508,25 +508,105 @@
   color: var(--accent-gold);
 }
 
-/* Banner Slider Center/Right */
+/* Banner Slider Center/Right - Viền LED Neon (Border Beam) & Ken Burns Cinematic */
 .hero-slider-panel {
+  position: relative;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(0, 132, 255, 0.2);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
-  position: relative;
+  box-shadow: var(--shadow-card), 0 0 20px rgba(0, 132, 255, 0.12);
   min-height: 280px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 32px;
-  background-image: linear-gradient(to right, rgba(11, 15, 25, 0.92) 0%, rgba(11, 15, 25, 0.4) 60%, rgba(11, 15, 25, 0.85) 100%), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80');
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-slider-panel:hover {
+  box-shadow: var(--shadow-card), 0 0 35px rgba(0, 240, 255, 0.35);
+  border-color: rgba(0, 240, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Tia sáng LED Neon chạy men theo 4 góc viền khung (Border Beam) */
+.hero-slider-panel::before {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 400%;
+  height: 400%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 65deg,
+    rgba(0, 132, 255, 0.25) 100deg,
+    #00f0ff 135deg,
+    #0084ff 155deg,
+    #ffd700 180deg,
+    transparent 210deg,
+    transparent 360deg
+  );
+  animation: borderBeamRotate 6s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Lớp ảnh nền phóng to cực chậm (Ken Burns Effect) */
+.hero-slider-bg {
+  position: absolute;
+  inset: 2px;
+  border-radius: calc(var(--radius-lg) - 2px);
+  background-image: linear-gradient(
+    to right,
+    rgba(11, 15, 25, 0.94) 0%,
+    rgba(11, 15, 25, 0.45) 60%,
+    rgba(11, 15, 25, 0.88) 100%
+  ), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80');
   background-size: cover;
   background-position: center;
+  animation: bannerKenBurns 14s infinite alternate ease-in-out;
+  transform-origin: center center;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-slider-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 25px rgba(0, 132, 255, 0.15);
+  pointer-events: none;
+}
+
+/* Tương thích Light Theme cho banner */
+[data-theme="light"] .hero-slider-bg {
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(255, 255, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0.88) 100%
+  ), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80');
+}
+
+[data-theme="light"] .slider-headline {
+  color: #0f172a;
+}
+
+[data-theme="light"] .slider-desc {
+  color: #334155;
+}
+
+[data-theme="light"] .feature-pill {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .slider-content {
+  position: relative;
   max-width: 620px;
   z-index: 2;
 }
@@ -544,6 +624,7 @@
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 12px;
+  box-shadow: 0 0 12px rgba(0, 132, 255, 0.3);
 }
 
 .slider-headline {
