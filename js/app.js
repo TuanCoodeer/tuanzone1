@@ -283,7 +283,16 @@ class TuanzoneApp {
     // 2. Lọc Server
     const serverFilter = store.filters.fcmobile?.server || 'all';
     if (serverFilter !== 'all') {
-      list = list.filter(a => (a.server || '').toLowerCase().includes(serverFilter.toLowerCase()));
+      if (serverFilter === 'vietnam' || serverFilter === 'korea') {
+        list = list.filter(a => {
+          const s = (a.server || '').toLowerCase();
+          return s.includes('việt') || s.includes('vietnam') || s.includes('vn') || s.includes('hàn');
+        });
+      } else if (serverFilter === 'global') {
+        list = list.filter(a => (a.server || '').toLowerCase().includes('global') || (a.server || '').toLowerCase().includes('quốc tế'));
+      } else {
+        list = list.filter(a => (a.server || '').toLowerCase().includes(serverFilter.toLowerCase()));
+      }
     }
 
     // 3. Lọc Mức giá
@@ -1383,7 +1392,7 @@ class TuanzoneApp {
         game,
         prime,
         ovr: game === 'fcmobile' ? (fcCat === 'over-1m' ? 'Acc Siêu Ngon (>1M)' : 'Acc Giá Rẻ (<1M)') : (ovr ? `OVR ${ovr}` : 'Sẵn sàng'),
-        server: server === 'korea' ? 'Bản Hàn' : 'Bản Global',
+        server: (server === 'vietnam' || server === 'korea') ? 'Bản Việt Nam ( VietNam )' : 'Bản Global',
         accountType,
         rank,
         title,

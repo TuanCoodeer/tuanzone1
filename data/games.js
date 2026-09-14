@@ -64,7 +64,7 @@ export const WAREHOUSES = {
     servers: [
       { id: "all", label: "Tất cả Server" },
       { id: "global", label: "Bản Quốc Tế (Global)" },
-      { id: "korea", label: "Bản Hàn Quốc (Nexon)" }
+      { id: "vietnam", label: "Bản Việt Nam ( VietNam )" }
     ],
     priceRanges: [
       { id: "all", label: "Tất cả mức giá" },
