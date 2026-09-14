@@ -5,6 +5,7 @@
 import { store, ADMIN_CONFIG, BANK_CONFIG } from './store.js';
 import { WAREHOUSES, TOP_DEPOSIT_USERS } from '../data/games.js?v=1.0.6';
 import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from './popup.js';
+import { initCyberSparks } from './cyberSparks.js';
 
 class TuanzoneApp {
   constructor() {
@@ -13,10 +14,12 @@ class TuanzoneApp {
     this.currentGalleryImages = [];
     this.currentGalleryIndex = 0;
     this.adminUploadedImages = [];
+    this.cyberSparks = null;
   }
 
   init() {
     initPopupSystem();
+    this.cyberSparks = initCyberSparks();
     this.initTheme();
     this.renderTopLeaderboard();
     this.renderHeaderAuth();

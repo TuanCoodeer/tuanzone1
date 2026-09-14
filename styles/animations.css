@@ -96,3 +96,24 @@
   background-size: 200% 100%;
   animation: shimmerSweep 3s infinite;
 }
+
+/* =========================================================
+   Hiệu Ứng Phong Thủy: Hạt Năng Lượng Cyber & Tinh Thể Bay Lên
+   ========================================================= */
+.cyber-sparks-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none !important;
+  z-index: 50; /* Bay lơ lửng trên background & card, nhưng dưới header (200) và modal (1000) */
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  transition: opacity 0.5s ease;
+}
+
+[data-theme="light"] .cyber-sparks-canvas {
+  mix-blend-mode: normal;
+  opacity: 0.75;
+}
