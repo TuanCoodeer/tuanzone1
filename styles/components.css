@@ -70,6 +70,34 @@
   font-size: 1.25rem;
   box-shadow: 0 4px 14px rgba(0, 132, 255, 0.4);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  animation: brandBadgePulse 3.5s infinite ease-in-out;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+}
+
+/* Tia sáng kim loại quét chéo qua huy hiệu TZ */
+.brand-badge-icon::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -120%;
+  width: 60%;
+  height: 220%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  animation: brandBadgeShine 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-wrapper:hover .brand-badge-icon {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 0 26px rgba(0, 210, 255, 0.9), 0 0 40px rgba(0, 132, 255, 0.5);
 }
 
 .brand-text {
@@ -90,8 +118,27 @@
   white-space: nowrap !important;
 }
 
+/* Chữ "One" với hiệu ứng ánh kim lấp lánh (Shimmer Gradient) */
 .brand-name span {
-  color: var(--primary-blue);
+  display: inline-block;
+  background: linear-gradient(
+    120deg,
+    #0084ff 0%,
+    #00f0ff 25%,
+    #ffffff 50%,
+    #00f0ff 75%,
+    #0084ff 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: brandTextShimmer 4s infinite linear;
+  filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.45));
+  transition: filter 0.3s ease;
+}
+
+.brand-wrapper:hover .brand-name span {
+  filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.8));
 }
 
 .brand-sub {
@@ -107,6 +154,14 @@
   white-space: nowrap !important;
   display: inline-flex;
   align-items: center;
+  animation: brandSubGlow 3s infinite ease-in-out;
+  transition: all 0.3s ease;
+}
+
+.brand-wrapper:hover .brand-sub {
+  border-color: rgba(255, 184, 0, 0.85);
+  box-shadow: 0 0 16px rgba(255, 184, 0, 0.5);
+  transform: translateY(-1px);
 }
 
 /* Nav Menu Links - Dàn đều dạng pill hiện đại, 1 dòng */

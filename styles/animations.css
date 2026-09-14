@@ -117,3 +117,46 @@
   mix-blend-mode: normal;
   opacity: 0.75;
 }
+
+/* =========================================================
+   Hiệu Ứng Động Logo Website tuanzOne.com
+   ========================================================= */
+@keyframes brandBadgePulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(0, 132, 255, 0.45), 0 0 22px rgba(0, 210, 255, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 132, 255, 0.8), 0 0 35px rgba(0, 240, 255, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.35);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes brandBadgeShine {
+  0%, 15% {
+    left: -120%;
+  }
+  45%, 100% {
+    left: 180%;
+  }
+}
+
+@keyframes brandTextShimmer {
+  0%, 15% {
+    background-position: 0% 50%;
+  }
+  60%, 100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes brandSubGlow {
+  0%, 100% {
+    border-color: rgba(255, 184, 0, 0.35);
+    box-shadow: 0 0 6px rgba(255, 184, 0, 0.15);
+  }
+  50% {
+    border-color: rgba(255, 184, 0, 0.75);
+    box-shadow: 0 0 12px rgba(255, 184, 0, 0.4);
+  }
+}
