@@ -75,21 +75,25 @@ class AppStore {
       freefire: {
         prime: 'all',
         priceRange: 'all',
-        sortBy: 'default'
+        sortBy: 'default',
+        search: ''
       },
       lienquan: {
         priceRange: 'all',
-        sortBy: 'default'
+        sortBy: 'default',
+        search: ''
       },
       fcmobile: {
         category: 'all',
         server: 'all',
-        sortBy: 'default'
+        sortBy: 'default',
+        search: ''
       },
       roblox: {
         subCategory: 'all',
         priceRange: 'all',
-        sortBy: 'default'
+        sortBy: 'default',
+        search: ''
       }
     };
 

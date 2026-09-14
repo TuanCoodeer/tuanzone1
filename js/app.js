@@ -221,13 +221,12 @@ class TuanzoneApp {
     // Lọc Mức giá
     list = this.filterByPrice(list, store.filters.freefire.priceRange);
 
-    // Tìm kiếm
+    // Tìm kiếm (Tìm kiếm chung Header & Tìm kiếm riêng Kho Free Fire)
     if (store.searchQuery) {
-      list = list.filter(a => 
-        a.id.toLowerCase().includes(store.searchQuery) ||
-        a.title.toLowerCase().includes(store.searchQuery) ||
-        a.description.toLowerCase().includes(store.searchQuery)
-      );
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.freefire?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.freefire.search));
     }
 
     // Sắp xếp
@@ -250,12 +249,12 @@ class TuanzoneApp {
 
     list = this.filterByPrice(list, store.filters.lienquan.priceRange);
 
+    // Tìm kiếm (Tìm kiếm chung Header & Tìm kiếm riêng Kho Liên Quân)
     if (store.searchQuery) {
-      list = list.filter(a => 
-        a.id.toLowerCase().includes(store.searchQuery) ||
-        a.title.toLowerCase().includes(store.searchQuery) ||
-        a.description.toLowerCase().includes(store.searchQuery)
-      );
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.lienquan?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.lienquan.search));
     }
 
     list = this.sortList(list, store.filters.lienquan.sortBy);
@@ -281,9 +280,7 @@ class TuanzoneApp {
       else if (categoryFilter === 'under-1m') list = list.filter(a => a.price <= 1000000);
     }
 
-
-
-    // 3. Lọc Server
+    // 2. Lọc Server
     const serverFilter = store.filters.fcmobile?.server || 'all';
     if (serverFilter !== 'all') {
       list = list.filter(a => (a.server || '').toLowerCase().includes(serverFilter.toLowerCase()));
@@ -292,19 +289,35 @@ class TuanzoneApp {
     // 3. Lọc Mức giá
     list = this.filterByPrice(list, store.filters.fcmobile?.priceRange);
 
-    // 4. Tìm kiếm
+    // 4. Tìm kiếm (Tìm kiếm chung Header & Tìm kiếm riêng Kho FC Mobile)
     if (store.searchQuery) {
-      list = list.filter(a => 
-        a.id.toLowerCase().includes(store.searchQuery) ||
-        a.title.toLowerCase().includes(store.searchQuery) ||
-        a.description.toLowerCase().includes(store.searchQuery)
-      );
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.fcmobile?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.fcmobile.search));
     }
 
     // 5. Sắp xếp
     list = this.sortList(list, store.filters.fcmobile?.sortBy);
     container.innerHTML = this.buildWarehouseHTML('fcmobile', list, "Kho Nick FC Mobile");
     this.attachCardBuyTriggers(container);
+  }
+
+  // Hàm so khớp tìm kiếm thông minh đa trường
+  matchesSearch(acc, query) {
+    if (!query) return true;
+    const q = query.trim().toLowerCase();
+    const id = (acc.id || '').toLowerCase();
+    const title = (acc.title || '').toLowerCase();
+    const desc = (acc.description || '').toLowerCase();
+    const prime = (acc.prime || '').toLowerCase();
+    const ovr = (acc.ovr || '').toLowerCase();
+    const rank = (acc.rank || '').toLowerCase();
+    const type = (acc.accountType || '').toLowerCase();
+    const server = (acc.server || '').toLowerCase();
+    return id.includes(q) || title.includes(q) || desc.includes(q) ||
+           prime.includes(q) || ovr.includes(q) || rank.includes(q) ||
+           type.includes(q) || server.includes(q);
   }
 
   filterByPrice(list, priceRangeId) {
@@ -827,6 +840,61 @@ class TuanzoneApp {
 
   // --- 6. EVENT LỌC & SẮP XẾP ---
   attachWarehouseFilterEvents() {
+    // --- TÌM KIẾM RIÊNG THEO TỪNG KHO ---
+    // 1. Free Fire Search
+    const ffSearchInput = document.getElementById('ff-search-input');
+    const ffSearchClear = document.getElementById('ff-search-clear');
+    ffSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.freefire) store.filters.freefire = {};
+      store.filters.freefire.search = val;
+      if (ffSearchClear) ffSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderFreeFireWarehouse();
+    });
+    ffSearchClear?.addEventListener('click', () => {
+      if (ffSearchInput) ffSearchInput.value = '';
+      if (!store.filters.freefire) store.filters.freefire = {};
+      store.filters.freefire.search = '';
+      ffSearchClear.style.display = 'none';
+      this.renderFreeFireWarehouse();
+    });
+
+    // 2. Liên Quân Search
+    const lqSearchInput = document.getElementById('lq-search-input');
+    const lqSearchClear = document.getElementById('lq-search-clear');
+    lqSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.lienquan) store.filters.lienquan = {};
+      store.filters.lienquan.search = val;
+      if (lqSearchClear) lqSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderLienQuanWarehouse();
+    });
+    lqSearchClear?.addEventListener('click', () => {
+      if (lqSearchInput) lqSearchInput.value = '';
+      if (!store.filters.lienquan) store.filters.lienquan = {};
+      store.filters.lienquan.search = '';
+      lqSearchClear.style.display = 'none';
+      this.renderLienQuanWarehouse();
+    });
+
+    // 3. FC Mobile Search
+    const fcSearchInput = document.getElementById('fc-search-input');
+    const fcSearchClear = document.getElementById('fc-search-clear');
+    fcSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.fcmobile) store.filters.fcmobile = {};
+      store.filters.fcmobile.search = val;
+      if (fcSearchClear) fcSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderFcMobileWarehouse();
+    });
+    fcSearchClear?.addEventListener('click', () => {
+      if (fcSearchInput) fcSearchInput.value = '';
+      if (!store.filters.fcmobile) store.filters.fcmobile = {};
+      store.filters.fcmobile.search = '';
+      fcSearchClear.style.display = 'none';
+      this.renderFcMobileWarehouse();
+    });
+
     // Free Fire: Prime Chips
     document.querySelectorAll('#ff-prime-chips .filter-chip').forEach(chip => {
       chip.addEventListener('click', () => {
