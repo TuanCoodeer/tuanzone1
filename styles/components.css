@@ -512,10 +512,9 @@
 .hero-slider-panel {
   position: relative;
   background: var(--bg-card);
-  border: 1px solid rgba(0, 132, 255, 0.2);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-card), 0 0 20px rgba(0, 132, 255, 0.12);
+  box-shadow: var(--shadow-card), 0 0 20px rgba(0, 132, 255, 0.15);
   min-height: 280px;
   display: flex;
   flex-direction: column;
@@ -525,46 +524,30 @@
 }
 
 .hero-slider-panel:hover {
-  box-shadow: var(--shadow-card), 0 0 35px rgba(0, 240, 255, 0.35);
-  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: var(--shadow-card), 0 0 40px rgba(0, 240, 255, 0.45);
   transform: translateY(-2px);
 }
 
-/* Tia sáng LED Neon chạy men theo 4 góc viền khung (Border Beam) - Chạy liên tục 1 chiều thuận kim đồng hồ */
+/* Tia sáng LED Neon chạy mượt mà men theo 4 góc viền khung (Border Beam) */
 .hero-slider-panel::before {
   content: '';
   position: absolute;
-  inset: -1px;
-  border-radius: calc(var(--radius-lg) + 1px);
-  padding: 2.5px;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 500%;
+  transform: translate(-50%, -50%) rotate(0deg);
   background: conic-gradient(
-    from var(--border-angle, 0deg),
-    /* Mũi tia sáng (Head) rực rỡ trắng xanh lao về phía trước */
-    #ffffff 0deg,
-    rgba(0, 132, 255, 0.25) 15deg,
-    rgba(0, 132, 255, 0.15) 60deg,
-    rgba(0, 240, 255, 0.1) 120deg,
-    rgba(0, 132, 255, 0.15) 180deg,
-    /* Đuôi tia sáng (Tail) trải dài màu neon cyber theo sau */
-    rgba(0, 240, 255, 0.25) 230deg,
-    rgba(0, 132, 255, 0.5) 280deg,
-    #ffd700 310deg,
-    #0084ff 332deg,
-    #00f0ff 350deg,
+    transparent 0deg,
+    transparent 260deg,
+    rgba(0, 132, 255, 0.2) 290deg,
+    #0084ff 320deg,
+    #00f0ff 345deg,
     #ffffff 360deg
   );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: borderBeamRotate 3.5s linear infinite;
-  z-index: 2;
+  animation: borderBeamSpin 4s linear infinite;
+  z-index: 1;
   pointer-events: none;
-  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.5));
-  transition: filter 0.35s ease;
-}
-
-.hero-slider-panel:hover::before {
-  filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.85));
 }
 
 /* Lớp ảnh nền phóng to cực chậm (Ken Burns Effect) */
@@ -582,7 +565,7 @@
   background-position: center;
   animation: bannerKenBurns 14s infinite alternate ease-in-out;
   transform-origin: center center;
-  z-index: 1;
+  z-index: 2;
   overflow: hidden;
 }
 
