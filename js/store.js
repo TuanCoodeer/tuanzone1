@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - State Store (With Supabase Cloud Sync)
+// tuBIzOne.com - State Store (With Supabase Cloud Sync)
 // =========================================================
 
 import {
@@ -30,8 +30,9 @@ export const BANK_CONFIG = {
 };
 
 export const ADMIN_CONFIG = {
-  username: "admin_tuanzone",
+  username: "admin_tuBIzOne",
   altUsername: "admin",
+  legacyUsername: "admin_tuanzone",
   password: "TZ@2026#HuynhTuan!SecureX9vK8"
 };
 
@@ -43,12 +44,12 @@ class AppStore {
 
   init() {
     // 1. Theme State (Dark by default)
-    const savedTheme = localStorage.getItem('tuanzone_theme') || 'dark';
+    const savedTheme = localStorage.getItem('tubizone_theme') || localStorage.getItem('tuanzone_theme') || 'dark';
     this.theme = savedTheme;
     document.body.setAttribute('data-theme', this.theme);
 
     // 2. User Authentication State
-    const savedUser = localStorage.getItem('tuanzone_user_auth');
+    const savedUser = localStorage.getItem('tubizone_user_auth') || localStorage.getItem('tuanzone_user_auth');
     this.user = savedUser ? JSON.parse(savedUser) : {
       isLoggedIn: false,
       isAdmin: false,
@@ -61,11 +62,11 @@ class AppStore {
     }
 
     // 3. Kho tài khoản thực tế do Admin thêm vào (mặc định rỗng)
-    const savedAccounts = localStorage.getItem('tuanzone_warehouse_accounts');
+    const savedAccounts = localStorage.getItem('tubizone_warehouse_accounts') || localStorage.getItem('tuanzone_warehouse_accounts');
     this.accounts = savedAccounts ? JSON.parse(savedAccounts) : [];
 
     // 4. Lịch sử đơn hàng mua nick
-    const savedOrders = localStorage.getItem('tuanzone_orders');
+    const savedOrders = localStorage.getItem('tubizone_orders') || localStorage.getItem('tuanzone_orders');
     this.orders = savedOrders ? JSON.parse(savedOrders) : [];
 
     // 5. Search & Filter State
@@ -98,10 +99,10 @@ class AppStore {
     };
 
     // 6. Lịch sử nạp tiền
-    this.depositHistory = JSON.parse(localStorage.getItem('tuanzone_deposit_history') || '[]');
+    this.depositHistory = JSON.parse(localStorage.getItem('tubizone_deposit_history') || localStorage.getItem('tuanzone_deposit_history') || '[]');
 
     // 7. Danh sách tài khoản người dùng đã đăng ký
-    const savedUsers = localStorage.getItem('tuanzone_registered_users');
+    const savedUsers = localStorage.getItem('tubizone_registered_users') || localStorage.getItem('tuanzone_registered_users');
     this.registeredUsers = savedUsers ? JSON.parse(savedUsers) : [];
 
     // Tự động đồng bộ với Supabase Cloud
@@ -114,28 +115,28 @@ class AppStore {
       const cloudAccounts = await dbGetAccounts();
       if (cloudAccounts !== null && Array.isArray(cloudAccounts)) {
         this.accounts = cloudAccounts;
-        localStorage.setItem('tuanzone_warehouse_accounts', JSON.stringify(this.accounts));
+        localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
       }
 
       // 2. Đồng bộ danh sách đơn hàng
       const cloudOrders = await dbGetOrders();
       if (cloudOrders !== null && Array.isArray(cloudOrders)) {
         this.orders = cloudOrders;
-        localStorage.setItem('tuanzone_orders', JSON.stringify(this.orders));
+        localStorage.setItem('tubizone_orders', JSON.stringify(this.orders));
       }
 
       // 3. Đồng bộ lịch sử nạp tiền
       const cloudDeposits = await dbGetDeposits();
       if (cloudDeposits !== null && Array.isArray(cloudDeposits)) {
         this.depositHistory = cloudDeposits;
-        localStorage.setItem('tuanzone_deposit_history', JSON.stringify(this.depositHistory));
+        localStorage.setItem('tubizone_deposit_history', JSON.stringify(this.depositHistory));
       }
 
       // 4. Đồng bộ danh sách người dùng
       const cloudUsers = await dbGetUsers();
       if (cloudUsers !== null && Array.isArray(cloudUsers)) {
         this.registeredUsers = cloudUsers;
-        localStorage.setItem('tuanzone_registered_users', JSON.stringify(this.registeredUsers));
+        localStorage.setItem('tubizone_registered_users', JSON.stringify(this.registeredUsers));
         this.syncUserBalance();
       }
 
@@ -147,12 +148,12 @@ class AppStore {
 
   save() {
     this.syncUserBalance();
-    localStorage.setItem('tuanzone_theme', this.theme);
-    localStorage.setItem('tuanzone_user_auth', JSON.stringify(this.user));
-    localStorage.setItem('tuanzone_warehouse_accounts', JSON.stringify(this.accounts));
-    localStorage.setItem('tuanzone_orders', JSON.stringify(this.orders));
-    localStorage.setItem('tuanzone_deposit_history', JSON.stringify(this.depositHistory));
-    localStorage.setItem('tuanzone_registered_users', JSON.stringify(this.registeredUsers));
+    localStorage.setItem('tubizone_theme', this.theme);
+    localStorage.setItem('tubizone_user_auth', JSON.stringify(this.user));
+    localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
+    localStorage.setItem('tubizone_orders', JSON.stringify(this.orders));
+    localStorage.setItem('tubizone_deposit_history', JSON.stringify(this.depositHistory));
+    localStorage.setItem('tubizone_registered_users', JSON.stringify(this.registeredUsers));
     this.notify();
   }
 
@@ -242,11 +243,12 @@ class AppStore {
     }
 
     // Kiểm tra đăng nhập tài khoản ADMIN
-    if (
-      (cleanUser.toLowerCase() === ADMIN_CONFIG.username.toLowerCase() || 
-       cleanUser.toLowerCase() === ADMIN_CONFIG.altUsername.toLowerCase()) && 
-      cleanPass === ADMIN_CONFIG.password
-    ) {
+    const isAdminUser = 
+      cleanUser.toLowerCase() === ADMIN_CONFIG.username.toLowerCase() || 
+      cleanUser.toLowerCase() === ADMIN_CONFIG.altUsername.toLowerCase() ||
+      (ADMIN_CONFIG.legacyUsername && cleanUser.toLowerCase() === ADMIN_CONFIG.legacyUsername.toLowerCase());
+
+    if (isAdminUser && cleanPass === ADMIN_CONFIG.password) {
       this.user = {
         isLoggedIn: true,
         isAdmin: true,
@@ -259,10 +261,7 @@ class AppStore {
     }
 
     // Nếu nhập tên admin nhưng sai mật khẩu
-    if (
-      cleanUser.toLowerCase() === ADMIN_CONFIG.username.toLowerCase() || 
-      cleanUser.toLowerCase() === ADMIN_CONFIG.altUsername.toLowerCase()
-    ) {
+    if (isAdminUser) {
       return { success: false, isAdmin: false, message: "Mật khẩu Quản trị viên không chính xác!" };
     }
 

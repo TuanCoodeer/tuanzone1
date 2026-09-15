@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Ký Gửi Tài Khoản (User Trade Zone C2C)
+// tuBIzOne.com - Ký Gửi Tài Khoản (User Trade Zone C2C)
 // Platform Escrow: Sàn trung gian giữ tiền, 5-7% phí giao dịch
 // =========================================================
 
@@ -23,7 +23,7 @@ class TradeZone {
       <div class="section-header-banner">
         <div class="section-header-info">
           <h2>🤝 Ký Gửi Tài Khoản (User Trade Zone C2C)</h2>
-          <p>Đăng bán nick của bạn an toàn tuyệt đối. Sàn tuanzOne.com làm trung gian bảo chứng, thu 5% phí khi giao dịch thành công.</p>
+          <p>Đăng bán nick của bạn an toàn tuyệt đối. Sàn tuBIzOne.com làm trung gian bảo chứng, thu 5% phí khi giao dịch thành công.</p>
         </div>
         <div>
           <span class="escrow-fee-badge">
@@ -180,7 +180,7 @@ class TradeZone {
             <div class="shield-assurance-icon">⚡</div>
             <div class="shield-assurance-text">
               <h4>Rút Tiền Tự Động Về Mọi Ngân Hàng</h4>
-              <p>Sau 24 giờ bảo hành TuanZone Shield không phát sinh khiếu nại, tiền bán nick sẽ tự động cộng vào tài khoản ngân hàng của bạn.</p>
+              <p>Sau 24 giờ bảo hành tuBIzOne Shield không phát sinh khiếu nại, tiền bán nick sẽ tự động cộng vào tài khoản ngân hàng của bạn.</p>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ class TradeZone {
       };
 
       const newAcc = store.addEscrowListing(listing);
-      alert(`🎉 Đăng bán ký gửi thành công!\n\nMã tin đăng: #${newAcc.id}\nGiá niêm yết: ${price.toLocaleString('vi-VN')} VNĐ\n\nTài khoản của bạn đã được đưa lên Kho Acc Tuyển Chọn ngay lập tức và bảo chứng qua TuanZone Escrow.`);
+      alert(`🎉 Đăng bán ký gửi thành công!\n\nMã tin đăng: #${newAcc.id}\nGiá niêm yết: ${price.toLocaleString('vi-VN')} VNĐ\n\nTài khoản của bạn đã được đưa lên Kho Acc Tuyển Chọn ngay lập tức và bảo chứng qua tuBIzOne Escrow.`);
       
       // Reset form
       form.reset();

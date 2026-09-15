@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - 3 Kho Nick Duy Nhất
+// tuBIzOne.com - 3 Kho Nick Duy Nhất
 // 1. Kho Nick Free Fire
 // 2. Kho Nick Liên Quân
 // 3. Kho Nick FC Mobile (OVR Đội Hình, Server)

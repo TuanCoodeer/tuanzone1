@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Main Application Logic
+// tuBIzOne.com - Main Application Logic
 // =========================================================
 
 import { store, ADMIN_CONFIG, BANK_CONFIG } from './store.js';
@@ -7,7 +7,7 @@ import { WAREHOUSES, TOP_DEPOSIT_USERS } from '../data/games.js?v=1.0.6';
 import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from './popup.js';
 import { initCyberSparks } from './cyberSparks.js';
 
-class TuanzoneApp {
+class TuBIzOneApp {
   constructor() {
     this.selectedTelco = 'VIETTEL';
     this.activeDetailAccId = null;
@@ -172,7 +172,7 @@ class TuanzoneApp {
     const syntaxEl = document.getElementById('bank-memo-syntax');
     if (syntaxEl) {
       const uname = store.user.isLoggedIn ? store.user.username : 'KHACH';
-      syntaxEl.textContent = `NAP TUANZONE ${uname.toUpperCase()}`;
+      syntaxEl.textContent = `NAP tuBIzOne ${uname.toUpperCase()}`;
     }
   }
 
@@ -1813,7 +1813,7 @@ class TuanzoneApp {
 
     const amount = Math.max(10000, Number(document.getElementById('bank-deposit-amount')?.value) || 50000);
     const uname = store.user.isLoggedIn ? store.user.username : 'KHACH';
-    const memo = `NAP TUANZONE ${uname.toUpperCase()}`;
+    const memo = `NAP tuBIzOne ${uname.toUpperCase()}`;
     const accountNo = BANK_CONFIG.accountNumber;
 
     const qrImg = document.getElementById('bank-qr-code-img');
@@ -1910,7 +1910,7 @@ class TuanzoneApp {
 
         showPopup({
           title: "🎉 TẠO TÀI KHOẢN THÀNH CÔNG!",
-          message: `${res.message}\nBạn đã được tự động đăng nhập vào tuanzOne.com.`,
+          message: `${res.message}\nBạn đã được tự động đăng nhập vào tuBIzOne.com.`,
           type: "success",
           confirmText: "Bắt Đầu Ngay"
         });
@@ -1923,7 +1923,7 @@ class TuanzoneApp {
 
         if (res.isAdmin) {
           showPopup({
-            title: "👑 QUẢN TRỊ VIÊN TUANZONE",
+            title: "👑 QUẢN TRỊ VIÊN tuBIzOne",
             message: "Chào mừng Quản trị viên Huỳnh Tuấn!\nBạn có toàn quyền quản trị: Thêm acc vào kho, xem doanh thu tháng và kiểm tra toàn bộ lịch sử giao dịch.",
             type: "success",
             confirmText: "Vào Quản Trị"
@@ -2008,7 +2008,7 @@ class TuanzoneApp {
           <div class="user-empty-history">
             <div class="user-empty-icon">📦</div>
             <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 6px;">
-              Bạn chưa mua tài khoản nào trên tuanzOne.com
+              Bạn chưa mua tài khoản nào trên tuBIzOne.com
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
               Khi bạn mua acc, toàn bộ thông tin đăng nhập và mật khẩu nick sẽ được lưu trữ vĩnh viễn tại đây để bạn xem lại bất cứ lúc nào!
@@ -2142,10 +2142,11 @@ class TuanzoneApp {
 
 // Khởi tạo ứng dụng an toàn trên mọi trình duyệt (Google Chrome, Cốc Cốc, Edge, Firefox)
 function startApp() {
-  if (window.__tuanzoneAppInitialized) return;
-  window.__tuanzoneAppInitialized = true;
-  const app = new TuanzoneApp();
+  if (window.__tuBIzOneAppInitialized) return;
+  window.__tuBIzOneAppInitialized = true;
+  const app = new TuBIzOneApp();
   app.init();
+  window.tuBIzOneApp = app;
   window.tuanzoneApp = app;
 }
 

@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - 5-Minute Concurrency Lock & Checkout Engine
+// tuBIzOne.com - 5-Minute Concurrency Lock & Checkout Engine
 // Prevents race conditions and double-spending
 // =========================================================
 
@@ -52,7 +52,7 @@ class LockEngine {
               </div>
               <div class="checkout-summary-row">
                 <span>Bảo hành:</span>
-                <strong style="color: var(--status-verified);">TuanZone Shield (24 Giờ 1-Đổi-1)</strong>
+                <strong style="color: var(--status-verified);">tuBIzOne Shield (24 Giờ 1-Đổi-1)</strong>
               </div>
               <div class="checkout-summary-row total">
                 <span>Tổng thanh toán:</span>
@@ -94,7 +94,7 @@ class LockEngine {
                 <div class="qr-payment-area">
                   <img class="qr-code-img" id="qr-code-img" src="" alt="VietQR Payment">
                   <div style="font-family: var(--font-mono); font-weight: 700; color: var(--neon-cyan); margin-bottom: 4px;" id="qr-syntax-text">
-                    Nội dung: TUANZONE 8801
+                    Nội dung: tuBIzOne 8801
                   </div>
                   <div class="qr-scan-hint">
                     Quét qua App Ngân Hàng hoặc MoMo. Hệ thống tự động bàn giao nick trong 3 giây sau khi nhận tiền.

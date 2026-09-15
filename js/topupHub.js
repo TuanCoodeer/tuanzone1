@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Trạm Nạp Tự Động (Top-up Hub)
+// tuBIzOne.com - Trạm Nạp Tự Động (Top-up Hub)
 // Automated Ingame ID Top-up with discount calculator
 // =========================================================
 

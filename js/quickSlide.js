@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Quick-Slide Fullscreen Inventory Story
+// tuBIzOne.com - Quick-Slide Fullscreen Inventory Story
 // Instagram Story / Carousel Experience
 // =========================================================
 

@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Custom Popup & Toast Notification System
+// tuBIzOne.com - Custom Popup & Toast Notification System
 // Thay thế hoàn toàn alert() và confirm() mặc định của trình duyệt
 // =========================================================
 

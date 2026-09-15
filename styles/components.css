@@ -1,5 +1,5 @@
 /* =========================================================
-   tuanzOne.com - Component Styles (Header, Top Nạp, 3 Kho, Footer)
+   tuBIzOne.com - Component Styles (Header, Top Nạp, 3 Kho, Footer)
    ========================================================= */
 
 /* --- Header Section --- */
@@ -76,7 +76,7 @@
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
 }
 
-/* Tia sáng kim loại quét chéo qua huy hiệu TZ */
+/* Tia sáng kim loại quét chéo qua huy hiệu TB */
 .brand-badge-icon::after {
   content: '';
   position: absolute;

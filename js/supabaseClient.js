@@ -1,5 +1,5 @@
 // =========================================================
-// tuanzOne.com - Supabase Client Configuration & Services
+// tuBIzOne.com - Supabase Client Configuration & Services
 // =========================================================
 
 export const SUPABASE_CONFIG = {

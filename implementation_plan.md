@@ -1,7 +1,7 @@
 # Kế Hoạch Triển Khai: Khu Vực Chi Tiết Tài Khoản (Account Detail View) & Nâng Cấp Form Thêm Acc Album Kho Đồ
 
 ## Tổng quan mục tiêu
-Nâng cấp trải nghiệm người dùng trên website `tuanzOne.com`:
+Nâng cấp trải nghiệm người dùng trên website `tuBIzOne.com`:
 1. **Chuyển đổi luồng click tài khoản (Ảnh 2 -> Ảnh 3)**: Khi khách hàng bấm vào một thẻ tài khoản bất kỳ trong shop, thay vì chỉ mở popup mua đơn điệu, trang web sẽ chuyển mượt mà sang **Khu Vực Xem Chi Tiết Tài Khoản (Account Detail View)** chuyên nghiệp:
    - **Thanh Breadcrumb & Nút điều hướng**: `Trang chủ > Kho [Game] > Chi tiết nick #[ID]` + Nút `← Quay lại kho nick`.
    - **Cột Trái (Gallery Kho Đồ Gaming)**: Khung ảnh lớn sắc nét (High-res Viewport), nút "🔍 Xem ảnh lớn" (Lightbox phóng to), kèm thanh trượt danh sách thumbnail bên dưới (`<` `>` và bộ đếm `(1/N)`), click vào ảnh nào sẽ hiển thị ngay ảnh đó.
