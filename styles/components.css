@@ -530,28 +530,41 @@
   transform: translateY(-2px);
 }
 
-/* Tia sáng LED Neon chạy men theo 4 góc viền khung (Border Beam) */
+/* Tia sáng LED Neon chạy men theo 4 góc viền khung (Border Beam) - Chạy liên tục 1 chiều thuận kim đồng hồ */
 .hero-slider-panel::before {
   content: '';
   position: absolute;
-  top: -150%;
-  left: -150%;
-  width: 400%;
-  height: 400%;
+  inset: -1px;
+  border-radius: calc(var(--radius-lg) + 1px);
+  padding: 2.5px;
   background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 65deg,
-    rgba(0, 132, 255, 0.25) 100deg,
-    #00f0ff 135deg,
-    #0084ff 155deg,
-    #ffd700 180deg,
-    transparent 210deg,
-    transparent 360deg
+    from var(--border-angle, 0deg),
+    /* Mũi tia sáng (Head) rực rỡ trắng xanh lao về phía trước */
+    #ffffff 0deg,
+    rgba(0, 132, 255, 0.25) 15deg,
+    rgba(0, 132, 255, 0.15) 60deg,
+    rgba(0, 240, 255, 0.1) 120deg,
+    rgba(0, 132, 255, 0.15) 180deg,
+    /* Đuôi tia sáng (Tail) trải dài màu neon cyber theo sau */
+    rgba(0, 240, 255, 0.25) 230deg,
+    rgba(0, 132, 255, 0.5) 280deg,
+    #ffd700 310deg,
+    #0084ff 332deg,
+    #00f0ff 350deg,
+    #ffffff 360deg
   );
-  animation: borderBeamRotate 6s linear infinite;
-  z-index: 0;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderBeamRotate 3.5s linear infinite;
+  z-index: 2;
   pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.5));
+  transition: filter 0.35s ease;
+}
+
+.hero-slider-panel:hover::before {
+  filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.85));
 }
 
 /* Lớp ảnh nền phóng to cực chậm (Ken Burns Effect) */
@@ -608,7 +621,7 @@
 .slider-content {
   position: relative;
   max-width: 620px;
-  z-index: 2;
+  z-index: 5;
 }
 
 .slider-tag {
