@@ -721,11 +721,11 @@
 /* Grid các khung hình vuông tỉ lệ đẹp chuẩn Ảnh 2 */
 .game-categories-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) {
   .game-categories-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
@@ -737,6 +737,39 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
+}
+
+.tag-blindbag {
+  background: linear-gradient(135deg, #ff007f, #ff6600);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(255, 0, 127, 0.5);
+}
+
+.tag-hot {
+  background: rgba(255, 60, 0, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 200, 0, 0.5);
+  animation: badgeBlink 1.5s infinite;
+}
+
+.btn-action-blindbag {
+  background: linear-gradient(135deg, #ff007f, #ff8800) !important;
+  box-shadow: 0 4px 15px rgba(255, 0, 127, 0.5) !important;
+}
+
+.card-blindbag-special {
+  border-color: rgba(255, 102, 0, 0.35);
+}
+
+.card-blindbag-special:hover {
+  border-color: #ff6600;
+  box-shadow: 0 14px 35px rgba(255, 102, 0, 0.35), 0 0 25px rgba(255, 0, 127, 0.3);
+}
+
+.nav-link-hot {
+  color: #ff9900 !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(255, 153, 0, 0.4);
 }
 
 /* Thẻ khung danh mục game (Card) */
@@ -996,6 +1029,633 @@
 
 [data-theme="light"] .category-card-count {
   color: #64748b;
+}
+
+/* =========================================================
+   KHU VỰC MỞ TÚI MÙ FREE FIRE (BLIND BAG ARENA)
+   ========================================================= */
+.view-ff-blindbag {
+  margin-bottom: 48px;
+  animation: fadeIn 0.4s ease;
+}
+
+.blindbag-hero-banner {
+  background: linear-gradient(135deg, rgba(255, 60, 0, 0.18) 0%, rgba(255, 0, 128, 0.12) 50%, rgba(11, 15, 25, 0.8) 100%), var(--bg-card);
+  border: 1px solid rgba(255, 102, 0, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(255, 60, 0, 0.15);
+}
+
+.blindbag-hero-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255, 102, 0, 0.22) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.blindbag-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #ff007f, #ff6600);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
+}
+
+.blindbag-heading {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+}
+
+.blindbag-heading span {
+  color: #ff9900;
+  text-shadow: 0 0 14px rgba(255, 153, 0, 0.6);
+}
+
+.blindbag-subheading {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 780px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Bố cục 2 Cột: Left Options, Right 3D Stage */
+.blindbag-stage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .blindbag-stage-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel Tùy chọn mở túi mù */
+.blindbag-options-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.blindbag-panel-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+}
+
+/* Danh sách Tier */
+.blindbag-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.blindbag-tier-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.blindbag-tier-card:hover {
+  border-color: rgba(255, 153, 0, 0.6);
+  transform: translateX(3px);
+  background: rgba(255, 153, 0, 0.05);
+}
+
+.blindbag-tier-card.active {
+  border-color: #ff9900;
+  background: rgba(255, 153, 0, 0.1);
+  box-shadow: 0 0 14px rgba(255, 153, 0, 0.2);
+}
+
+.tier-radio-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.blindbag-tier-card.active .tier-radio-icon {
+  border-color: #ff9900;
+  background: #ff9900;
+  box-shadow: 0 0 8px #ff9900;
+}
+
+.blindbag-tier-card.active .tier-radio-icon::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.tier-info {
+  flex: 1;
+}
+
+.tier-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.tier-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
+.tier-badge-price {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 102, 0, 0.15);
+  color: #ff9900;
+  border: 1px solid rgba(255, 102, 0, 0.35);
+}
+
+.tier-desc {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.tier-tag-recommend {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #ff007f, #ff6600);
+  color: #fff;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(255, 0, 127, 0.4);
+}
+
+/* Số lượng mở túi */
+.blindbag-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.qty-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.qty-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-qty-choice {
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-qty-choice:hover {
+  color: var(--text-main);
+  border-color: #ff9900;
+}
+
+.btn-qty-choice.active {
+  background: linear-gradient(135deg, #ff6600, #ff9900);
+  color: #fff;
+  border-color: #ff9900;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+}
+
+/* Khung Checkout & Nút Mở */
+.blindbag-checkout-box {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.checkout-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.checkout-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.checkout-price {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ff2a44;
+  text-shadow: 0 0 10px rgba(255, 42, 68, 0.3);
+}
+
+.btn-action-open-bag {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff0055 0%, #ff5500 50%, #ff9900 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(255, 85, 0, 0.5), 0 0 20px rgba(255, 0, 85, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-action-open-bag:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(255, 85, 0, 0.7), 0 0 30px rgba(255, 0, 85, 0.5);
+}
+
+.btn-action-open-bag:active {
+  transform: translateY(-1px);
+}
+
+.checkout-note {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.73rem;
+  color: var(--text-muted);
+}
+
+/* Sân Khấu Túi Mù 3D */
+.blindbag-showcase-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px;
+  box-shadow: var(--shadow-card);
+  min-height: 460px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stage-pouch-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+}
+
+.pouch-glow-circle {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 102, 0, 0.35) 0%, rgba(255, 0, 128, 0.15) 50%, transparent 70%);
+  filter: blur(20px);
+  animation: pouchGlowPulse 3s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+.pouch-card-item {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 102, 0, 0.4);
+  border: 2px solid rgba(255, 153, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.pouch-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Rung lắc khi đang xé túi */
+.pouch-shaking {
+  animation: pouchShake 0.1s infinite alternate !important;
+  border-color: #ff0055 !important;
+  box-shadow: 0 0 40px rgba(255, 0, 85, 0.8), 0 0 60px rgba(255, 153, 0, 0.6) !important;
+}
+
+.pouch-status-label {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  background: rgba(255, 184, 0, 0.12);
+  border: 1px solid rgba(255, 184, 0, 0.3);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  animation: badgeBlink 2s infinite;
+}
+
+/* Live Ticker trúng thưởng */
+.blindbag-live-feed {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-top: 18px;
+}
+
+.live-feed-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.live-feed-ticker {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 75px;
+  overflow: hidden;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  animation: fadeIn 0.3s ease;
+}
+
+.ticker-item strong {
+  color: var(--text-main);
+}
+
+.ticker-item .ticker-badge {
+  color: #ff9900;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+/* Keyframes mở túi */
+@keyframes pouchShake {
+  0% { transform: translate(-4px, 3px) rotate(-3deg); }
+  50% { transform: translate(4px, -3px) rotate(3deg); }
+  100% { transform: translate(-3px, -4px) rotate(-2deg); }
+}
+
+@keyframes pouchGlowPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+/* Modal Kết Quả Túi Mù */
+.modal-blindbag-window {
+  max-width: 500px;
+  background: linear-gradient(180deg, #131a29 0%, #0c101a 100%);
+  border: 1.5px solid rgba(255, 153, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 102, 0, 0.4);
+  text-align: center;
+}
+
+.blindbag-modal-win-header {
+  margin-bottom: 14px;
+}
+
+.win-crown-icon {
+  font-size: 2.2rem;
+  margin-bottom: 2px;
+}
+
+.win-sparkle-tag {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.win-heading {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 4px 0 2px;
+}
+
+.win-subheading {
+  font-size: 0.82rem;
+  color: var(--accent-cyan);
+  font-weight: 600;
+  margin: 0;
+}
+
+.blindbag-win-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 153, 0, 0.3);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.win-card-thumb {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.win-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.win-tag-prime {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 102, 0, 0.9);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.win-tag-id {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.win-acc-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px 0;
+}
+
+.win-cred-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.cred-header-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.cred-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cred-data-row:last-child {
+  margin-bottom: 0;
+}
+
+.cred-data-row .cred-title {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.cred-data-row .cred-string {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.win-guarantee-note {
+  font-size: 0.72rem;
+  color: #00c853;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.blindbag-win-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-bag-again {
+  flex: 1;
+  padding: 11px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #fff;
+  background: linear-gradient(135deg, #ff0055, #ff6600);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
+}
+
+.btn-bag-finish {
+  flex: 1;
+  padding: 11px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
 }
 
 /* =========================================================
