@@ -666,6 +666,339 @@
 }
 
 /* =========================================================
+   DANH MỤC KHO ACC GAME (GAME CATEGORY CARDS - THEO ẢNH 2)
+   Khung vuông bo góc, hiển thị ảnh game & số tài khoản
+   ========================================================= */
+.section-game-categories {
+  margin-bottom: 40px;
+  animation: fadeIn 0.4s ease;
+}
+
+.categories-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.categories-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.categories-header-icon {
+  font-size: 1.8rem;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 132, 255, 0.12);
+  border: 1px solid rgba(0, 132, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 132, 255, 0.2);
+}
+
+.categories-heading {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.categories-subheading {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 4px 0 0 0;
+}
+
+/* Grid các khung hình vuông tỉ lệ đẹp chuẩn Ảnh 2 */
+.game-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .game-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 580px) {
+  .game-categories-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Thẻ khung danh mục game (Card) */
+.game-category-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 132, 255, 0.18);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.game-category-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 240, 255, 0.6);
+  box-shadow: 0 14px 35px rgba(0, 132, 255, 0.25), 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.game-category-card:active {
+  transform: translateY(-2px);
+}
+
+/* Phần Thumbnail hình vuông chuẩn theo yêu cầu Ảnh 2 */
+.category-card-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #0b0f19;
+}
+
+.category-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.game-category-card:hover .category-card-img {
+  transform: scale(1.06);
+}
+
+/* Badges trên ảnh */
+.category-card-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cat-game-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-ff {
+  background: rgba(255, 102, 0, 0.9);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 102, 0, 0.4);
+}
+
+.tag-lq {
+  background: rgba(0, 132, 255, 0.9);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 132, 255, 0.4);
+}
+
+.tag-fc {
+  background: rgba(16, 185, 129, 0.9);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+.cat-status-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--accent-gold);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+/* Mask hover hiện nút xem kho */
+.category-card-hover-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(11, 15, 25, 0.88) 0%, rgba(11, 15, 25, 0.25) 55%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.game-category-card:hover .category-card-hover-mask {
+  opacity: 1;
+}
+
+.btn-category-action {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 15px rgba(0, 132, 255, 0.5);
+  transform: translateY(10px);
+  transition: transform 0.3s ease;
+}
+
+.game-category-card:hover .btn-category-action {
+  transform: translateY(0);
+}
+
+/* Phần thông tin chữ bên dưới card chuẩn Ảnh 2 */
+.category-card-info {
+  padding: 14px 18px 16px;
+  background: var(--bg-card);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 6px 0;
+  transition: color 0.25s ease;
+}
+
+.game-category-card:hover .category-card-title {
+  color: var(--accent-cyan);
+}
+
+.category-card-count {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.category-card-count .count-num {
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+/* Thanh điều hướng quay lại của kho nick */
+.warehouse-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 12px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-warehouse-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-warehouse-back:hover {
+  background: var(--primary-blue);
+  color: #fff;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 12px rgba(0, 132, 255, 0.4);
+  transform: translateX(-3px);
+}
+
+.warehouse-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.warehouse-breadcrumbs .bc-link {
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.warehouse-breadcrumbs .bc-link:hover {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+}
+
+.warehouse-breadcrumbs .bc-sep {
+  opacity: 0.5;
+}
+
+.warehouse-breadcrumbs .bc-current {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* Tương thích Light Mode cho Category Cards */
+[data-theme="light"] .game-category-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .game-category-card:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 10px 25px rgba(0, 132, 255, 0.18);
+}
+
+[data-theme="light"] .category-card-thumb-wrap {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .category-card-info {
+  background: #ffffff;
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .category-card-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .category-card-count {
+  color: #64748b;
+}
+
+/* =========================================================
    3 KHO NICK CHUYÊN BIỆT (FREE FIRE, LIÊN QUÂN, FC MOBILE)
    ========================================================= */
 .section-warehouse {

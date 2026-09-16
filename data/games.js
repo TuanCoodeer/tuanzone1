@@ -11,7 +11,7 @@ export const WAREHOUSES = {
     name: "Kho Nick Free Fire",
     icon: "🔥",
     color: "#ff6600",
-    banner: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80",
+    banner: "assets/images/cat-freefire.jpg",
     description: "Kho tài khoản Free Fire chính chủ, hỗ trợ phân loại theo Prime (1-8) và mức giá.",
     primes: ["Prime 1", "Prime 2", "Prime 3", "Prime 4", "Prime 5", "Prime 6", "Prime 7", "Prime 8"],
     priceRanges: [
@@ -32,7 +32,7 @@ export const WAREHOUSES = {
     name: "Kho Nick Liên Quân",
     icon: "⚔️",
     color: "#0084ff",
-    banner: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80",
+    banner: "assets/images/cat-lienquan.jpg",
     description: "Kho tài khoản Liên Quân Mobile trắng thông tin, phân loại theo mức giá và sắp xếp linh hoạt.",
     priceRanges: [
       { id: "all", label: "Tất cả mức giá" },
@@ -52,7 +52,7 @@ export const WAREHOUSES = {
     name: "Kho Nick FC Mobile",
     icon: "⚽",
     color: "#10b981",
-    banner: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&auto=format&fit=crop&q=80",
+    banner: "assets/images/cat-fcmobile.jpg",
     description: "Kho tài khoản FC Mobile chính chủ, phân loại theo chỉ số OVR đội hình, Server và mức giá.",
     ovrLevels: [
       { id: "all", label: "Tất cả OVR" },

@@ -106,10 +106,106 @@
     </section>
 
     <!-- =========================================================
-         KHO 1: KHO NICK FREE FIRE
-         Phân loại Prime (1-8) & Mức giá, Sắp xếp
+         KHU VỰC DANH MỤC KHO GAME (GAME CATEGORY CARDS)
+         Thiết kế khung hình vuông chuẩn đẹp theo Ảnh 2
+         Bấm vào khung để mở danh sách tài khoản tương ứng
          ========================================================= -->
-    <section class="section-warehouse" id="kho-freefire">
+    <section class="section-game-categories" id="game-categories-section">
+      <div class="categories-header-bar">
+        <div class="categories-title-group">
+          <span class="categories-header-icon">🎮</span>
+          <div>
+            <h2 class="categories-heading">DANH MỤC KHO NICK GAME</h2>
+            <p class="categories-subheading">Hệ thống phân phối tài khoản tự động 24/7 • Bấm vào khung để xem chi tiết kho nick</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lưới 3 Khung Danh Mục Game Hình Vuông -->
+      <div class="game-categories-grid">
+        
+        <!-- Khung 1: Nick Free Fire -->
+        <div class="game-category-card" data-game-category="freefire" role="button" tabindex="0" title="Bấm để xem kho tài khoản Free Fire">
+          <div class="category-card-thumb-wrap">
+            <img src="assets/images/cat-freefire.jpg" alt="Nick Free Fire" class="category-card-img" loading="lazy">
+            <div class="category-card-badges">
+              <span class="cat-game-tag tag-ff">🔥 Free Fire</span>
+              <span class="cat-status-tag">Tự Động 24/7</span>
+            </div>
+            <div class="category-card-hover-mask">
+              <span class="btn-category-action">Xem Kho Nick ➔</span>
+            </div>
+          </div>
+          <div class="category-card-info">
+            <h3 class="category-card-title">Nick Free Fire</h3>
+            <div class="category-card-count">
+              Số tài khoản: <span class="count-num" id="cat-count-freefire">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Khung 2: Nick Liên Quân -->
+        <div class="game-category-card" data-game-category="lienquan" role="button" tabindex="0" title="Bấm để xem kho tài khoản Liên Quân">
+          <div class="category-card-thumb-wrap">
+            <img src="assets/images/cat-lienquan.jpg" alt="Nick Liên Quân" class="category-card-img" loading="lazy">
+            <div class="category-card-badges">
+              <span class="cat-game-tag tag-lq">⚔️ Liên Quân</span>
+              <span class="cat-status-tag">Tự Động 24/7</span>
+            </div>
+            <div class="category-card-hover-mask">
+              <span class="btn-category-action">Xem Kho Nick ➔</span>
+            </div>
+          </div>
+          <div class="category-card-info">
+            <h3 class="category-card-title">Nick Liên Quân Mobile</h3>
+            <div class="category-card-count">
+              Số tài khoản: <span class="count-num" id="cat-count-lienquan">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Khung 3: Nick FC Mobile -->
+        <div class="game-category-card" data-game-category="fcmobile" role="button" tabindex="0" title="Bấm để xem kho tài khoản FC Mobile">
+          <div class="category-card-thumb-wrap">
+            <img src="assets/images/cat-fcmobile.jpg" alt="Nick FC Mobile" class="category-card-img" loading="lazy">
+            <div class="category-card-badges">
+              <span class="cat-game-tag tag-fc">⚽ FC Mobile</span>
+              <span class="cat-status-tag">Tự Động 24/7</span>
+            </div>
+            <div class="category-card-hover-mask">
+              <span class="btn-category-action">Xem Kho Nick ➔</span>
+            </div>
+          </div>
+          <div class="category-card-info">
+            <h3 class="category-card-title">Nick FC Mobile</h3>
+            <div class="category-card-count">
+              Số tài khoản: <span class="count-num" id="cat-count-fcmobile">0</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         KHO 1: KHO NICK FREE FIRE
+         Ẩn mặc định, chỉ hiển thị khi click vào khung Nick Free Fire
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-freefire" style="display: none;">
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="warehouse-nav-bar">
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
+          <span>←</span> Quay lại danh mục game
+        </button>
+        <div class="warehouse-breadcrumbs">
+          <span class="bc-link" data-back-to-categories>Trang chủ</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-link" data-back-to-categories>Danh mục game</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Kho Nick Free Fire</span>
+        </div>
+      </div>
+
       <div class="warehouse-header-bar">
         <div class="warehouse-title-group">
           <div class="warehouse-icon icon-ff">🔥</div>
@@ -172,9 +268,23 @@
 
     <!-- =========================================================
          KHO 2: KHO NICK LIÊN QUÂN
-         Phân loại Mức giá & Sắp xếp
+         Ẩn mặc định, chỉ hiển thị khi click vào khung Nick Liên Quân
          ========================================================= -->
-    <section class="section-warehouse" id="kho-lienquan">
+    <section class="section-warehouse" id="kho-lienquan" style="display: none;">
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="warehouse-nav-bar">
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
+          <span>←</span> Quay lại danh mục game
+        </button>
+        <div class="warehouse-breadcrumbs">
+          <span class="bc-link" data-back-to-categories>Trang chủ</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-link" data-back-to-categories>Danh mục game</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Kho Nick Liên Quân</span>
+        </div>
+      </div>
+
       <div class="warehouse-header-bar">
         <div class="warehouse-title-group">
           <div class="warehouse-icon icon-lq">⚔️</div>
@@ -221,9 +331,23 @@
 
     <!-- =========================================================
          KHO 3: KHO NICK FC MOBILE
-         Phân loại Chỉ số OVR, Phiên bản Server, Mức giá, Sắp xếp
+         Ẩn mặc định, chỉ hiển thị khi click vào khung Nick FC Mobile
          ========================================================= -->
-    <section class="section-warehouse" id="kho-fcmobile">
+    <section class="section-warehouse" id="kho-fcmobile" style="display: none;">
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="warehouse-nav-bar">
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
+          <span>←</span> Quay lại danh mục game
+        </button>
+        <div class="warehouse-breadcrumbs">
+          <span class="bc-link" data-back-to-categories>Trang chủ</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-link" data-back-to-categories>Danh mục game</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Kho Nick FC Mobile</span>
+        </div>
+      </div>
+
       <div class="warehouse-header-bar">
         <div class="warehouse-title-group">
           <div class="warehouse-icon icon-fc">⚽</div>

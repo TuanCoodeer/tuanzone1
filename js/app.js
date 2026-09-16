@@ -11,6 +11,7 @@ class TuBIzOneApp {
   constructor() {
     this.selectedTelco = 'VIETTEL';
     this.activeDetailAccId = null;
+    this.currentActiveWarehouse = null;
     this.currentGalleryImages = [];
     this.currentGalleryIndex = 0;
     this.adminUploadedImages = [];
@@ -25,6 +26,7 @@ class TuBIzOneApp {
     this.renderHeaderAuth();
     this.renderWarehouses();
     this.attachHeaderEvents();
+    this.attachCategoryCardEvents();
     this.attachDepositModalEvents();
     this.attachAuthModalEvents();
     this.attachWarehouseFilterEvents();
@@ -197,11 +199,124 @@ class TuBIzOneApp {
     });
   }
 
-  // --- 4. RENDER 3 KHO TÀI KHOẢN ---
+  // --- 4. RENDER 3 KHO TÀI KHOẢN & DANH MỤC GAME (THEO ẢNH 2) ---
   renderWarehouses() {
+    this.updateCategoryCounts();
     this.renderFreeFireWarehouse();
     this.renderLienQuanWarehouse();
     this.renderFcMobileWarehouse();
+  }
+
+  updateCategoryCounts() {
+    const ffCount = store.accounts.filter(a => a.game === 'freefire' && a.status === 'AVAILABLE').length;
+    const lqCount = store.accounts.filter(a => a.game === 'lienquan' && a.status === 'AVAILABLE').length;
+    const fcCount = store.accounts.filter(a => (a.game === 'fcmobile' || a.game === 'fc' || a.game === 'roblox') && a.status === 'AVAILABLE').length;
+
+    const elFf = document.getElementById('cat-count-freefire');
+    const elLq = document.getElementById('cat-count-lienquan');
+    const elFc = document.getElementById('cat-count-fcmobile');
+
+    if (elFf) elFf.textContent = ffCount;
+    if (elLq) elLq.textContent = lqCount;
+    if (elFc) elFc.textContent = fcCount;
+  }
+
+  openWarehouse(gameKey, updateHash = true) {
+    if (!gameKey) return;
+    this.currentActiveWarehouse = gameKey;
+
+    if (updateHash) {
+      window.location.hash = 'kho-' + gameKey;
+    }
+
+    const catSection = document.getElementById('game-categories-section');
+    if (catSection) catSection.style.display = 'none';
+
+    ['freefire', 'lienquan', 'fcmobile'].forEach(g => {
+      const el = document.getElementById(`kho-${g}`);
+      if (el) el.style.display = g === gameKey ? 'block' : 'none';
+    });
+
+    const target = document.getElementById(`kho-${gameKey}`);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+  }
+
+  closeWarehouseDetail(updateHash = true) {
+    this.currentActiveWarehouse = null;
+
+    if (updateHash) {
+      if (window.location.hash.startsWith('#kho-')) {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+      }
+    }
+
+    const catSection = document.getElementById('game-categories-section');
+    if (catSection) catSection.style.display = 'block';
+
+    ['freefire', 'lienquan', 'fcmobile'].forEach(g => {
+      const el = document.getElementById(`kho-${g}`);
+      if (el) el.style.display = 'none';
+    });
+
+    if (catSection) {
+      setTimeout(() => {
+        catSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+  }
+
+  attachCategoryCardEvents() {
+    // 1. Click vào khung danh mục game hình vuông
+    document.querySelectorAll('.game-category-card[data-game-category]').forEach(card => {
+      card.addEventListener('click', () => {
+        const game = card.getAttribute('data-game-category');
+        if (game) {
+          this.openWarehouse(game);
+        }
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const game = card.getAttribute('data-game-category');
+          if (game) {
+            this.openWarehouse(game);
+          }
+        }
+      });
+    });
+
+    // 2. Click nút quay lại danh mục game
+    document.querySelectorAll('[data-back-to-categories]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeWarehouseDetail();
+      });
+    });
+
+    // 3. Header nav links: 🔥 Kho Free Fire, ⚔️ Kho Liên Quân, ⚽ Kho FC Mobile
+    document.querySelectorAll('.header-nav a[href^="#kho-"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        const game = href.replace('#kho-', '').trim();
+        if (game) {
+          this.openWarehouse(game);
+        }
+      });
+    });
+
+    // 4. Logo website click -> quay về trang chủ hiển thị danh mục game
+    document.getElementById('header-logo-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (this.activeDetailAccId) {
+        this.closeAccountDetail(false);
+      }
+      this.closeWarehouseDetail(true);
+    });
   }
 
   renderFreeFireWarehouse() {
@@ -498,6 +613,12 @@ class TuBIzOneApp {
         if (accId) {
           this.openAccountDetail(accId, false);
         }
+      } else if (hash === '#kho-freefire') {
+        this.openWarehouse('freefire', false);
+      } else if (hash === '#kho-lienquan') {
+        this.openWarehouse('lienquan', false);
+      } else if (hash === '#kho-fcmobile') {
+        this.openWarehouse('fcmobile', false);
       } else if (hash === '#admin-add-acc') {
         if (store.user?.isAdmin) {
           this.openAddAccView(false);
@@ -511,6 +632,9 @@ class TuBIzOneApp {
         const adminAddView = document.getElementById('view-admin-add-acc');
         if (adminAddView && adminAddView.style.display !== 'none') {
           this.closeAddAccView(false);
+        }
+        if (!this.currentActiveWarehouse) {
+          this.closeWarehouseDetail(false);
         }
       }
     };
@@ -642,7 +766,11 @@ class TuBIzOneApp {
     this.activeDetailAccId = null;
     if (updateHash) {
       if (window.location.hash.startsWith('#acc-')) {
-        history.pushState("", document.title, window.location.pathname + window.location.search);
+        if (this.currentActiveWarehouse) {
+          window.location.hash = 'kho-' + this.currentActiveWarehouse;
+        } else {
+          history.pushState("", document.title, window.location.pathname + window.location.search);
+        }
       }
     }
 
@@ -653,6 +781,12 @@ class TuBIzOneApp {
     if (detailView) detailView.style.display = 'none';
     if (adminAddView) adminAddView.style.display = 'none';
     if (shopView) shopView.style.display = 'block';
+
+    if (this.currentActiveWarehouse) {
+      this.openWarehouse(this.currentActiveWarehouse, false);
+    } else {
+      this.closeWarehouseDetail(false);
+    }
   }
 
   renderAccountDetail(acc) {
