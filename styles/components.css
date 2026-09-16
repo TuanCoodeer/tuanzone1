@@ -511,7 +511,7 @@
 /* Banner Slider Center/Right - Viền LED Neon (Border Beam) & Ken Burns Cinematic */
 .hero-slider-panel {
   position: relative;
-  background: var(--bg-card);
+  background: linear-gradient(135deg, rgba(0, 132, 255, 0.25), rgba(0, 240, 255, 0.15));
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card), 0 0 20px rgba(0, 132, 255, 0.15);
@@ -528,26 +528,32 @@
   transform: translateY(-2px);
 }
 
-/* Tia sáng LED Neon chạy mượt mà men theo 4 góc viền khung (Border Beam) */
+/* Tia sáng LED Neon chạy qua lại liên tục không ngừng (Border Beam Back & Forth) */
 .hero-slider-panel::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 250%;
-  height: 500%;
-  transform: translate(-50%, -50%) rotate(0deg);
-  background: conic-gradient(
-    transparent 0deg,
-    transparent 260deg,
-    rgba(0, 132, 255, 0.2) 290deg,
-    #0084ff 320deg,
-    #00f0ff 345deg,
-    #ffffff 360deg
+  top: -40px;
+  bottom: -40px;
+  width: clamp(200px, 32%, 340px);
+  left: 0;
+  transform: translateX(-50%) translateZ(0);
+  background: radial-gradient(
+    ellipse at center,
+    #ffffff 0%,
+    #00f0ff 25%,
+    rgba(0, 132, 255, 0.85) 50%,
+    rgba(0, 132, 255, 0.25) 72%,
+    transparent 85%
   );
-  animation: borderBeamSpin 4s linear infinite;
+  animation: borderBeamBackAndForth 2.6s ease-in-out infinite alternate;
   z-index: 1;
   pointer-events: none;
+  filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.85));
+  will-change: left;
+}
+
+.hero-slider-panel:hover::before {
+  filter: drop-shadow(0 0 18px rgba(0, 240, 255, 1));
 }
 
 /* Lớp ảnh nền phóng to cực chậm (Ken Burns Effect) */

@@ -164,12 +164,14 @@
 /* =========================================================
    Hiệu Ứng Viền LED Khung Banner Chính (Border Beam & Ken Burns)
    ========================================================= */
-@keyframes borderBeamSpin {
+@keyframes borderBeamBackAndForth {
   0% {
-    transform: translate(-50%, -50%) rotate(0deg);
+    left: 0%;
+    transform: translateX(-50%) translateZ(0);
   }
   100% {
-    transform: translate(-50%, -50%) rotate(360deg);
+    left: 100%;
+    transform: translateX(-50%) translateZ(0);
   }
 }
 
