@@ -556,7 +556,7 @@
   filter: drop-shadow(0 0 18px rgba(0, 240, 255, 1));
 }
 
-/* Lớp ảnh nền phóng to cực chậm (Ken Burns Effect) */
+/* Lớp ảnh nền cố định sắc nét */
 .hero-slider-bg {
   position: absolute;
   inset: 2px;
@@ -569,8 +569,6 @@
   ), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80');
   background-size: cover;
   background-position: center;
-  animation: bannerKenBurns 14s infinite alternate ease-in-out;
-  transform-origin: center center;
   z-index: 2;
   overflow: hidden;
 }

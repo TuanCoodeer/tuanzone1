@@ -174,12 +174,3 @@
     transform: translateX(-50%) translateZ(0);
   }
 }
-
-@keyframes bannerKenBurns {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.07);
-  }
-}
