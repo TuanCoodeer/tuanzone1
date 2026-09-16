@@ -33,7 +33,6 @@ class TuBIzOneApp {
     this.attachAdminEvents();
     this.attachUserHistoryModalEvents();
     this.attachAccountDetailEvents();
-    this.initBlindBagLogic();
     this.initRouteHash();
 
     store.subscribe(() => {
@@ -200,33 +199,35 @@ class TuBIzOneApp {
     });
   }
 
-  // --- 4. RENDER 3 KHO TÀI KHOẢN & DANH MỤC GAME (THEO ẢNH 2) ---
+  // --- 4. RENDER CÁC KHO TÀI KHOẢN & DANH MỤC GAME (THEO ẢNH 2) ---
   renderWarehouses() {
     this.updateCategoryCounts();
     this.renderFreeFireWarehouse();
     this.renderLienQuanWarehouse();
     this.renderFcMobileWarehouse();
+    this.renderBlindBagWarehouse();
   }
 
   updateCategoryCounts() {
     const ffCount = store.accounts.filter(a => a.game === 'freefire' && a.status === 'AVAILABLE').length;
     const lqCount = store.accounts.filter(a => a.game === 'lienquan' && a.status === 'AVAILABLE').length;
     const fcCount = store.accounts.filter(a => (a.game === 'fcmobile' || a.game === 'fc' || a.game === 'roblox') && a.status === 'AVAILABLE').length;
+    const bbCount = store.accounts.filter(a => (a.game === 'blindbag' || a.game === 'ff-blindbag') && a.status === 'AVAILABLE').length;
 
     const elFf = document.getElementById('cat-count-freefire');
     const elLq = document.getElementById('cat-count-lienquan');
     const elFc = document.getElementById('cat-count-fcmobile');
+    const elBb = document.getElementById('cat-count-blindbag');
 
     if (elFf) elFf.textContent = ffCount;
     if (elLq) elLq.textContent = lqCount;
     if (elFc) elFc.textContent = fcCount;
+    if (elBb) elBb.textContent = bbCount;
   }
 
   openWarehouse(gameKey, updateHash = true) {
     if (!gameKey) return;
-    if (gameKey === 'ff-blindbag' || gameKey === 'blindbag') {
-      return this.openBlindBagView(updateHash);
-    }
+    if (gameKey === 'ff-blindbag') gameKey = 'blindbag';
     this.currentActiveWarehouse = gameKey;
 
     if (updateHash) {
@@ -236,10 +237,7 @@ class TuBIzOneApp {
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'none';
 
-    const blindBagView = document.getElementById('view-ff-blindbag');
-    if (blindBagView) blindBagView.style.display = 'none';
-
-    ['freefire', 'lienquan', 'fcmobile'].forEach(g => {
+    ['freefire', 'lienquan', 'fcmobile', 'blindbag'].forEach(g => {
       const el = document.getElementById(`kho-${g}`);
       if (el) el.style.display = g === gameKey ? 'block' : 'none';
     });
@@ -250,36 +248,6 @@ class TuBIzOneApp {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 60);
     }
-  }
-
-  openBlindBagView(updateHash = true) {
-    this.currentActiveWarehouse = 'blindbag';
-
-    if (updateHash) {
-      window.location.hash = 'tui-mu-freefire';
-    }
-
-    const catSection = document.getElementById('game-categories-section');
-    if (catSection) catSection.style.display = 'none';
-
-    ['freefire', 'lienquan', 'fcmobile'].forEach(g => {
-      const el = document.getElementById(`kho-${g}`);
-      if (el) el.style.display = 'none';
-    });
-
-    const blindBagView = document.getElementById('view-ff-blindbag');
-    if (blindBagView) {
-      blindBagView.style.display = 'block';
-      setTimeout(() => {
-        blindBagView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 60);
-    }
-
-    this.renderBlindBagLiveTicker();
-  }
-
-  closeBlindBagView(updateHash = true) {
-    this.closeWarehouseDetail(updateHash);
   }
 
   closeWarehouseDetail(updateHash = true) {
@@ -294,10 +262,7 @@ class TuBIzOneApp {
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'block';
 
-    const blindBagView = document.getElementById('view-ff-blindbag');
-    if (blindBagView) blindBagView.style.display = 'none';
-
-    ['freefire', 'lienquan', 'fcmobile'].forEach(g => {
+    ['freefire', 'lienquan', 'fcmobile', 'blindbag'].forEach(g => {
       const el = document.getElementById(`kho-${g}`);
       if (el) el.style.display = 'none';
     });
@@ -314,9 +279,7 @@ class TuBIzOneApp {
     document.querySelectorAll('.game-category-card[data-game-category]').forEach(card => {
       card.addEventListener('click', () => {
         const game = card.getAttribute('data-game-category');
-        if (game === 'ff-blindbag') {
-          this.openBlindBagView();
-        } else if (game) {
+        if (game) {
           this.openWarehouse(game);
         }
       });
@@ -324,9 +287,7 @@ class TuBIzOneApp {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           const game = card.getAttribute('data-game-category');
-          if (game === 'ff-blindbag') {
-            this.openBlindBagView();
-          } else if (game) {
+          if (game) {
             this.openWarehouse(game);
           }
         }
@@ -345,9 +306,9 @@ class TuBIzOneApp {
     document.querySelectorAll('.header-nav a').forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
-        if (href === '#tui-mu-freefire') {
+        if (href === '#kho-blindbag' || href === '#tui-mu-freefire') {
           e.preventDefault();
-          this.openBlindBagView();
+          this.openWarehouse('blindbag');
         } else if (href && href.startsWith('#kho-')) {
           e.preventDefault();
           const game = href.replace('#kho-', '').trim();
@@ -371,11 +332,11 @@ class TuBIzOneApp {
   initRouteHash() {
     const handleHash = () => {
       const hash = window.location.hash;
-      if (hash === '#tui-mu-freefire') {
-        this.openBlindBagView(false);
+      if (hash === '#kho-blindbag' || hash === '#tui-mu-freefire') {
+        this.openWarehouse('blindbag', false);
       } else if (hash.startsWith('#kho-')) {
         const game = hash.replace('#kho-', '').trim();
-        if (['freefire', 'lienquan', 'fcmobile'].includes(game)) {
+        if (['freefire', 'lienquan', 'fcmobile', 'blindbag'].includes(game)) {
           this.openWarehouse(game, false);
         }
       } else if (!hash || hash === '#') {
@@ -392,243 +353,34 @@ class TuBIzOneApp {
     window.addEventListener('hashchange', handleHash);
   }
 
-  // --- 4B. TÍNH NĂNG MỞ TÚI MÙ FREE FIRE ---
-  initBlindBagLogic() {
-    this.selectedBlindBagTier = 'basic';
-    this.selectedBlindBagPrice = 20000;
-    this.selectedBlindBagQty = 1;
-    this.isOpeningBlindBag = false;
+  // --- 4B. KHO TÚI MÙ FREE FIRE (CHUẨN NHƯ 3 KHO NICK) ---
+  renderBlindBagWarehouse() {
+    const container = document.getElementById('blindbag-accounts-container');
+    const badge = document.querySelector('#kho-blindbag .warehouse-total-badge');
+    if (!container) return;
 
-    // 1. Chọn Cấp Độ Túi Mù
-    const tierCards = document.querySelectorAll('.blindbag-tier-card');
-    tierCards.forEach(card => {
-      card.addEventListener('click', () => {
-        tierCards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        this.selectedBlindBagTier = card.getAttribute('data-tier') || 'basic';
-        this.selectedBlindBagPrice = parseInt(card.getAttribute('data-price') || '20000', 10);
-        this.updateBlindBagTotal();
-      });
-    });
+    let list = store.accounts.filter(a => (a.game === 'blindbag' || a.game === 'ff-blindbag') && a.status === 'AVAILABLE');
 
-    // 2. Chọn Số Lượng Mở Túi
-    const qtyButtons = document.querySelectorAll('.btn-qty-choice');
-    qtyButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        qtyButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.selectedBlindBagQty = parseInt(btn.getAttribute('data-qty') || '1', 10);
-        this.updateBlindBagTotal();
-      });
-    });
-
-    // 3. Nút Kích Hoạt Xé Túi Mù
-    const triggerBtn = document.getElementById('btn-trigger-open-bag');
-    triggerBtn?.addEventListener('click', () => {
-      this.executeOpenBlindBag();
-    });
-
-    // 4. Các nút trong Modal Kết Quả
-    document.getElementById('btn-close-blindbag-modal')?.addEventListener('click', () => {
-      const modal = document.getElementById('modal-blindbag-result');
-      if (modal) modal.style.display = 'none';
-    });
-    document.getElementById('btn-blindbag-finish')?.addEventListener('click', () => {
-      const modal = document.getElementById('modal-blindbag-result');
-      if (modal) modal.style.display = 'none';
-      this.closeWarehouseDetail(true);
-    });
-    document.getElementById('btn-blindbag-again')?.addEventListener('click', () => {
-      const modal = document.getElementById('modal-blindbag-result');
-      if (modal) modal.style.display = 'none';
-      this.executeOpenBlindBag();
-    });
-
-    // Copy thông tin tài khoản trúng
-    document.getElementById('btn-copy-bag-user')?.addEventListener('click', () => {
-      const u = document.getElementById('blindbag-res-username')?.textContent || '';
-      navigator.clipboard.writeText(u);
-      showToast('Đã sao chép tài khoản!', 'success');
-    });
-    document.getElementById('btn-copy-bag-pass')?.addEventListener('click', () => {
-      const p = document.getElementById('blindbag-res-password')?.textContent || '';
-      navigator.clipboard.writeText(p);
-      showToast('Đã sao chép mật khẩu!', 'success');
-    });
-  }
-
-  updateBlindBagTotal() {
-    const total = this.selectedBlindBagPrice * this.selectedBlindBagQty;
-    const totalEl = document.getElementById('blindbag-total-cost');
-    if (totalEl) {
-      totalEl.textContent = total.toLocaleString('vi-VN') + ' đ';
-    }
-  }
-
-  executeOpenBlindBag() {
-    if (this.isOpeningBlindBag) return;
-
-    if (!store.user.isLoggedIn) {
-      showToast("Vui lòng đăng nhập để mở túi mù Free Fire!", "warning");
-      document.getElementById('btn-header-login')?.click();
-      return;
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
     }
 
-    if (store.user.isAdmin) {
-      showAlert({
-        title: "Tài Khoản Admin",
-        message: "Bạn đang đăng nhập bằng tài khoản Quản trị viên (Admin). Vui lòng đăng xuất và dùng tài khoản khách hàng để trải nghiệm mở túi mù thực tế!",
-        type: "info"
-      });
-      return;
+    // Lọc Mức giá
+    list = this.filterByPrice(list, store.filters.blindbag?.priceRange);
+
+    // Tìm kiếm (Tìm kiếm chung Header & Tìm kiếm riêng Kho Túi Mù)
+    if (store.searchQuery) {
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.blindbag?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.blindbag.search));
     }
 
-    const totalCost = this.selectedBlindBagPrice * this.selectedBlindBagQty;
-    if (store.user.balance < totalCost) {
-      const diff = totalCost - store.user.balance;
-      showConfirm({
-        title: "Số Dư Không Đủ",
-        message: `Số dư hiện tại: ${store.user.balance.toLocaleString('vi-VN')} đ.\nBạn cần thêm ${diff.toLocaleString('vi-VN')} đ để xé ${this.selectedBlindBagQty} túi mù. Nạp tiền ngay?`,
-        confirmText: "Nạp Tiền Ngay",
-        cancelText: "Để Sau",
-        onConfirm: () => {
-          document.getElementById('btn-open-deposit-modal')?.click();
-        }
-      });
-      return;
-    }
+    // Sắp xếp
+    list = this.sortList(list, store.filters.blindbag?.sortBy);
 
-    // Bắt đầu quá trình xé túi mù với hiệu ứng rung lắc
-    this.isOpeningBlindBag = true;
-    const pouchElem = document.getElementById('pouch-card-element');
-    const statusLabel = document.getElementById('pouch-status-label');
-    const triggerBtn = document.getElementById('btn-trigger-open-bag');
-
-    if (pouchElem) pouchElem.classList.add('pouch-shaking');
-    if (statusLabel) statusLabel.textContent = "🔥 ĐANG XÉ TÚI MÙ...";
-    if (triggerBtn) {
-      triggerBtn.disabled = true;
-      triggerBtn.style.opacity = '0.7';
-    }
-
-    // Trừ số dư người chơi
-    store.user.balance -= totalCost;
-
-    setTimeout(() => {
-      if (pouchElem) pouchElem.classList.remove('pouch-shaking');
-      if (statusLabel) statusLabel.textContent = "⚡ SẴN SÀNG XÉ TÚI MÙ";
-      if (triggerBtn) {
-        triggerBtn.disabled = false;
-        triggerBtn.style.opacity = '1';
-      }
-      this.isOpeningBlindBag = false;
-
-      // Tạo phần thưởng tài khoản Free Fire trúng thưởng theo tier
-      const reward = this.generateBlindBagReward(this.selectedBlindBagTier);
-
-      // Lưu đơn hàng vào hệ thống
-      const order = {
-        orderId: 'TZ-BAG-' + Date.now().toString().slice(-6),
-        buyer: store.user.username,
-        buyerName: store.user.displayName,
-        accId: reward.id,
-        accTitle: reward.title,
-        game: 'freefire',
-        price: totalCost,
-        credentials: reward.credentials,
-        date: new Date().toLocaleString('vi-VN'),
-        status: 'SUCCESS'
-      };
-      store.orders.unshift(order);
-      store.save();
-      store.notify();
-
-      // Hiển thị modal chúc mừng chiến thắng
-      this.showBlindBagResultModal(reward, this.selectedBlindBagTier);
-    }, 1300);
-  }
-
-  generateBlindBagReward(tier) {
-    const randomId = 'FF-' + Math.floor(100000 + Math.random() * 900000);
-    const mockUser = 'ff_pro_' + Math.floor(10000 + Math.random() * 90000);
-    const mockPass = 'TuBizOne@' + Math.floor(1000 + Math.random() * 9000);
-
-    if (tier === 'mythic') {
-      return {
-        id: randomId,
-        title: "Tài khoản Free Fire Prime 8 - Full AK Rồng Xanh & MP40 Max Lv7",
-        prime: "Prime 8",
-        rank: "Thách Đấu",
-        image: "assets/images/cat-freefire.jpg",
-        credentials: { username: mockUser, password: mockPass }
-      };
-    } else if (tier === 'vip') {
-      return {
-        id: randomId,
-        title: "Tài khoản Free Fire Prime 6 - AK Rồng Xanh Lv5 & Mãng Xà",
-        prime: "Prime 6",
-        rank: "Huyền Thoại",
-        image: "assets/images/cat-freefire.jpg",
-        credentials: { username: mockUser, password: mockPass }
-      };
-    } else {
-      return {
-        id: randomId,
-        title: "Tài khoản Free Fire VIP - Rank Kim Cương + Skin Súng VIP",
-        prime: "Prime 3",
-        rank: "Kim Cương",
-        image: "assets/images/cat-freefire.jpg",
-        credentials: { username: mockUser, password: mockPass }
-      };
-    }
-  }
-
-  showBlindBagResultModal(reward, tier) {
-    const modal = document.getElementById('modal-blindbag-result');
-    if (!modal) return;
-
-    const tierNames = {
-      basic: "Túi Mù Sơ Cấp (Đồng)",
-      vip: "Túi Mù VIP (Vàng Cyber)",
-      mythic: "Túi Mù Thần Thoại (Kim Cương)"
-    };
-
-    const tierTextEl = document.getElementById('blindbag-res-tier-text');
-    const imgEl = document.getElementById('blindbag-res-img');
-    const primeEl = document.getElementById('blindbag-res-prime');
-    const idEl = document.getElementById('blindbag-res-id');
-    const titleEl = document.getElementById('blindbag-res-title');
-    const userEl = document.getElementById('blindbag-res-username');
-    const passEl = document.getElementById('blindbag-res-password');
-
-    if (tierTextEl) tierTextEl.textContent = tierNames[tier] || "Túi Mù Free Fire";
-    if (imgEl) imgEl.src = reward.image;
-    if (primeEl) primeEl.textContent = reward.prime;
-    if (idEl) idEl.textContent = '#' + reward.id;
-    if (titleEl) titleEl.textContent = reward.title;
-    if (userEl) userEl.textContent = reward.credentials.username;
-    if (passEl) passEl.textContent = reward.credentials.password;
-
-    modal.style.display = 'flex';
-  }
-
-  renderBlindBagLiveTicker() {
-    const ticker = document.getElementById('blindbag-live-ticker');
-    if (!ticker) return;
-
-    const samples = [
-      { user: "hoangnam99***", prize: "Prime 7 - AK Rồng Xanh Lv7", time: "1 phút trước" },
-      { user: "minhtuan_ff***", prize: "Prime 6 - MP40 Mãng Xà", time: "3 phút trước" },
-      { user: "anhquan_vip***", prize: "Prime 8 - Thần Thoại VIP", time: "5 phút trước" },
-      { user: "duykhanh_2k***", prize: "Rank Huyền Thoại - Skin VIP", time: "7 phút trước" }
-    ];
-
-    ticker.innerHTML = samples.map(s => `
-      <div class="ticker-item">
-        <span><strong>${s.user}</strong> vừa xé trúng <span class="ticker-badge">${s.prize}</span></span>
-        <span style="opacity: 0.6; font-size: 0.7rem;">${s.time}</span>
-      </div>
-    `).join('');
+    container.innerHTML = this.buildWarehouseHTML('blindbag', list, "Kho Túi Mù Free Fire");
+    this.attachCardBuyTriggers(container);
   }
 
   renderFreeFireWarehouse() {
@@ -824,7 +576,7 @@ class TuBIzOneApp {
             <div class="acc-card-info">
               <h3 class="acc-card-name">${acc.title}</h3>
               <div class="acc-meta-details">
-                <div class="acc-meta-item">Game: <strong>${acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile')}</strong></div>
+                <div class="acc-meta-item">Game: <strong>${(acc.game === 'blindbag' || acc.game === 'ff-blindbag') ? 'Túi Mù FF' : (acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile'))}</strong></div>
                 <div class="acc-meta-item">Loại: <strong>${acc.accountType || 'VIP'}</strong></div>
               </div>
               <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
@@ -1106,6 +858,8 @@ class TuBIzOneApp {
       freefire: "Free Fire",
       lienquan: "Liên Quân Mobile",
       fcmobile: "FC Mobile",
+      blindbag: "Túi Mù Free Fire",
+      "ff-blindbag": "Túi Mù Free Fire",
       roblox: "Roblox"
     };
     const gameName = gameNames[acc.game] || 'Game Online';
@@ -1403,6 +1157,42 @@ class TuBIzOneApp {
       store.filters.fcmobile.sortBy = e.target.value;
       this.renderFcMobileWarehouse();
     });
+
+    // 4. Kho Túi Mù Free Fire: Search
+    const bbSearchInput = document.getElementById('blindbag-search-input');
+    const bbSearchClear = document.getElementById('blindbag-search-clear');
+    bbSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.blindbag) store.filters.blindbag = {};
+      store.filters.blindbag.search = val;
+      if (bbSearchClear) bbSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderBlindBagWarehouse();
+    });
+    bbSearchClear?.addEventListener('click', () => {
+      if (bbSearchInput) bbSearchInput.value = '';
+      if (!store.filters.blindbag) store.filters.blindbag = {};
+      store.filters.blindbag.search = '';
+      bbSearchClear.style.display = 'none';
+      this.renderBlindBagWarehouse();
+    });
+
+    // Kho Túi Mù: Price Chips
+    document.querySelectorAll('#blindbag-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#blindbag-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.blindbag) store.filters.blindbag = {};
+        store.filters.blindbag.priceRange = chip.dataset.priceRange;
+        this.renderBlindBagWarehouse();
+      });
+    });
+
+    // Kho Túi Mù: Sort
+    document.getElementById('blindbag-sort-select')?.addEventListener('change', (e) => {
+      if (!store.filters.blindbag) store.filters.blindbag = {};
+      store.filters.blindbag.sortBy = e.target.value;
+      this.renderBlindBagWarehouse();
+    });
   }
 
   // --- 7. KHU VỰC QUẢN TRỊ VIÊN: THÊM ACC (DEDICATED VIEW) & BÁO CÁO DOANH THU ---
@@ -1621,6 +1411,7 @@ class TuBIzOneApp {
       freefire: "Free Fire",
       lienquan: "Liên Quân Mobile",
       fcmobile: "FC Mobile",
+      blindbag: "Túi Mù Free Fire",
       roblox: "Roblox"
     };
     const gameName = gameNames[game] || 'Game Online';

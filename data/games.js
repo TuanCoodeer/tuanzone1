@@ -78,6 +78,22 @@ export const WAREHOUSES = {
       { id: "15m-20m", label: "15 Triệu - 20 Triệu", min: 15000000, max: 20000000 },
       { id: "over-20m", label: "Trên 20 Triệu", min: 20000000 }
     ]
+  },
+  blindbag: {
+    id: "blindbag",
+    name: "Kho Túi Mù Free Fire",
+    icon: "🎁",
+    color: "#ff6600",
+    banner: "assets/images/cat-ff-blindbag.jpg",
+    description: "Kho túi mù Free Fire 100% trúng tài khoản có sẵn thông tin đăng nhập, phân loại theo mức giá và sắp xếp linh hoạt.",
+    priceRanges: [
+      { id: "all", label: "Tất cả mức giá" },
+      { id: "under-50k", label: "Dưới 50K", max: 50000 },
+      { id: "50k-200k", label: "50K - 200K", min: 50000, max: 200000 },
+      { id: "200k-500k", label: "200K - 500K", min: 200000, max: 500000 },
+      { id: "500k-1m", label: "500K - 1 Triệu", min: 500000, max: 1000000 },
+      { id: "over-1m", label: "Trên 1 Triệu", min: 1000000 }
+    ]
   }
 };
 

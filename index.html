@@ -36,7 +36,7 @@
         <a href="#kho-freefire" class="nav-link">🔥 Kho Free Fire</a>
         <a href="#kho-lienquan" class="nav-link">⚔️ Kho Liên Quân</a>
         <a href="#kho-fcmobile" class="nav-link">⚽ Kho FC Mobile</a>
-        <a href="#tui-mu-freefire" class="nav-link nav-link-hot" id="nav-link-blindbag">🎁 Túi Mù FF</a>
+        <a href="#kho-blindbag" class="nav-link nav-link-hot" id="nav-link-blindbag">🎁 Túi Mù FF</a>
       </nav>
 
       <!-- 3. Thanh Tìm Kiếm Acc Bằng Mã Hoặc Mô Tả -->
@@ -185,8 +185,8 @@
           </div>
         </div>
 
-        <!-- Khung 4: Mở Túi Mù Free Fire (HOT) -->
-        <div class="game-category-card card-blindbag-special" data-game-category="ff-blindbag" role="button" tabindex="0" title="Bấm để mở Túi Mù Free Fire - 100% Trúng Nick VIP">
+        <!-- Khung 4: Kho Túi Mù Free Fire (HOT) -->
+        <div class="game-category-card" data-game-category="blindbag" role="button" tabindex="0" title="Bấm để xem Kho Túi Mù Free Fire - 100% Trúng Nick VIP">
           <div class="category-card-thumb-wrap">
             <img src="assets/images/cat-ff-blindbag.jpg" alt="Túi Mù Free Fire" class="category-card-img" loading="lazy">
             <div class="category-card-badges">
@@ -194,13 +194,13 @@
               <span class="cat-status-tag tag-hot">🔥 100% Trúng Nick</span>
             </div>
             <div class="category-card-hover-mask">
-              <span class="btn-category-action btn-action-blindbag">Xé Túi Mù Ngay ➔</span>
+              <span class="btn-category-action">Xem Kho Nick ➔</span>
             </div>
           </div>
           <div class="category-card-info">
             <h3 class="category-card-title">Túi Mù Free Fire</h3>
             <div class="category-card-count">
-              Giá chỉ từ: <span class="count-num" style="color: #ff9900;">20.000 đ</span>
+              Số tài khoản: <span class="count-num" id="cat-count-blindbag">0</span>
             </div>
           </div>
         </div>
@@ -209,13 +209,14 @@
     </section>
 
     <!-- =========================================================
-         KHU VỰC MỞ TÚI MÙ FREE FIRE (BLIND BAG ARENA)
+         KHO 4: KHO TÚI MÙ FREE FIRE
          Ẩn mặc định, chỉ hiển thị khi click vào khung Túi Mù Free Fire
+         Cấu trúc chuẩn 100% giống 3 kho nick (Free Fire, Liên Quân, FC Mobile)
          ========================================================= -->
-    <section class="section-warehouse view-ff-blindbag" id="view-ff-blindbag" style="display: none;">
+    <section class="section-warehouse" id="kho-blindbag" style="display: none;">
       <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
       <div class="warehouse-nav-bar">
-        <button class="btn-warehouse-back" id="btn-blindbag-back" type="button" data-back-to-categories>
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
           <span>←</span> Quay lại danh mục game
         </button>
         <div class="warehouse-breadcrumbs">
@@ -223,118 +224,65 @@
           <span class="bc-sep">›</span>
           <span class="bc-link" data-back-to-categories>Danh mục game</span>
           <span class="bc-sep">›</span>
-          <span class="bc-current">🎁 Mở Túi Mù Free Fire</span>
+          <span class="bc-current">Kho Túi Mù Free Fire</span>
         </div>
       </div>
 
-      <!-- Banner Giới Thiệu Túi Mù & Cam Kết -->
-      <div class="blindbag-hero-banner">
-        <div class="blindbag-hero-content">
-          <span class="blindbag-badge">🎁 SỰ KIỆN ĐẶC BIỆT FREE FIRE 2026</span>
-          <h2 class="blindbag-heading">VẬN MAY TÚI MÙ FREE FIRE <span>100% TRÚNG NICK</span></h2>
-          <p class="blindbag-subheading">
-            Tất cả túi mù đều chứa tài khoản Free Fire thật 100% Trắng Thông Tin. Cơ hội trúng Nick Siêu Phẩm Prime 7-8, AK Rồng Xanh, MP40 Mãng Xà Lv7 chỉ với 20.000 đ!
-          </p>
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-blindbag">🎁</div>
+          <h2 class="warehouse-heading">KHO TÚI MÙ FREE FIRE</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho Túi Mù Free Fire -->
+      <div class="filter-toolbar">
+        <!-- Tìm kiếm trong Kho Túi Mù -->
+        <div class="filter-search-row">
+          <div class="warehouse-search-box">
+            <span class="warehouse-search-icon">🔍</span>
+            <input type="text" class="warehouse-search-input" id="blindbag-search-input" placeholder="Tìm kiếm trong Kho Túi Mù (Mã ID, loại túi, mức giá, skin...)...">
+            <button type="button" class="warehouse-search-clear" id="blindbag-search-clear" title="Xóa tìm kiếm">✕</button>
+          </div>
+        </div>
+
+        <!-- 1. Lọc Theo Mức Giá -->
+        <div class="filter-row">
+          <span class="filter-label">Mức giá:</span>
+          <div class="chip-group" id="blindbag-price-chips">
+            <button class="filter-chip active" data-price-range="all">Tất cả mức giá</button>
+            <button class="filter-chip" data-price-range="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price-range="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price-range="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price-range="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price-range="over-1m">Trên 1 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Sắp xếp và chọn túi mù Free Fire phù hợp với bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="blindbag-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <!-- Giao Diện Sân Khấu Mở Túi Mù (Blind Bag Stage Grid) -->
-      <div class="blindbag-stage-grid">
-        
-        <!-- CỘT TRÁI: KHU VỰC CHỌN GÓI TÚI MÙ -->
-        <div class="blindbag-options-panel">
-          <h3 class="blindbag-panel-title">1. Chọn Cấp Độ Túi Mù</h3>
-          
-          <div class="blindbag-tier-list">
-            <!-- Gói 1: Túi Mù Cơ Bản 20K -->
-            <div class="blindbag-tier-card active" data-tier="basic" data-price="20000" role="button" tabindex="0">
-              <div class="tier-radio-icon"></div>
-              <div class="tier-info">
-                <div class="tier-name-row">
-                  <span class="tier-name">Túi Mù Sơ Cấp (Đồng)</span>
-                  <span class="tier-badge-price">20.000 đ</span>
-                </div>
-                <p class="tier-desc">Trúng Nick Rank Vàng/Bạch Kim, Skin súng ngẫu nhiên, 100% có nick đăng nhập được.</p>
-              </div>
-            </div>
-
-            <!-- Gói 2: Túi Mù VIP 50K (Khuyên dùng) -->
-            <div class="blindbag-tier-card" data-tier="vip" data-price="50000" role="button" tabindex="0">
-              <div class="tier-radio-icon"></div>
-              <div class="tier-info">
-                <div class="tier-name-row">
-                  <span class="tier-name">Túi Mù VIP (Vàng Cyber)</span>
-                  <span class="tier-badge-price" style="background: rgba(255, 184, 0, 0.2); color: var(--accent-gold); border-color: rgba(255, 184, 0, 0.4);">50.000 đ</span>
-                </div>
-                <p class="tier-desc">Tỷ lệ cao trúng Nick Prime 4 - 6, AK Rồng Xanh Lv4+, Trang phục VIP, 100% Trắng TT.</p>
-              </div>
-              <span class="tier-tag-recommend">Khuyên Dùng</span>
-            </div>
-
-            <!-- Gói 3: Túi Mù Siêu Phẩm 100K -->
-            <div class="blindbag-tier-card" data-tier="mythic" data-price="100000" role="button" tabindex="0">
-              <div class="tier-radio-icon"></div>
-              <div class="tier-info">
-                <div class="tier-name-row">
-                  <span class="tier-name">Túi Mù Thần Thoại (Kim Cương)</span>
-                  <span class="tier-badge-price" style="background: rgba(0, 240, 255, 0.2); color: #00f0ff; border-color: rgba(0, 240, 255, 0.4);">100.000 đ</span>
-                </div>
-                <p class="tier-desc">Cực phẩm: Tỷ lệ cao trúng Nick Prime 7-8, Full skin súng tiến hóa Max Lv7, Trang phục cực hiếm!</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tùy chọn Số lượng túi mở -->
-          <div class="blindbag-qty-row">
-            <span class="qty-label">Số lượng xé:</span>
-            <div class="qty-btn-group">
-              <button type="button" class="btn-qty-choice active" data-qty="1">Mở 1 Túi</button>
-              <button type="button" class="btn-qty-choice" data-qty="3">Mở 3 Túi (Ưu Đãi)</button>
-              <button type="button" class="btn-qty-choice" data-qty="5">Mở 5 Túi (Đặc Biệt)</button>
-            </div>
-          </div>
-
-          <!-- Tổng tiền & Nút Xé Túi Mù -->
-          <div class="blindbag-checkout-box">
-            <div class="checkout-total-row">
-              <span class="checkout-label">Tổng thanh toán:</span>
-              <span class="checkout-price" id="blindbag-total-cost">20.000 đ</span>
-            </div>
-            <button class="btn-action-open-bag" id="btn-trigger-open-bag" type="button">
-              <span class="btn-bag-icon">🎁</span> XÉ TÚI MÙ NGAY
-            </button>
-            <div class="checkout-note">
-              <span>🔒 Trừ trực tiếp vào số dư tài khoản • 100% nhận nick ngay lập tức</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- CỘT PHẢI: SÂN KHẤU TÚI MÙ 3D HOÀNH TRÁNG -->
-        <div class="blindbag-showcase-stage">
-          <div class="stage-pouch-container" id="stage-pouch-container">
-            <div class="pouch-glow-circle"></div>
-            <div class="pouch-card-item" id="pouch-card-element">
-              <img src="assets/images/cat-ff-blindbag.jpg" alt="Túi Mù Free Fire" class="pouch-main-img" id="pouch-main-img">
-              <div class="pouch-energy-rays"></div>
-            </div>
-            <div class="pouch-status-label" id="pouch-status-label">
-              ⚡ SẴN SÀNG XÉ TÚI MÙ
-            </div>
-          </div>
-
-          <!-- Live Feed Lịch Sử Trúng Thưởng -->
-          <div class="blindbag-live-feed">
-            <div class="live-feed-title">
-              <span>🏆 LƯỢT TRÚNG TÚI MÙ VỪA DIỄN RA</span>
-            </div>
-            <div class="live-feed-ticker" id="blindbag-live-ticker">
-              <!-- Render ticker via JS -->
-            </div>
-          </div>
-        </div>
-
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="blindbag-accounts-container">
+        <!-- Rendered via JS -->
       </div>
-
     </section>
 
     <!-- =========================================================
@@ -786,6 +734,7 @@
                   <option value="freefire">🔥 Free Fire</option>
                   <option value="lienquan">⚔️ Liên Quân Mobile</option>
                   <option value="fcmobile">⚽ FC Mobile</option>
+                  <option value="blindbag">🎁 Túi Mù Free Fire</option>
                 </select>
               </div>
 
@@ -1377,61 +1326,7 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       MODAL KẾT QUẢ XÉ TÚI MÙ FREE FIRE
-       Hiển thị quà trúng thưởng + thông tin tài khoản đăng nhập
-       ========================================================= -->
-  <div class="modal-overlay" id="modal-blindbag-result" style="display: none;">
-    <div class="modal-window modal-blindbag-window">
-      <button class="modal-close-trigger" id="btn-close-blindbag-modal">✕</button>
 
-      <div class="blindbag-modal-win-header">
-        <div class="win-crown-icon">👑</div>
-        <span class="win-sparkle-tag">🎉 CHÚC MỪNG CHIẾN THẮNG 🎉</span>
-        <h2 class="win-heading">BẠN ĐÃ MỞ TRÚNG ACC FREE FIRE!</h2>
-        <p class="win-subheading" id="blindbag-res-tier-text">Túi Mù VIP (Vàng Cyber)</p>
-      </div>
-
-      <div class="blindbag-win-card">
-        <div class="win-card-thumb">
-          <img src="assets/images/cat-freefire.jpg" alt="Acc trúng thưởng" id="blindbag-res-img" class="win-thumb-img">
-          <span class="win-tag-prime" id="blindbag-res-prime">Prime 6</span>
-          <span class="win-tag-id" id="blindbag-res-id">#FF-992140</span>
-        </div>
-
-        <div class="win-card-details">
-          <h3 class="win-acc-title" id="blindbag-res-title">Tài khoản Free Fire Prime 6 - AK Rồng Xanh</h3>
-          
-          <div class="win-cred-box">
-            <div class="cred-header-label">THÔNG TIN ĐĂNG NHẬP (BẢO MẬT):</div>
-            <div class="cred-data-row">
-              <span class="cred-title">Tài khoản:</span>
-              <span class="cred-string" id="blindbag-res-username">ff_vip_992140</span>
-              <button class="btn-copy-mini" id="btn-copy-bag-user" type="button" title="Sao chép tài khoản">Sao chép</button>
-            </div>
-            <div class="cred-data-row">
-              <span class="cred-title">Mật khẩu:</span>
-              <span class="cred-string" id="blindbag-res-password">TubizOne@2026</span>
-              <button class="btn-copy-mini" id="btn-copy-bag-pass" type="button" title="Sao chép mật khẩu">Sao chép</button>
-            </div>
-          </div>
-
-          <div class="win-guarantee-note">
-            <span>🛡️ Cam kết: 100% Trắng Thông Tin • Đăng Nhập Giao Dịch Tức Thì</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="blindbag-win-actions">
-        <button type="button" class="btn-bag-again" id="btn-blindbag-again">
-          <span>🎁</span> Xé Tiếp Túi Nữa
-        </button>
-        <button type="button" class="btn-bag-finish" id="btn-blindbag-finish">
-          Xong & Về Shop
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- =========================================================
        FOOTER CHUẨN 4 CỘT (100% THEO ẢNH SHOPT1.COM MẪU)

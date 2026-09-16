@@ -65,6 +65,78 @@ class AppStore {
     const savedAccounts = localStorage.getItem('tubizone_warehouse_accounts') || localStorage.getItem('tuanzone_warehouse_accounts');
     this.accounts = savedAccounts ? JSON.parse(savedAccounts) : [];
 
+    // 3B. Khởi tạo 4 túi mù Free Fire mẫu nếu kho túi mù chưa có tài khoản nào
+    const hasBlindBag = this.accounts.some(a => a.game === 'blindbag' || a.game === 'ff-blindbag');
+    if (!hasBlindBag) {
+      const sampleBags = [
+        {
+          id: "TM-FF-01",
+          game: "blindbag",
+          prime: "Sơ Cấp",
+          rank: "Kim Cương",
+          accountType: "Túi Mù May Mắn",
+          title: "Túi Mù Free Fire Sơ Cấp - Cơ Hội Trúng Prime 4 & Skin Súng VIP",
+          price: 20000,
+          image: "assets/images/cat-ff-blindbag.jpg",
+          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
+          credentials: "Tài khoản: ff_blindbag_01 | Mật khẩu: TubizOne@2026",
+          description: "Túi mù Free Fire mức giá học sinh sinh viên. Cam kết 100% trúng tài khoản đăng nhập được, trắng thông tin, rank từ Kim Cương trở lên.",
+          status: "AVAILABLE",
+          createdAt: new Date().toISOString(),
+          createdDate: new Date().toLocaleDateString('vi-VN')
+        },
+        {
+          id: "TM-FF-02",
+          game: "blindbag",
+          prime: "VIP Cyber",
+          rank: "Huyền Thoại",
+          accountType: "Túi Mù VIP",
+          title: "Túi Mù Free Fire VIP - Tỷ Lệ Cao Trúng AK Rồng Xanh & MP40 Mãng Xà",
+          price: 50000,
+          image: "assets/images/cat-ff-blindbag.jpg",
+          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
+          credentials: "Tài khoản: ff_blindbag_vip02 | Mật khẩu: TubizOne@2026",
+          description: "Túi mù VIP được săn đón nhiều nhất! Tỷ lệ cao mở trúng Prime 5-6, AK Rồng Xanh Lv4+, trang phục siêu hiếm.",
+          status: "AVAILABLE",
+          createdAt: new Date().toISOString(),
+          createdDate: new Date().toLocaleDateString('vi-VN')
+        },
+        {
+          id: "TM-FF-03",
+          game: "blindbag",
+          prime: "Siêu Cấp",
+          rank: "Huyền Thoại",
+          accountType: "Túi Mù Thần Thoại",
+          title: "Túi Mù Free Fire Thần Thoại - Full Skin Súng Tiến Hóa Max Lv7",
+          price: 100000,
+          image: "assets/images/cat-ff-blindbag.jpg",
+          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
+          credentials: "Tài khoản: ff_mythic_03 | Mật khẩu: TubizOne@2026",
+          description: "Túi mù cực phẩm dành cho game thủ chịu chơi. Tỷ lệ cao trúng Nick Prime 7-8, Full AK Rồng Xanh Max, MP40 Mãng Xà Lv7, trang phục Quỷ Dạ Xoa.",
+          status: "AVAILABLE",
+          createdAt: new Date().toISOString(),
+          createdDate: new Date().toLocaleDateString('vi-VN')
+        },
+        {
+          id: "TM-FF-04",
+          game: "blindbag",
+          prime: "Thần Thoại",
+          rank: "Thách Đấu",
+          accountType: "Túi Mù Thần Thoại",
+          title: "Túi Mù Free Fire Độc Quyền - Prime 8 Thách Đấu Max Cực Phẩm",
+          price: 200000,
+          image: "assets/images/cat-ff-blindbag.jpg",
+          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
+          credentials: "Tài khoản: ff_god_04 | Mật khẩu: TubizOne@2026",
+          description: "Túi mù đẳng cấp nhất shop tuBIzOne! 100% tài khoản Prime 8 siêu VIP, full súng tiến hóa cấp tối đa, đầy đủ thẻ vô cực các mùa đầu.",
+          status: "AVAILABLE",
+          createdAt: new Date().toISOString(),
+          createdDate: new Date().toLocaleDateString('vi-VN')
+        }
+      ];
+      this.accounts.push(...sampleBags);
+    }
+
     // 4. Lịch sử đơn hàng mua nick
     const savedOrders = localStorage.getItem('tubizone_orders') || localStorage.getItem('tuanzone_orders');
     this.orders = savedOrders ? JSON.parse(savedOrders) : [];
@@ -87,6 +159,11 @@ class AppStore {
       fcmobile: {
         category: 'all',
         server: 'all',
+        sortBy: 'default',
+        search: ''
+      },
+      blindbag: {
+        priceRange: 'all',
         sortBy: 'default',
         search: ''
       },
@@ -396,10 +473,11 @@ class AppStore {
   }
 
   getDefaultGameImage(game) {
-    if (game === 'freefire') return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=700&auto=format&fit=crop&q=80';
-    if (game === 'lienquan') return 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=700&auto=format&fit=crop&q=80';
-    if (game === 'fcmobile') return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=700&auto=format&fit=crop&q=80';
-    return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=700&auto=format&fit=crop&q=80';
+    if (game === 'freefire') return 'assets/images/cat-freefire.jpg';
+    if (game === 'lienquan') return 'assets/images/cat-lienquan.jpg';
+    if (game === 'fcmobile') return 'assets/images/cat-fcmobile.jpg';
+    if (game === 'blindbag' || game === 'ff-blindbag') return 'assets/images/cat-ff-blindbag.jpg';
+    return 'assets/images/cat-ff-blindbag.jpg';
   }
 
   // --- MUA TÀI KHOẢN ---
