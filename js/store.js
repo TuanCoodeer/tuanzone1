@@ -188,11 +188,31 @@ class AppStore {
 
   async syncFromCloud() {
     try {
-      // 1. Đồng bộ kho accounts từ Supabase
+      // 1. Đồng bộ kho accounts từ Supabase Cloud
       const cloudAccounts = await dbGetAccounts();
       if (cloudAccounts !== null && Array.isArray(cloudAccounts)) {
-        this.accounts = cloudAccounts;
-        localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
+        // Lấy danh sách ID đã bị xóa gần đây (để tránh phục hồi acc vừa xóa)
+        const deletedIds = JSON.parse(localStorage.getItem('tubizone_deleted_acc_ids') || '[]');
+
+        // Tạo Map các tài khoản hiện có ở local và cloud
+        const localMap = new Map((this.accounts || []).map(a => [String(a.id), a]));
+        const cloudMap = new Map(cloudAccounts.map(a => [String(a.id), a]));
+
+        // Danh sách hợp nhất: Bắt đầu từ cloud (lọc bỏ các ID đã xóa)
+        const mergedList = cloudAccounts.filter(a => !deletedIds.includes(String(a.id)));
+
+        // Những tài khoản có ở Local nhưng chưa có trên Cloud (Admin vừa tạo hoặc mạng lag trước đó):
+        // Tuyệt đối giữ lại và tự động đẩy lên Supabase Cloud để vĩnh viễn không bao giờ mất!
+        for (const [id, localAcc] of localMap.entries()) {
+          if (!cloudMap.has(id) && !deletedIds.includes(id)) {
+            mergedList.unshift(localAcc);
+            // Tự động đẩy lên Supabase Cloud
+            dbInsertAccount(localAcc).catch(e => console.warn('[Supabase Auto Sync] dbInsertAccount error:', e));
+          }
+        }
+
+        this.accounts = mergedList;
+        this.save();
       }
 
       // 2. Đồng bộ danh sách đơn hàng
@@ -225,12 +245,16 @@ class AppStore {
 
   save() {
     this.syncUserBalance();
-    localStorage.setItem('tubizone_theme', this.theme);
-    localStorage.setItem('tubizone_user_auth', JSON.stringify(this.user));
-    localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
-    localStorage.setItem('tubizone_orders', JSON.stringify(this.orders));
-    localStorage.setItem('tubizone_deposit_history', JSON.stringify(this.depositHistory));
-    localStorage.setItem('tubizone_registered_users', JSON.stringify(this.registeredUsers));
+    try {
+      localStorage.setItem('tubizone_theme', this.theme);
+      localStorage.setItem('tubizone_user_auth', JSON.stringify(this.user));
+      localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
+      localStorage.setItem('tubizone_orders', JSON.stringify(this.orders));
+      localStorage.setItem('tubizone_deposit_history', JSON.stringify(this.depositHistory));
+      localStorage.setItem('tubizone_registered_users', JSON.stringify(this.registeredUsers));
+    } catch (e) {
+      console.warn('[Store] LocalStorage save warning (quota):', e);
+    }
     this.notify();
   }
 
@@ -435,9 +459,18 @@ class AppStore {
       galleryImages.unshift(mainImg);
     }
 
+    const accId = String(data.id || ('TZ-' + Math.floor(100000 + Math.random() * 900000))).trim();
+
+    // Nếu ID này từng nằm trong danh sách đã xóa, xóa khỏi danh sách đã xóa
+    try {
+      let deletedIds = JSON.parse(localStorage.getItem('tubizone_deleted_acc_ids') || '[]');
+      deletedIds = deletedIds.filter(id => id !== accId);
+      localStorage.setItem('tubizone_deleted_acc_ids', JSON.stringify(deletedIds));
+    } catch (e) {}
+
     const newAcc = {
-      id: data.id || ('TZ-' + Math.floor(1000 + Math.random() * 9000)),
-      game: data.game, // 'freefire' | 'lienquan' | 'fcmobile'
+      id: accId,
+      game: data.game, // 'freefire' | 'lienquan' | 'fcmobile' | 'blindbag'
       prime: data.prime || 'Prime 1',
       ovr: data.ovr || '125 OVR',
       server: data.server || 'Global',
@@ -455,21 +488,42 @@ class AppStore {
       createdDate: new Date().toLocaleDateString('vi-VN')
     };
 
-    this.accounts.unshift(newAcc);
+    // Nếu acc đã tồn tại thì ghi đè, chưa có thì thêm lên đầu
+    const existingIdx = this.accounts.findIndex(a => String(a.id) === accId);
+    if (existingIdx >= 0) {
+      this.accounts[existingIdx] = newAcc;
+    } else {
+      this.accounts.unshift(newAcc);
+    }
+
     this.save();
 
-    // Lưu online lên Supabase Cloud
+    // Lưu online lên Supabase Cloud để tất cả người dùng và mọi thiết bị đều thấy vĩnh viễn
     dbInsertAccount(newAcc).catch(e => console.warn('[Supabase] dbInsertAccount error:', e));
 
     return newAcc;
   }
 
   deleteAccount(accId) {
-    this.accounts = this.accounts.filter(a => a.id !== accId);
+    const idStr = String(accId);
+    this.accounts = this.accounts.filter(a => String(a.id) !== idStr);
+
+    // Ghi nhớ ID đã xóa để tránh syncFromCloud phục hồi lại
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('tubizone_deleted_acc_ids') || '[]');
+      if (!deletedIds.includes(idStr)) {
+        deletedIds.push(idStr);
+        if (deletedIds.length > 100) deletedIds.shift();
+        localStorage.setItem('tubizone_deleted_acc_ids', JSON.stringify(deletedIds));
+      }
+    } catch (e) {
+      console.warn('Error saving deleted id:', e);
+    }
+
     this.save();
 
     // Xóa trên Supabase Cloud
-    dbDeleteAccount(accId).catch(e => console.warn('[Supabase] dbDeleteAccount error:', e));
+    dbDeleteAccount(idStr).catch(e => console.warn('[Supabase] dbDeleteAccount error:', e));
   }
 
   getDefaultGameImage(game) {

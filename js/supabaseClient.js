@@ -34,7 +34,30 @@ export async function dbGetAccounts() {
       console.warn('[Supabase] dbGetAccounts warning:', error.message);
       return null;
     }
-    return data || [];
+    if (!data || !Array.isArray(data)) return [];
+
+    // Giải nén metadata mở rộng (rank, accountType, images) từ trường description nếu có
+    return data.map(acc => {
+      const copy = { ...acc };
+      if (typeof copy.description === 'string' && copy.description.includes('<!--tz_meta:')) {
+        try {
+          const match = copy.description.match(/<!--tz_meta:(.*?)-->/s);
+          if (match && match[1]) {
+            const meta = JSON.parse(match[1]);
+            if (meta.rank && !copy.rank) copy.rank = meta.rank;
+            if (meta.accountType && !copy.accountType) copy.accountType = meta.accountType;
+            if (meta.images && Array.isArray(meta.images) && (!copy.images || copy.images.length === 0)) copy.images = meta.images;
+            copy.description = copy.description.replace(/<!--tz_meta:.*?-->/s, '').trim();
+          }
+        } catch (e) {
+          console.warn('[Supabase] Error unpacking tz_meta:', e);
+        }
+      }
+      if (!copy.images || !Array.isArray(copy.images) || copy.images.length === 0) {
+        copy.images = copy.image ? [copy.image] : [];
+      }
+      return copy;
+    });
   } catch (err) {
     console.warn('[Supabase] dbGetAccounts network error:', err);
     return null;
@@ -45,49 +68,46 @@ export async function dbInsertAccount(account) {
   const sb = getSupabase();
   if (!sb) return false;
   try {
+    // Đóng gói các thuộc tính mở rộng (rank, accountType, images) vào tag metadata trong description
+    // Nhằm tương thích 100% với cấu trúc bảng Supabase hiện tại
+    let cleanDesc = account.description || '';
+    const metaObj = {};
+    if (account.rank) metaObj.rank = account.rank;
+    if (account.accountType) metaObj.accountType = account.accountType;
+    if (account.images && Array.isArray(account.images) && account.images.length > 0) {
+      metaObj.images = account.images;
+    }
+
+    cleanDesc = cleanDesc.replace(/<!--tz_meta:.*?-->/s, '').trim();
+    if (Object.keys(metaObj).length > 0) {
+      cleanDesc += (cleanDesc ? '\n' : '') + `<!--tz_meta:${JSON.stringify(metaObj)}-->`;
+    }
+
     const payload = {
-      id: account.id,
-      game: account.game,
-      prime: account.prime || '',
-      ovr: account.ovr || '',
-      server: account.server || '',
-      subCategory: account.subCategory || '',
-      title: account.title,
+      id: String(account.id),
+      game: String(account.game || 'freefire'),
+      prime: String(account.prime || ''),
+      ovr: String(account.ovr || ''),
+      server: String(account.server || ''),
+      subCategory: String(account.subCategory || ''),
+      title: String(account.title || ''),
       price: Number(account.price) || 0,
-      image: account.image || '',
-      credentials: account.credentials || '',
-      description: account.description || '',
-      status: account.status || 'AVAILABLE',
+      image: String(account.image || ''),
+      credentials: String(account.credentials || ''),
+      description: cleanDesc,
+      status: String(account.status || 'AVAILABLE'),
       createdAt: account.createdAt || new Date().toISOString(),
       createdDate: account.createdDate || new Date().toLocaleDateString('vi-VN')
     };
 
-    // Thử gửi kèm các trường mở rộng nếu có
-    if (account.images && Array.isArray(account.images)) {
-      payload.images = account.images;
-    }
-    if (account.rank) {
-      payload.rank = account.rank;
-    }
-    if (account.accountType) {
-      payload.accountType = account.accountType;
-    }
-
-    let { error } = await sb.from('accounts').insert([payload]);
-    
-    // Nếu bảng Supabase chưa có cột mở rộng (schema strict) thì tự động fallback chỉ lưu các cột chuẩn
-    if (error && error.message && (error.message.includes('column') && error.message.includes('does not exist'))) {
-      delete payload.images;
-      delete payload.rank;
-      delete payload.accountType;
-      const retry = await sb.from('accounts').insert([payload]);
-      error = retry.error;
-    }
+    // Dùng upsert để nếu ID đã tồn tại thì cập nhật, chưa có thì thêm mới
+    const { error } = await sb.from('accounts').upsert([payload]);
 
     if (error) {
       console.error('[Supabase] dbInsertAccount error:', error.message);
       return false;
     }
+    console.log('[Supabase] Đã đồng bộ tài khoản lên Supabase Cloud thành công! ID:', payload.id);
     return true;
   } catch (err) {
     console.error('[Supabase] dbInsertAccount exception:', err);

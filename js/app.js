@@ -329,30 +329,6 @@ class TuBIzOneApp {
     });
   }
 
-  initRouteHash() {
-    const handleHash = () => {
-      const hash = window.location.hash;
-      if (hash === '#kho-blindbag' || hash === '#tui-mu-freefire') {
-        this.openWarehouse('blindbag', false);
-      } else if (hash.startsWith('#kho-')) {
-        const game = hash.replace('#kho-', '').trim();
-        if (['freefire', 'lienquan', 'fcmobile', 'blindbag'].includes(game)) {
-          this.openWarehouse(game, false);
-        }
-      } else if (!hash || hash === '#') {
-        if (this.currentActiveWarehouse) {
-          this.closeWarehouseDetail(false);
-        }
-      }
-    };
-
-    if (window.location.hash) {
-      setTimeout(handleHash, 100);
-    }
-
-    window.addEventListener('hashchange', handleHash);
-  }
-
   // --- 4B. KHO TÚI MÙ FREE FIRE (CHUẨN NHƯ 3 KHO NICK) ---
   renderBlindBagWarehouse() {
     const container = document.getElementById('blindbag-accounts-container');
@@ -668,7 +644,7 @@ class TuBIzOneApp {
     }
   }
 
-  // --- 5C. KHU VỰC CHI TIẾT TÀI KHOẢN (ACCOUNT DETAIL SHOWCASE) ---
+  // --- 5C. KHU VỰC CHI TIẾT TÀI KHOẢN (ACCOUNT DETAIL SHOWCASE) & ROUTING ---
   initRouteHash() {
     const checkHash = () => {
       const hash = window.location.hash || '';
@@ -683,6 +659,13 @@ class TuBIzOneApp {
         this.openWarehouse('lienquan', false);
       } else if (hash === '#kho-fcmobile') {
         this.openWarehouse('fcmobile', false);
+      } else if (hash === '#kho-blindbag' || hash === '#tui-mu-freefire') {
+        this.openWarehouse('blindbag', false);
+      } else if (hash.startsWith('#kho-')) {
+        const g = hash.replace('#kho-', '').trim();
+        if (['freefire', 'lienquan', 'fcmobile', 'blindbag'].includes(g)) {
+          this.openWarehouse(g, false);
+        }
       } else if (hash === '#admin-add-acc') {
         if (store.user?.isAdmin) {
           this.openAddAccView(false);
@@ -1251,7 +1234,7 @@ class TuBIzOneApp {
     if (shopView) shopView.style.display = 'block';
   }
 
-  // Nén ảnh từ file người dùng chọn trên máy tính (sắc nét & chống tràn localStorage)
+  // Nén ảnh từ file người dùng chọn trên máy tính (sắc nét & chống tràn dung lượng)
   compressAndReadImage(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -1261,7 +1244,7 @@ class TuBIzOneApp {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const maxDim = 1200;
+          const maxDim = 900;
 
           if (width > maxDim || height > maxDim) {
             if (width > height) {
@@ -1278,8 +1261,8 @@ class TuBIzOneApp {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Nén JPEG chất lượng 0.82 siêu sắc nét mà dung lượng cực nhẹ (~60-120KB)
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+          // Nén JPEG chất lượng 0.78 siêu sắc nét mà dung lượng cực nhẹ (~35-65KB)
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.78);
           resolve(compressedBase64);
         };
         img.onerror = () => resolve(e.target.result);
@@ -1499,7 +1482,7 @@ class TuBIzOneApp {
 
     gameSelect?.addEventListener('change', () => {
       const val = gameSelect.value;
-      if (val === 'freefire') {
+      if (val === 'freefire' || val === 'blindbag') {
         if (primeGroup) primeGroup.style.display = 'block';
         if (fcGroup) fcGroup.style.display = 'none';
       } else if (val === 'fcmobile') {
@@ -1566,24 +1549,31 @@ class TuBIzOneApp {
       let sampleList = [];
       if (g === 'freefire') {
         sampleList = [
+          'assets/images/cat-freefire.jpg',
           'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800',
           'https://images.unsplash.com/photo-1563089145-599997674d42?w=800',
-          'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800',
-          'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800'
+          'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800'
         ];
       } else if (g === 'lienquan') {
         sampleList = [
+          'assets/images/cat-lienquan.jpg',
           'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
           'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800',
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800'
+        ];
+      } else if (g === 'blindbag') {
+        sampleList = [
+          'assets/images/cat-ff-blindbag.jpg',
+          'assets/images/cat-freefire.jpg',
           'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800',
           'https://images.unsplash.com/photo-1563089145-599997674d42?w=800'
         ];
       } else {
         sampleList = [
+          'assets/images/cat-fcmobile.jpg',
           'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800',
           'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800',
-          'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=800',
-          'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800'
+          'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=800'
         ];
       }
       this.adminUploadedImages = [...sampleList];
