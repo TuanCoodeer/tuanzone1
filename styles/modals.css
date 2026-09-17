@@ -857,3 +857,136 @@
 .custom-toast-item.toast-info {
   border-left: 4px solid #0084ff;
 }
+
+/* =========================================================
+   SECURITY UI: PASSWORD STRENGTH METER, CHECKLIST & BRUTE-FORCE LOCKOUT
+   ========================================================= */
+.auth-lockout-banner {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: modalShake 0.4s ease;
+}
+
+.auth-lockout-banner .lockout-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.auth-lockout-banner .lockout-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #ef4444;
+  margin-bottom: 2px;
+}
+
+.auth-lockout-banner .lockout-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+.auth-lockout-banner .countdown-num {
+  color: #ffaa00;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.pwd-strength-container {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.25s ease;
+}
+
+.pwd-strength-bar-wrap {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.pwd-strength-bar {
+  height: 100%;
+  width: 0%;
+  background: #ef4444;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.pwd-strength-bar.weak {
+  background: #ef4444;
+}
+
+.pwd-strength-bar.medium {
+  background: #f59e0b;
+}
+
+.pwd-strength-bar.strong {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.pwd-strength-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.pwd-strength-meta strong {
+  color: #ef4444;
+  transition: color 0.2s;
+}
+
+.pwd-strength-meta strong.medium {
+  color: #f59e0b;
+}
+
+.pwd-strength-meta strong.strong {
+  color: #10b981;
+}
+
+.pwd-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pwd-checklist .check-item {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.pwd-checklist .check-item .check-icon {
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #ef4444;
+  width: 14px;
+  display: inline-block;
+}
+
+.pwd-checklist .check-item.passed {
+  color: #cbd5e1;
+}
+
+.pwd-checklist .check-item.passed .check-icon {
+  color: #10b981;
+}
+

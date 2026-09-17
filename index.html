@@ -1139,6 +1139,15 @@
         <button type="button" class="auth-seg-btn" id="tab-auth-register">Đăng ký</button>
       </div>
 
+      <!-- Banner cảnh báo khóa tài khoản do Brute-force -->
+      <div class="auth-lockout-banner" id="auth-lockout-banner" style="display: none;">
+        <span class="lockout-icon">⏳</span>
+        <div class="lockout-text">
+          <strong id="auth-lockout-title">Tạm khóa bảo vệ tài khoản</strong>
+          <p id="auth-lockout-desc">Nhập sai nhiều lần liên tiếp. Vui lòng chờ <span id="auth-lockout-timer" class="countdown-num">300</span>s để thử lại.</p>
+        </div>
+      </div>
+
       <!-- Form nhập dữ liệu -->
       <form id="auth-submit-form">
         <!-- Trường Tên đăng nhập -->
@@ -1154,8 +1163,25 @@
         <div class="auth-field-wrap">
           <label class="auth-field-label" for="auth-password-field">Mật khẩu</label>
           <div class="auth-input-container">
-            <input type="password" class="auth-input" id="auth-password-field" placeholder="Tối thiểu 6 ký tự" autocomplete="current-password" required>
+            <input type="password" class="auth-input" id="auth-password-field" placeholder="Tối thiểu 8 ký tự (hoa, thường, số, ký tự đặc biệt)" autocomplete="current-password" required>
             <button type="button" class="auth-pwd-toggle-btn" id="btn-toggle-pwd-main" title="Hiện/Ẩn mật khẩu">Hiện</button>
+          </div>
+
+          <!-- Thanh đo độ mạnh mật khẩu & Checklist bảo mật (Chỉ hiển thị khi bấm tab Đăng ký) -->
+          <div class="pwd-strength-container" id="pwd-strength-container" style="display: none;">
+            <div class="pwd-strength-bar-wrap">
+              <div class="pwd-strength-bar" id="pwd-strength-bar"></div>
+            </div>
+            <div class="pwd-strength-meta">
+              <span class="pwd-strength-label">Độ an toàn: <strong id="pwd-strength-text">Chưa nhập</strong></span>
+            </div>
+            <ul class="pwd-checklist" id="pwd-checklist">
+              <li id="pwd-check-length" class="check-item"><span class="check-icon">✕</span> Tối thiểu 8 ký tự</li>
+              <li id="pwd-check-upper" class="check-item"><span class="check-icon">✕</span> Có chữ in hoa (A–Z)</li>
+              <li id="pwd-check-lower" class="check-item"><span class="check-icon">✕</span> Có chữ in thường (a–z)</li>
+              <li id="pwd-check-number" class="check-item"><span class="check-icon">✕</span> Có chữ số (0–9)</li>
+              <li id="pwd-check-special" class="check-item"><span class="check-icon">✕</span> Có ký tự đặc biệt (@$!%*?&#...)</li>
+            </ul>
           </div>
         </div>
 
@@ -1163,7 +1189,7 @@
         <div class="auth-field-wrap" id="auth-repass-group" style="display: none;">
           <label class="auth-field-label" for="auth-repassword-field">Nhập lại mật khẩu</label>
           <div class="auth-input-container">
-            <input type="password" class="auth-input" id="auth-repassword-field" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+            <input type="password" class="auth-input" id="auth-repassword-field" placeholder="Nhập lại chính xác mật khẩu trên" autocomplete="new-password">
             <button type="button" class="auth-pwd-toggle-btn" id="btn-toggle-pwd-repass" title="Hiện/Ẩn mật khẩu">Hiện</button>
           </div>
         </div>
@@ -1438,6 +1464,9 @@
 
   <!-- Supabase Cloud Database SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Bcrypt.js Library for Industry-Standard Password Hashing & Salting -->
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 
   <!-- Main JavaScript App -->
   <script type="module" src="js/app.js?v=1.1.0"></script>

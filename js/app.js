@@ -6,6 +6,7 @@ import { store, ADMIN_CONFIG, BANK_CONFIG } from './store.js';
 import { WAREHOUSES, TOP_DEPOSIT_USERS } from '../data/games.js?v=1.0.6';
 import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from './popup.js';
 import { initCyberSparks } from './cyberSparks.js';
+import { SecurityService } from './security.js';
 
 class TuBIzOneApp {
   constructor() {
@@ -16,6 +17,7 @@ class TuBIzOneApp {
     this.currentGalleryIndex = 0;
     this.adminUploadedImages = [];
     this.cyberSparks = null;
+    this.lockoutInterval = null;
   }
 
   init() {
@@ -2108,14 +2110,136 @@ class TuBIzOneApp {
     const repassInput = document.getElementById('auth-repassword-field');
     const actionBtn = document.getElementById('btn-auth-action-submit');
     const modalTitle = document.getElementById('auth-modal-title');
+    const userInput = document.getElementById('auth-username-field');
+    const pwdMain = document.getElementById('auth-password-field');
+    const pwdRepass = document.getElementById('auth-repassword-field');
+    const lockoutBanner = document.getElementById('auth-lockout-banner');
+    const lockoutTimerEl = document.getElementById('auth-lockout-timer');
+    const strengthContainer = document.getElementById('pwd-strength-container');
+    const strengthBar = document.getElementById('pwd-strength-bar');
+    const strengthText = document.getElementById('pwd-strength-text');
+    const checkLength = document.getElementById('pwd-check-length');
+    const checkUpper = document.getElementById('pwd-check-upper');
+    const checkLower = document.getElementById('pwd-check-lower');
+    const checkNumber = document.getElementById('pwd-check-number');
+    const checkSpecial = document.getElementById('pwd-check-special');
+
+    // Hàm đếm ngược thời gian khóa do Brute-force
+    const startLockoutCountdown = (remainingSec) => {
+      if (this.lockoutInterval) clearInterval(this.lockoutInterval);
+      if (!lockoutBanner || !lockoutTimerEl) return;
+
+      lockoutBanner.style.display = 'flex';
+      lockoutTimerEl.textContent = remainingSec;
+      if (actionBtn) {
+        actionBtn.disabled = true;
+        actionBtn.style.opacity = '0.5';
+        actionBtn.style.cursor = 'not-allowed';
+      }
+
+      let currentSec = remainingSec;
+      this.lockoutInterval = setInterval(() => {
+        currentSec -= 1;
+        if (currentSec <= 0) {
+          clearInterval(this.lockoutInterval);
+          this.lockoutInterval = null;
+          lockoutBanner.style.display = 'none';
+          if (actionBtn) {
+            actionBtn.disabled = false;
+            actionBtn.style.opacity = '1';
+            actionBtn.style.cursor = 'pointer';
+          }
+        } else {
+          lockoutTimerEl.textContent = currentSec;
+        }
+      }, 1000);
+    };
+
+    const stopLockoutCountdown = () => {
+      if (this.lockoutInterval) {
+        clearInterval(this.lockoutInterval);
+        this.lockoutInterval = null;
+      }
+      if (lockoutBanner) lockoutBanner.style.display = 'none';
+      if (actionBtn) {
+        actionBtn.disabled = false;
+        actionBtn.style.opacity = '1';
+        actionBtn.style.cursor = 'pointer';
+      }
+    };
+
+    // Hàm kiểm tra và cập nhật giao diện đo độ mạnh mật khẩu theo thời gian thực
+    const updatePasswordStrengthUI = (val) => {
+      const isRegister = tabRegister?.classList.contains('active');
+      if (!isRegister) {
+        if (strengthContainer) strengthContainer.style.display = 'none';
+        return;
+      }
+      if (strengthContainer) strengthContainer.style.display = 'block';
+
+      const result = SecurityService.validatePasswordPolicy(val);
+
+      if (strengthBar) {
+        strengthBar.style.width = `${result.score}%`;
+        strengthBar.className = `pwd-strength-bar ${result.strengthLevel}`;
+      }
+      if (strengthText) {
+        strengthText.textContent = val ? result.strengthLabel : 'Chưa nhập';
+        strengthText.className = result.strengthLevel;
+      }
+
+      const updateCheckItem = (el, passed) => {
+        if (!el) return;
+        const icon = el.querySelector('.check-icon');
+        if (passed) {
+          el.classList.add('passed');
+          if (icon) icon.textContent = '✓';
+        } else {
+          el.classList.remove('passed');
+          if (icon) icon.textContent = '✕';
+        }
+      };
+
+      updateCheckItem(checkLength, result.checklist.length);
+      updateCheckItem(checkUpper, result.checklist.hasUpper);
+      updateCheckItem(checkLower, result.checklist.hasLower);
+      updateCheckItem(checkNumber, result.checklist.hasNumber);
+      updateCheckItem(checkSpecial, result.checklist.hasSpecial);
+    };
+
+    pwdMain?.addEventListener('input', (e) => {
+      updatePasswordStrengthUI(e.target.value);
+    });
+
+    userInput?.addEventListener('input', (e) => {
+      const isRegister = tabRegister?.classList.contains('active');
+      if (!isRegister) {
+        const check = SecurityService.checkRateLimit(e.target.value);
+        if (check.isLocked) {
+          startLockoutCountdown(check.remainingSeconds);
+        } else {
+          stopLockoutCountdown();
+        }
+      }
+    });
 
     tabLogin?.addEventListener('click', () => {
       tabLogin.classList.add('active');
       tabRegister?.classList.remove('active');
       if (repassGroup) repassGroup.style.display = 'none';
       if (repassInput) repassInput.removeAttribute('required');
+      if (strengthContainer) strengthContainer.style.display = 'none';
       if (actionBtn) actionBtn.textContent = 'Đăng nhập';
       if (modalTitle) modalTitle.textContent = 'Đăng nhập';
+
+      // Kiểm tra trạng thái brute force của username đang nhập
+      const userVal = userInput?.value || '';
+      const check = SecurityService.checkRateLimit(userVal);
+      if (check.isLocked) {
+        startLockoutCountdown(check.remainingSeconds);
+      } else {
+        stopLockoutCountdown();
+      }
     });
 
     tabRegister?.addEventListener('click', () => {
@@ -2125,11 +2249,12 @@ class TuBIzOneApp {
       if (repassInput) repassInput.setAttribute('required', 'required');
       if (actionBtn) actionBtn.textContent = 'Đăng ký';
       if (modalTitle) modalTitle.textContent = 'Đăng ký';
+      stopLockoutCountdown();
+      updatePasswordStrengthUI(pwdMain?.value || '');
     });
 
     // Nút Hiện / Ẩn Mật Khẩu (Chính)
     const toggleMain = document.getElementById('btn-toggle-pwd-main');
-    const pwdMain = document.getElementById('auth-password-field');
     toggleMain?.addEventListener('click', () => {
       if (!pwdMain) return;
       const isPwd = pwdMain.type === 'password';
@@ -2139,7 +2264,6 @@ class TuBIzOneApp {
 
     // Nút Hiện / Ẩn Mật Khẩu (Xác nhận)
     const toggleRepass = document.getElementById('btn-toggle-pwd-repass');
-    const pwdRepass = document.getElementById('auth-repassword-field');
     toggleRepass?.addEventListener('click', () => {
       if (!pwdRepass) return;
       const isPwd = pwdRepass.type === 'password';
@@ -2147,10 +2271,11 @@ class TuBIzOneApp {
       toggleRepass.textContent = isPwd ? 'Ẩn' : 'Hiện';
     });
 
-    document.getElementById('auth-submit-form')?.addEventListener('submit', (e) => {
+    // Xử lý gửi Form Đăng nhập / Đăng ký (Bất đồng bộ với Bcrypt)
+    document.getElementById('auth-submit-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = (document.getElementById('auth-username-field')?.value || '').trim();
-      const password = (document.getElementById('auth-password-field')?.value || '').trim();
+      const username = (userInput?.value || '').trim();
+      const password = (pwdMain?.value || '').trim();
       const isRegister = tabRegister?.classList.contains('active');
 
       if (!username || !password) {
@@ -2158,48 +2283,82 @@ class TuBIzOneApp {
         return;
       }
 
-      if (isRegister) {
-        const repass = (document.getElementById('auth-repassword-field')?.value || '').trim();
-        if (password !== repass) {
-          showToast("Mật khẩu xác nhận không trùng khớp! Vui lòng nhập lại.", "danger");
-          return;
-        }
-
-        const res = store.register(username, password);
-        if (!res.success) {
-          showToast(res.message, "danger");
-          return;
-        }
-
-        showPopup({
-          title: "🎉 TẠO TÀI KHOẢN THÀNH CÔNG!",
-          message: `${res.message}\nBạn đã được tự động đăng nhập vào tuBIzOne.com.`,
-          type: "success",
-          confirmText: "Bắt Đầu Ngay"
-        });
-      } else {
-        const res = store.login(username, password);
-        if (!res.success) {
-          showToast(res.message, "danger");
-          return;
-        }
-
-        if (res.isAdmin) {
-          showPopup({
-            title: "👑 QUẢN TRỊ VIÊN tuBIzOne",
-            message: "Chào mừng Quản trị viên Huỳnh Tuấn!\nBạn có toàn quyền quản trị: Thêm acc vào kho, xem doanh thu tháng và kiểm tra toàn bộ lịch sử giao dịch.",
-            type: "success",
-            confirmText: "Vào Quản Trị"
-          });
-        } else {
-          showToast(`Xin chào ${store.user.displayName}! Bạn đã đăng nhập thành công.`, "success");
-        }
+      // Trạng thái đang tải (Loading) để tính toán Bcrypt mượt mà
+      const originalBtnText = actionBtn ? actionBtn.textContent : '';
+      if (actionBtn) {
+        actionBtn.disabled = true;
+        actionBtn.textContent = 'Đang xử lý... 🔒';
       }
 
-      modal?.classList.remove('active');
-      e.target.reset();
-      this.renderHeaderAuth();
-      this.renderWarehouses();
+      try {
+        if (isRegister) {
+          const repass = (pwdRepass?.value || '').trim();
+          if (password !== repass) {
+            showToast("Mật khẩu xác nhận không trùng khớp! Vui lòng nhập lại.", "danger");
+            if (actionBtn) {
+              actionBtn.disabled = false;
+              actionBtn.textContent = originalBtnText;
+            }
+            return;
+          }
+
+          const res = await store.register(username, password);
+          if (!res.success) {
+            showToast(res.message, "danger");
+            if (actionBtn) {
+              actionBtn.disabled = false;
+              actionBtn.textContent = originalBtnText;
+            }
+            return;
+          }
+
+          showPopup({
+            title: "🎉 TẠO TÀI KHOẢN THÀNH CÔNG!",
+            message: `${res.message}\nBạn đã được tự động đăng nhập vào tuBIzOne.com.`,
+            type: "success",
+            confirmText: "Bắt Đầu Ngay"
+          });
+        } else {
+          const res = await store.login(username, password);
+          if (!res.success) {
+            if (res.isLocked && res.remainingSeconds) {
+              startLockoutCountdown(res.remainingSeconds);
+            }
+            showToast(res.message, "danger");
+            if (actionBtn) {
+              actionBtn.disabled = false;
+              actionBtn.textContent = originalBtnText;
+            }
+            return;
+          }
+
+          stopLockoutCountdown();
+          if (res.isAdmin) {
+            showPopup({
+              title: "👑 QUẢN TRỊ VIÊN tuBIzOne",
+              message: "Chào mừng Quản trị viên Huỳnh Tuấn!\nBạn có toàn quyền quản trị: Thêm acc vào kho, xem doanh thu tháng và kiểm tra toàn bộ lịch sử giao dịch.",
+              type: "success",
+              confirmText: "Vào Quản Trị"
+            });
+          } else {
+            showToast(`Xin chào ${store.user.displayName}! Bạn đã đăng nhập thành công.`, "success");
+          }
+        }
+
+        modal?.classList.remove('active');
+        e.target.reset();
+        stopLockoutCountdown();
+        updatePasswordStrengthUI('');
+        this.renderHeaderAuth();
+        this.renderWarehouses();
+      } catch (err) {
+        console.error('[Auth Form Error]:', err);
+        showToast("Đã có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại!", "danger");
+      } finally {
+        if (actionBtn && !actionBtn.disabled) {
+          actionBtn.textContent = originalBtnText;
+        }
+      }
     });
   }
 

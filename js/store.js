@@ -16,6 +16,7 @@ import {
   dbUpsertUser,
   dbUpdateUserBalance
 } from './supabaseClient.js';
+import { SecurityService } from './security.js';
 
 export const BANK_CONFIG = {
   bankId: "VCB",
@@ -285,7 +286,7 @@ class AppStore {
     return this.theme;
   }
 
-  register(username, password) {
+  async register(username, password) {
     const cleanUser = (username || '').trim().toLowerCase();
     const cleanPass = (password || '').trim();
 
@@ -295,8 +296,14 @@ class AppStore {
     if (!/^[a-z][a-z0-9]*$/.test(cleanUser)) {
       return { success: false, message: "Tên đăng nhập phải bắt đầu bằng chữ cái; chỉ dùng chữ thường và số!" };
     }
-    if (!cleanPass || cleanPass.length < 6) {
-      return { success: false, message: "Mật khẩu phải có tối thiểu 6 ký tự!" };
+
+    // 1. Kiểm tra chính sách mật khẩu (Password Policy)
+    const policyResult = SecurityService.validatePasswordPolicy(cleanPass);
+    if (!policyResult.isValid) {
+      return { 
+        success: false, 
+        message: policyResult.errors[0] || "Mật khẩu chưa đáp ứng tiêu chuẩn an toàn bảo mật!" 
+      };
     }
 
     if (
@@ -311,9 +318,18 @@ class AppStore {
       return { success: false, message: "Tên đăng nhập này đã được đăng ký! Vui lòng chuyển sang tab Đăng nhập." };
     }
 
+    // 2. Băm mật khẩu bằng Bcrypt với Salt ngẫu nhiên và Work factor = 10
+    let hashedPassword;
+    try {
+      hashedPassword = await SecurityService.hashPassword(cleanPass);
+    } catch (err) {
+      console.error('[Security] Bcrypt hash error:', err);
+      return { success: false, message: "Lỗi hệ thống mã hóa bảo mật. Vui lòng thử lại!" };
+    }
+
     const newUser = {
       username: cleanUser,
-      password: cleanPass,
+      password: hashedPassword, // Chuỗi Bcrypt hash an toàn ($2a$10$...)
       displayName: cleanUser,
       balance: 0, // Kinh doanh thực tế: số dư khởi tạo là 0 VNĐ
       createdAt: new Date().toISOString()
@@ -329,82 +345,102 @@ class AppStore {
     };
     this.save();
 
-    // Lưu online lên Supabase Cloud
+    // Lưu online lên Supabase Cloud (mật khẩu đã băm, không bao giờ gửi plain text)
     dbUpsertUser(newUser).catch(e => console.warn('[Supabase] dbUpsertUser error:', e));
 
     return { success: true, message: `Chào mừng ${newUser.displayName}! Tạo tài khoản thành công.` };
   }
 
-  login(username, password = '') {
+  async login(username, password = '') {
     const cleanUser = (username || '').trim();
     const cleanPass = (password || '').trim();
 
-    if (!cleanUser) {
-      return { success: false, message: "Vui lòng nhập tên đăng nhập!" };
+    if (!cleanUser || !cleanPass) {
+      return { success: false, message: "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!" };
     }
 
-    // Kiểm tra đăng nhập tài khoản ADMIN
+    // 1. Kiểm tra giới hạn số lần thử (Chống tấn công Brute-force & Rate Limiting)
+    const rateCheck = SecurityService.checkRateLimit(cleanUser);
+    if (rateCheck.isLocked) {
+      return { 
+        success: false, 
+        isLocked: true, 
+        remainingSeconds: rateCheck.remainingSeconds, 
+        message: rateCheck.message 
+      };
+    }
+
+    // 2. Kiểm tra đăng nhập tài khoản ADMIN
     const isAdminUser = 
       cleanUser.toLowerCase() === ADMIN_CONFIG.username.toLowerCase() || 
       cleanUser.toLowerCase() === ADMIN_CONFIG.altUsername.toLowerCase() ||
       (ADMIN_CONFIG.legacyUsername && cleanUser.toLowerCase() === ADMIN_CONFIG.legacyUsername.toLowerCase());
 
-    if (isAdminUser && cleanPass === ADMIN_CONFIG.password) {
-      this.user = {
-        isLoggedIn: true,
-        isAdmin: true,
-        username: ADMIN_CONFIG.username,
-        displayName: "Huỳnh Tuấn (Quản Trị Viên)",
-        balance: 0 // Admin thực tế: 0đ và không mua nick
-      };
-      this.save();
-      return { success: true, isAdmin: true, message: "Chào mừng Quản trị viên Huỳnh Tuấn!" };
-    }
-
-    // Nếu nhập tên admin nhưng sai mật khẩu
     if (isAdminUser) {
-      return { success: false, isAdmin: false, message: "Mật khẩu Quản trị viên không chính xác!" };
+      const isMatch = await SecurityService.verifyPassword(cleanPass, ADMIN_CONFIG.password);
+      if (isMatch) {
+        SecurityService.resetRateLimit(cleanUser);
+        this.user = {
+          isLoggedIn: true,
+          isAdmin: true,
+          username: ADMIN_CONFIG.username,
+          displayName: "Huỳnh Tuấn (Quản Trị Viên)",
+          balance: 0 // Admin thực tế: 0đ và không mua nick
+        };
+        this.save();
+        return { success: true, isAdmin: true, message: "Chào mừng Quản trị viên Huỳnh Tuấn!" };
+      } else {
+        const failRecord = SecurityService.recordFailedAttempt(cleanUser);
+        return { 
+          success: false, 
+          isAdmin: false, 
+          isLocked: failRecord.isLocked,
+          remainingSeconds: failRecord.remainingSeconds,
+          message: failRecord.isLocked ? failRecord.message : SecurityService.getGenericLoginErrorMessage() 
+        };
+      }
     }
 
-    // Kiểm tra tài khoản người dùng đã đăng ký
+    // 3. Kiểm tra tài khoản người dùng đã đăng ký
     const found = this.registeredUsers.find(u => u.username.toLowerCase() === cleanUser.toLowerCase());
     if (found) {
-      if (cleanPass && found.password && found.password !== cleanPass) {
-        return { success: false, isAdmin: false, message: "Mật khẩu không chính xác! Vui lòng thử lại." };
+      const isMatch = await SecurityService.verifyPassword(cleanPass, found.password);
+      if (isMatch) {
+        SecurityService.resetRateLimit(cleanUser);
+
+        // Tự động nâng cấp (re-hash) sang Bcrypt nếu tài khoản cũ trước đây lưu dạng plain text
+        if (!SecurityService.isBcryptHash(found.password)) {
+          try {
+            const rehashed = await SecurityService.hashPassword(cleanPass);
+            found.password = rehashed;
+            dbUpsertUser(found).catch(() => {});
+          } catch (e) {
+            console.warn('[Security] Auto rehash note:', e);
+          }
+        }
+
+        this.user = {
+          isLoggedIn: true,
+          isAdmin: false,
+          username: found.username,
+          displayName: found.displayName || found.username,
+          balance: typeof found.balance === 'number' ? found.balance : 0
+        };
+        this.save();
+        return { success: true, isAdmin: false, message: `Xin chào ${this.user.displayName}! Bạn đã đăng nhập thành công.` };
       }
-      this.user = {
-        isLoggedIn: true,
-        isAdmin: false,
-        username: found.username,
-        displayName: found.displayName || found.username,
-        balance: typeof found.balance === 'number' ? found.balance : 0
-      };
-      this.save();
-      return { success: true, isAdmin: false, message: `Xin chào ${this.user.displayName}! Bạn đã đăng nhập thành công.` };
     }
 
-    // Nếu chưa đăng ký, tự động tạo tài khoản và cho phép đăng nhập với số dư 0đ
-    const newUser = {
-      username: cleanUser.toLowerCase(),
-      password: cleanPass || '123456',
-      displayName: cleanUser,
-      balance: 0,
-      createdAt: new Date().toISOString()
+    // 4. Nếu thông tin không khớp hoặc tài khoản không tồn tại:
+    // Tuyệt đối KHÔNG tự động đăng ký và KHÔNG báo "tài khoản không tồn tại" (Chống Username Enumeration)
+    const failRecord = SecurityService.recordFailedAttempt(cleanUser);
+    return { 
+      success: false, 
+      isAdmin: false, 
+      isLocked: failRecord.isLocked,
+      remainingSeconds: failRecord.remainingSeconds,
+      message: failRecord.isLocked ? failRecord.message : SecurityService.getGenericLoginErrorMessage() 
     };
-    this.registeredUsers.push(newUser);
-    this.user = {
-      isLoggedIn: true,
-      isAdmin: false,
-      username: newUser.username,
-      displayName: newUser.displayName,
-      balance: newUser.balance
-    };
-    this.save();
-
-    // Lưu online lên Supabase Cloud
-    dbUpsertUser(newUser).catch(e => console.warn('[Supabase] dbUpsertUser error:', e));
-
-    return { success: true, isAdmin: false, message: `Xin chào ${this.user.displayName}! Đăng nhập thành công.` };
   }
 
   logout() {

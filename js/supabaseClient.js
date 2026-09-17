@@ -287,6 +287,28 @@ export async function dbGetUsers() {
   }
 }
 
+export async function dbGetUserByUsername(username) {
+  const sb = getSupabase();
+  if (!sb) return null;
+  try {
+    const cleanUser = (username || '').toLowerCase().trim();
+    if (!cleanUser) return null;
+    const { data, error } = await sb
+      .from('users')
+      .select('*')
+      .eq('username', cleanUser)
+      .maybeSingle();
+    if (error) {
+      console.warn('[Supabase] dbGetUserByUsername warning:', error.message);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    console.warn('[Supabase] dbGetUserByUsername network error:', err);
+    return null;
+  }
+}
+
 export async function dbUpsertUser(user) {
   const sb = getSupabase();
   if (!sb) return false;
