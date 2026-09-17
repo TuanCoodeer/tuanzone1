@@ -9,12 +9,15 @@ import {
   dbUpdateAccountStatus,
   dbGetOrders,
   dbInsertOrder,
+  dbClearAllOrders,
   dbGetDeposits,
   dbInsertDeposit,
   dbUpdateDepositStatus,
+  dbClearAllDeposits,
   dbGetUsers,
   dbUpsertUser,
-  dbUpdateUserBalance
+  dbUpdateUserBalance,
+  dbDeleteUser
 } from './supabaseClient.js';
 import { SecurityService } from './security.js';
 
@@ -138,9 +141,16 @@ class AppStore {
       this.accounts.push(...sampleBags);
     }
 
-    // 4. Lịch sử đơn hàng mua nick
-    const savedOrders = localStorage.getItem('tubizone_orders') || localStorage.getItem('tuanzone_orders');
-    this.orders = savedOrders ? JSON.parse(savedOrders) : [];
+    // 4. Lịch sử đơn hàng mua nick & Doanh thu
+    if (localStorage.getItem('tubizone_orders_reset_v1') !== 'true') {
+      this.orders = [];
+      localStorage.setItem('tubizone_orders', '[]');
+      localStorage.setItem('tubizone_orders_reset_v1', 'true');
+      dbClearAllOrders().catch(() => {});
+    } else {
+      const savedOrders = localStorage.getItem('tubizone_orders') || localStorage.getItem('tuanzone_orders');
+      this.orders = savedOrders ? JSON.parse(savedOrders) : [];
+    }
 
     // 5. Search & Filter State
     this.searchQuery = '';
@@ -765,6 +775,56 @@ class AppStore {
 
   getPendingDepositsCount() {
     return this.depositHistory.filter(d => d.status === 'PENDING').length;
+  }
+
+  // --- ADMIN: XÓA THÀNH VIÊN ---
+  adminDeleteUser(username) {
+    if (!username) return { success: false, message: "Tên đăng nhập không hợp lệ!" };
+    const clean = username.toLowerCase().trim();
+    if (clean === 'admin' || clean === ADMIN_CONFIG.username.toLowerCase()) {
+      return { success: false, message: "Tuyệt đối không thể xóa tài khoản Quản trị viên!" };
+    }
+
+    const prevCount = this.registeredUsers.length;
+    this.registeredUsers = this.registeredUsers.filter(u => (u.username || '').toLowerCase() !== clean);
+    
+    if (this.registeredUsers.length === prevCount) {
+      return { success: false, message: `Không tìm thấy thành viên "${username}" trong hệ thống!` };
+    }
+
+    // Nếu người dùng bị xóa đang đăng nhập trên trình duyệt hiện tại thì đăng xuất
+    if (this.user && (this.user.username || '').toLowerCase() === clean) {
+      this.logout();
+    } else {
+      this.save();
+    }
+
+    // Xóa trên Supabase Cloud
+    dbDeleteUser(clean).catch(e => console.warn('[Supabase] dbDeleteUser error:', e));
+
+    return { success: true, message: `Đã xóa thành viên "${username}" thành công!` };
+  }
+
+  // --- ADMIN: RESET DOANH THU & LỊCH SỬ ĐƠN HÀNG VỀ 0 ---
+  adminResetOrders() {
+    this.orders = [];
+    try {
+      localStorage.setItem('tubizone_orders', '[]');
+    } catch (e) {}
+    this.save();
+    dbClearAllOrders().catch(e => console.warn('[Supabase] dbClearAllOrders error:', e));
+    return { success: true, message: "Đã reset toàn bộ doanh thu và lịch sử đơn hàng về 0đ!" };
+  }
+
+  // --- ADMIN: RESET TOÀN BỘ PHIẾU NẠP TIỀN ---
+  adminResetDeposits() {
+    this.depositHistory = [];
+    try {
+      localStorage.setItem('tubizone_deposit_history', '[]');
+    } catch (e) {}
+    this.save();
+    dbClearAllDeposits().catch(e => console.warn('[Supabase] dbClearAllDeposits error:', e));
+    return { success: true, message: "Đã reset toàn bộ danh sách phiếu nạp tiền thành công!" };
   }
 }
 

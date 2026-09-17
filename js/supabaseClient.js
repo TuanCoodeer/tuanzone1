@@ -349,3 +349,53 @@ export async function dbUpdateUserBalance(username, balance) {
     return false;
   }
 }
+
+export async function dbDeleteUser(username) {
+  const sb = getSupabase();
+  if (!sb) return false;
+  try {
+    const cleanUser = (username || '').toLowerCase().trim();
+    if (!cleanUser || cleanUser === 'admin') return false;
+    const { error } = await sb.from('users').delete().eq('username', cleanUser);
+    if (error) {
+      console.warn('[Supabase] dbDeleteUser warning:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('[Supabase] dbDeleteUser exception:', err);
+    return false;
+  }
+}
+
+export async function dbClearAllDeposits() {
+  const sb = getSupabase();
+  if (!sb) return false;
+  try {
+    const { error } = await sb.from('deposits').delete().neq('id', '___none___');
+    if (error) {
+      console.warn('[Supabase] dbClearAllDeposits warning:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('[Supabase] dbClearAllDeposits exception:', err);
+    return false;
+  }
+}
+
+export async function dbClearAllOrders() {
+  const sb = getSupabase();
+  if (!sb) return false;
+  try {
+    const { error } = await sb.from('orders').delete().neq('id', '___none___');
+    if (error) {
+      console.warn('[Supabase] dbClearAllOrders warning:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('[Supabase] dbClearAllOrders exception:', err);
+    return false;
+  }
+}

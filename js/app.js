@@ -1775,14 +1775,16 @@ class TuBIzOneApp {
     const tabDep = document.getElementById('tab-admin-deposits');
     const tabHist = document.getElementById('tab-admin-history');
     const tabInv = document.getElementById('tab-admin-inventory');
+    const tabUsers = document.getElementById('tab-admin-users');
     const panelRev = document.getElementById('panel-admin-revenue');
     const panelDep = document.getElementById('panel-admin-deposits');
     const panelHist = document.getElementById('panel-admin-history');
     const panelInv = document.getElementById('panel-admin-inventory');
+    const panelUsers = document.getElementById('panel-admin-users');
 
     const switchAdminTab = (activeTab, activePanel) => {
-      [tabRev, tabDep, tabHist, tabInv].forEach(t => t?.classList.remove('active'));
-      [panelRev, panelDep, panelHist, panelInv].forEach(p => { if (p) p.style.display = 'none'; });
+      [tabRev, tabDep, tabHist, tabInv, tabUsers].forEach(t => t?.classList.remove('active'));
+      [panelRev, panelDep, panelHist, panelInv, panelUsers].forEach(p => { if (p) p.style.display = 'none'; });
       activeTab?.classList.add('active');
       if (activePanel) activePanel.style.display = 'block';
     };
@@ -1794,6 +1796,10 @@ class TuBIzOneApp {
     });
     tabHist?.addEventListener('click', () => switchAdminTab(tabHist, panelHist));
     tabInv?.addEventListener('click', () => switchAdminTab(tabInv, panelInv));
+    tabUsers?.addEventListener('click', () => {
+      switchAdminTab(tabUsers, panelUsers);
+      this.renderAdminUsersModal();
+    });
 
     document.getElementById('btn-refresh-admin-deposits')?.addEventListener('click', () => {
       this.renderAdminDeposits();
@@ -2070,7 +2076,52 @@ class TuBIzOneApp {
       }
     }
 
-    // 6. Panel 3: Doanh Thu Chi Tiết Theo Từng Game
+    // Gắn sự kiện Reset Duyệt Nạp Tiền trong Kho Admin
+    const btnResetDepHub = document.getElementById('btn-hub-reset-deposits');
+    if (btnResetDepHub && !btnResetDepHub.dataset.bound) {
+      btnResetDepHub.dataset.bound = 'true';
+      btnResetDepHub.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn xóa và reset toàn bộ danh sách phiếu nạp tiền?", {
+          title: "Reset Danh Sách Nạp Tiền",
+          type: "danger",
+          confirmText: "Reset Tất Cả",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetDeposits();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
+            this.renderAdminDeposits();
+          }
+          showToast("Đã reset toàn bộ danh sách phiếu nạp tiền thành công!", "success");
+        }
+      });
+    }
+
+    // 6. Panel 3: Doanh Thu Chi Tiết Theo Từng Game & Nút Reset Doanh Thu
+    const btnResetRevHub = document.getElementById('btn-hub-reset-revenue');
+    if (btnResetRevHub && !btnResetRevHub.dataset.bound) {
+      btnResetRevHub.dataset.bound = 'true';
+      btnResetRevHub.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn reset toàn bộ doanh thu tháng về 0đ?", {
+          title: "Reset Doanh Thu Về 0đ",
+          type: "danger",
+          confirmText: "Reset Về 0đ",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetOrders();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
+            this.renderAdminDashboard();
+          }
+          showToast("Đã reset toàn bộ doanh thu tháng về 0đ thành công!", "success");
+        }
+      });
+    }
+
     const gameRevGrid = document.getElementById('admin-hub-game-revenue-grid');
     if (gameRevGrid) {
       gameRevGrid.innerHTML = `
@@ -2092,7 +2143,29 @@ class TuBIzOneApp {
       `;
     }
 
-    // 7. Panel 4: Lịch Sử Giao Dịch Toàn Shop
+    // 7. Panel 4: Lịch Sử Giao Dịch Toàn Shop & Nút Reset Đơn Hàng
+    const btnResetOrdersHub = document.getElementById('btn-hub-reset-orders');
+    if (btnResetOrdersHub && !btnResetOrdersHub.dataset.bound) {
+      btnResetOrdersHub.dataset.bound = 'true';
+      btnResetOrdersHub.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn xóa và reset toàn bộ lịch sử giao dịch mua nick?", {
+          title: "Reset Lịch Sử Giao Dịch",
+          type: "danger",
+          confirmText: "Xóa Toàn Bộ",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetOrders();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
+            this.renderAdminDashboard();
+          }
+          showToast("Đã reset toàn bộ lịch sử giao dịch mua nick!", "success");
+        }
+      });
+    }
+
     const ordersTbody = document.getElementById('admin-hub-orders-tbody');
     if (ordersTbody) {
       if (stats.orders.length === 0) {
@@ -2112,18 +2185,22 @@ class TuBIzOneApp {
       }
     }
 
-    // 8. Panel 5: Danh Sách Thành Viên Đã Đăng Ký
+    // 8. Panel 5: Danh Sách Thành Viên Đã Đăng Ký (Có nút XÓA THÀNH VIÊN)
     const usersTbody = document.getElementById('admin-hub-users-tbody');
     if (usersTbody) {
       const usersList = store.registeredUsers || [];
       if (usersList.length === 0) {
-        usersTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">Chưa có thành viên nào đăng ký.</td></tr>`;
+        usersTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">Chưa có thành viên nào đăng ký.</td></tr>`;
       } else {
         usersTbody.innerHTML = usersList.map((u, idx) => {
-          const isAdmin = u.username.toLowerCase() === 'admin';
+          const isAdmin = (u.username || '').toLowerCase() === 'admin';
           const roleBadge = isAdmin
             ? `<span style="color: #ffb703; font-weight: 800; background: rgba(255,183,3,0.15); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(255,183,3,0.3);">👑 Quản Trị Viên</span>`
             : `<span style="color: #94a3b8; font-weight: 600; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px;">👤 Khách hàng</span>`;
+
+          const actionBtn = isAdmin
+            ? `<span style="color: var(--text-muted); font-size: 0.75rem;">Mặc định</span>`
+            : `<button class="btn-delete-user btn-hub-del-user" data-username="${u.username}">Xóa</button>`;
 
           const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleString('vi-VN') : 'Mặc định';
 
@@ -2135,9 +2212,33 @@ class TuBIzOneApp {
               <td style="font-weight: 800; color: var(--accent-gold); font-family: var(--font-mono);">${(u.balance || 0).toLocaleString('vi-VN')} đ</td>
               <td style="font-size: 0.8rem; color: var(--text-muted);">${createdDate}</td>
               <td>${roleBadge}</td>
+              <td>${actionBtn}</td>
             </tr>
           `;
         }).join('');
+
+        usersTbody.querySelectorAll('.btn-hub-del-user').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const username = btn.dataset.username;
+            const ok = await showConfirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản thành viên "${username}" khỏi hệ thống?`, {
+              title: "Xác Nhận Xóa Thành Viên",
+              type: "danger",
+              confirmText: "Xóa Vĩnh Viễn",
+              cancelText: "Hủy Bỏ"
+            });
+            if (ok) {
+              const res = store.adminDeleteUser(username);
+              if (res.success) {
+                showToast(res.message, "success");
+                this.renderAdminWarehouseHub();
+                this.renderAdminUsersModal();
+                this.renderHeaderAuth();
+              } else {
+                showToast(res.message, "danger");
+              }
+            }
+          });
+        });
       }
     }
   }
@@ -2247,6 +2348,127 @@ class TuBIzOneApp {
 
     // 5. Cập nhật bảng nạp tiền & huy hiệu
     this.renderAdminDeposits();
+
+    // 6. Cập nhật bảng danh sách thành viên trong modal
+    this.renderAdminUsersModal();
+
+    // 7. Gắn sự kiện các nút Reset trong Modal
+    const btnResetRevModal = document.getElementById('btn-admin-reset-revenue');
+    if (btnResetRevModal && !btnResetRevModal.dataset.bound) {
+      btnResetRevModal.dataset.bound = 'true';
+      btnResetRevModal.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn reset toàn bộ doanh thu tháng về 0đ?", {
+          title: "Reset Doanh Thu Về 0đ",
+          type: "danger",
+          confirmText: "Reset Về 0đ",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetOrders();
+          this.renderAdminDashboard();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          showToast("Đã reset doanh thu tháng về 0đ thành công!", "success");
+        }
+      });
+    }
+
+    const btnResetDepModal = document.getElementById('btn-admin-reset-deposits');
+    if (btnResetDepModal && !btnResetDepModal.dataset.bound) {
+      btnResetDepModal.dataset.bound = 'true';
+      btnResetDepModal.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn xóa và reset toàn bộ danh sách phiếu nạp tiền?", {
+          title: "Reset Danh Sách Nạp Tiền",
+          type: "danger",
+          confirmText: "Reset Tất Cả",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetDeposits();
+          this.renderAdminDeposits();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          showToast("Đã reset toàn bộ danh sách phiếu nạp tiền thành công!", "success");
+        }
+      });
+    }
+
+    const btnResetOrdersModal = document.getElementById('btn-admin-reset-orders');
+    if (btnResetOrdersModal && !btnResetOrdersModal.dataset.bound) {
+      btnResetOrdersModal.dataset.bound = 'true';
+      btnResetOrdersModal.addEventListener('click', async () => {
+        const ok = await showConfirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử giao dịch đơn hàng trên shop?", {
+          title: "Reset Lịch Sử Giao Dịch",
+          type: "danger",
+          confirmText: "Xóa Toàn Bộ",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          store.adminResetOrders();
+          this.renderAdminDashboard();
+          this.renderAdminWarehouseHub();
+          this.renderHeaderAuth();
+          showToast("Đã reset toàn bộ lịch sử giao dịch đơn hàng!", "success");
+        }
+      });
+    }
+  }
+
+  renderAdminUsersModal() {
+    const tbody = document.getElementById('admin-users-table-body');
+    if (!tbody) return;
+    const usersList = store.registeredUsers || [];
+    if (usersList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">Chưa có thành viên nào đăng ký.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = usersList.map((u, idx) => {
+      const isAdmin = (u.username || '').toLowerCase() === 'admin';
+      const roleBadge = isAdmin
+        ? `<span style="color: #ffb703; font-weight: 800; background: rgba(255,183,3,0.15); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(255,183,3,0.3);">👑 Quản Trị Viên</span>`
+        : `<span style="color: #94a3b8; font-weight: 600; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px;">👤 Khách hàng</span>`;
+
+      const actionBtn = isAdmin
+        ? `<span style="color: var(--text-muted); font-size: 0.75rem;">Mặc định</span>`
+        : `<button class="btn-delete-user btn-modal-del-user" data-username="${u.username}">Xóa</button>`;
+
+      const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleString('vi-VN') : 'Mặc định';
+
+      return `
+        <tr>
+          <td style="color: var(--text-muted);">${idx + 1}</td>
+          <td><strong style="color: var(--text-main); font-family: var(--font-mono);">${u.username}</strong></td>
+          <td>${u.displayName || u.username}</td>
+          <td style="font-weight: 800; color: var(--accent-gold); font-family: var(--font-mono);">${(u.balance || 0).toLocaleString('vi-VN')} đ</td>
+          <td style="font-size: 0.8rem; color: var(--text-muted);">${createdDate}</td>
+          <td>${roleBadge}</td>
+          <td>${actionBtn}</td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-modal-del-user').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const username = btn.dataset.username;
+        const ok = await showConfirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản thành viên "${username}" khỏi hệ thống?`, {
+          title: "Xác Nhận Xóa Thành Viên",
+          type: "danger",
+          confirmText: "Xóa Vĩnh Viễn",
+          cancelText: "Hủy Bỏ"
+        });
+        if (ok) {
+          const res = store.adminDeleteUser(username);
+          if (res.success) {
+            showToast(res.message, "success");
+            this.renderAdminUsersModal();
+            this.renderAdminWarehouseHub();
+            this.renderHeaderAuth();
+          } else {
+            showToast(res.message, "danger");
+          }
+        }
+      });
+    });
   }
 
   renderAdminDeposits() {
