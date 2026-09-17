@@ -195,6 +195,15 @@ class TuBIzOneApp {
 
     document.getElementById('header-logo-btn')?.addEventListener('click', (e) => {
       e.preventDefault();
+      if (this.activeDetailAccId) {
+        this.closeAccountDetail(false);
+      }
+      const adminAddView = document.getElementById('view-admin-add-acc');
+      if (adminAddView && adminAddView.style.display !== 'none') {
+        this.closeAddAccView(false);
+      }
+      this.closeWarehouseDetail(false);
+      window.location.hash = 'trangchu';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
@@ -234,6 +243,13 @@ class TuBIzOneApp {
       window.location.hash = 'kho-' + gameKey;
     }
 
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
+    if (shopView) shopView.style.display = 'block';
+    if (detailView) detailView.style.display = 'none';
+    if (adminAddView) adminAddView.style.display = 'none';
+
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'none';
 
@@ -254,10 +270,15 @@ class TuBIzOneApp {
     this.currentActiveWarehouse = null;
 
     if (updateHash) {
-      if (window.location.hash.startsWith('#kho-') || window.location.hash === '#tui-mu-freefire') {
-        history.pushState("", document.title, window.location.pathname + window.location.search);
-      }
+      window.location.hash = 'trangchu';
     }
+
+    const shopView = document.getElementById('view-shop-warehouses');
+    const detailView = document.getElementById('view-account-detail');
+    const adminAddView = document.getElementById('view-admin-add-acc');
+    if (shopView) shopView.style.display = 'block';
+    if (detailView) detailView.style.display = 'none';
+    if (adminAddView) adminAddView.style.display = 'none';
 
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'block';
@@ -267,7 +288,7 @@ class TuBIzOneApp {
       if (el) el.style.display = 'none';
     });
 
-    if (catSection) {
+    if (catSection && updateHash) {
       setTimeout(() => {
         catSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 60);
@@ -319,14 +340,7 @@ class TuBIzOneApp {
       });
     });
 
-    // 4. Logo website click -> quay về trang chủ hiển thị danh mục game
-    document.getElementById('header-logo-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (this.activeDetailAccId) {
-        this.closeAccountDetail(false);
-      }
-      this.closeWarehouseDetail(true);
-    });
+    // 4. Logo website click đã được xử lý tập trung tại attachHeaderEvents()
   }
 
   // --- 4B. KHO TÚI MÙ FREE FIRE (CHUẨN NHƯ 3 KHO NICK) ---
@@ -647,7 +661,14 @@ class TuBIzOneApp {
   // --- 5C. KHU VỰC CHI TIẾT TÀI KHOẢN (ACCOUNT DETAIL SHOWCASE) & ROUTING ---
   initRouteHash() {
     const checkHash = () => {
-      const hash = window.location.hash || '';
+      let hash = window.location.hash || '';
+
+      // Tự động gán #trangchu vào thanh địa chỉ nếu người dùng mới vào web mà chưa có hash
+      if (!hash || hash === '#') {
+        history.replaceState(null, '', '#trangchu');
+        hash = '#trangchu';
+      }
+
       if (hash.startsWith('#acc-')) {
         const accId = hash.replace('#acc-', '').trim();
         if (accId) {
@@ -673,6 +694,7 @@ class TuBIzOneApp {
           this.closeAddAccView(false);
         }
       } else {
+        // #trangchu hoặc hash khác -> quay về giao diện trang chủ
         if (this.activeDetailAccId) {
           this.closeAccountDetail(false);
         }
@@ -680,13 +702,12 @@ class TuBIzOneApp {
         if (adminAddView && adminAddView.style.display !== 'none') {
           this.closeAddAccView(false);
         }
-        if (!this.currentActiveWarehouse) {
-          this.closeWarehouseDetail(false);
-        }
+        this.closeWarehouseDetail(false);
       }
     };
 
     window.addEventListener('hashchange', checkHash);
+    checkHash();
     setTimeout(checkHash, 150);
   }
 
@@ -697,11 +718,15 @@ class TuBIzOneApp {
     });
     document.getElementById('bc-home-link')?.addEventListener('click', (e) => {
       e.preventDefault();
-      this.closeAccountDetail();
+      this.currentActiveWarehouse = null;
+      this.closeAccountDetail(false);
+      this.closeWarehouseDetail(false);
+      window.location.hash = 'trangchu';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     document.getElementById('bc-shop-link')?.addEventListener('click', (e) => {
       e.preventDefault();
-      this.closeAccountDetail();
+      this.closeAccountDetail(true);
     });
 
     // 2. Nút Copy Mã Nick
@@ -816,7 +841,7 @@ class TuBIzOneApp {
         if (this.currentActiveWarehouse) {
           window.location.hash = 'kho-' + this.currentActiveWarehouse;
         } else {
-          history.pushState("", document.title, window.location.pathname + window.location.search);
+          window.location.hash = 'trangchu';
         }
       }
     }
@@ -1221,7 +1246,7 @@ class TuBIzOneApp {
   closeAddAccView(updateHash = true) {
     if (updateHash) {
       if (window.location.hash === '#admin-add-acc') {
-        history.pushState("", document.title, window.location.pathname + window.location.search);
+        window.location.hash = this.currentActiveWarehouse ? ('kho-' + this.currentActiveWarehouse) : 'trangchu';
       }
     }
 
