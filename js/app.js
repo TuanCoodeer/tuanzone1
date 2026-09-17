@@ -188,12 +188,13 @@ class TuBIzOneApp {
       if (navAdmin) navAdmin.style.display = 'inline-flex';
 
       const revStats = store.getMonthlyRevenue();
+      const totalShopAccounts = store.getTotalAvailableAccounts();
       const elTotal = document.getElementById('cat-count-admin-total');
       const elRev = document.getElementById('cat-count-admin-revenue');
       const elSold = document.getElementById('cat-count-admin-sold');
       const elPendingBadge = document.getElementById('cat-badge-pending-deposits');
 
-      if (elTotal) elTotal.textContent = `${store.accounts.length} nick`;
+      if (elTotal) elTotal.textContent = `${totalShopAccounts} nick`;
       if (elRev) elRev.textContent = `${revStats.totalRevenue.toLocaleString('vi-VN')} đ`;
       if (elSold) elSold.textContent = `${revStats.totalSold} acc`;
       if (elPendingBadge) elPendingBadge.textContent = `Chờ Duyệt: ${store.getPendingDepositsCount()}`;
@@ -252,16 +253,19 @@ class TuBIzOneApp {
     const lqCount = store.accounts.filter(a => a.game === 'lienquan' && a.status === 'AVAILABLE').length;
     const fcCount = store.accounts.filter(a => (a.game === 'fcmobile' || a.game === 'fc' || a.game === 'roblox') && a.status === 'AVAILABLE').length;
     const bbCount = store.accounts.filter(a => (a.game === 'blindbag' || a.game === 'ff-blindbag') && a.status === 'AVAILABLE').length;
+    const totalShopAccounts = store.getTotalAvailableAccounts();
 
     const elFf = document.getElementById('cat-count-freefire');
     const elLq = document.getElementById('cat-count-lienquan');
     const elFc = document.getElementById('cat-count-fcmobile');
     const elBb = document.getElementById('cat-count-blindbag');
+    const elAdminTotal = document.getElementById('cat-count-admin-total');
 
     if (elFf) elFf.textContent = ffCount;
     if (elLq) elLq.textContent = lqCount;
     if (elFc) elFc.textContent = fcCount;
     if (elBb) elBb.textContent = bbCount;
+    if (elAdminTotal) elAdminTotal.textContent = `${totalShopAccounts} nick`;
   }
 
   openWarehouse(gameKey, updateHash = true) {
@@ -1829,7 +1833,7 @@ class TuBIzOneApp {
     if (!store.user?.isAdmin) return;
 
     const stats = store.getMonthlyRevenue();
-    const availableCount = store.accounts.filter(a => a.status === 'AVAILABLE').length;
+    const availableCount = store.getTotalAvailableAccounts();
     const usersCount = store.registeredUsers ? store.registeredUsers.length : 0;
     const pendingDeposits = store.getPendingDepositsCount();
 
@@ -1845,7 +1849,7 @@ class TuBIzOneApp {
     if (soldEl) soldEl.textContent = stats.totalSold + ' acc';
     if (availEl) availEl.textContent = availableCount + ' acc';
     if (usersEl) usersEl.textContent = usersCount + ' người';
-    if (invBadge) invBadge.textContent = store.accounts.length;
+    if (invBadge) invBadge.textContent = availableCount;
     if (depBadge) depBadge.textContent = pendingDeposits;
 
     // 2. Nút Thêm Acc & Làm Mới
@@ -2256,7 +2260,7 @@ class TuBIzOneApp {
 
   renderAdminDashboard() {
     const stats = store.getMonthlyRevenue();
-    const availableCount = store.accounts.filter(a => a.status === 'AVAILABLE').length;
+    const availableCount = store.getTotalAvailableAccounts();
 
     // 1. Thống kê tổng
     document.getElementById('metric-total-revenue').textContent = stats.totalRevenue.toLocaleString('vi-VN') + ' đ';

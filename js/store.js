@@ -69,76 +69,23 @@ class AppStore {
     const savedAccounts = localStorage.getItem('tubizone_warehouse_accounts') || localStorage.getItem('tuanzone_warehouse_accounts');
     this.accounts = savedAccounts ? JSON.parse(savedAccounts) : [];
 
-    // 3B. Khởi tạo 4 túi mù Free Fire mẫu nếu kho túi mù chưa có tài khoản nào
-    const hasBlindBag = this.accounts.some(a => a.game === 'blindbag' || a.game === 'ff-blindbag');
-    if (!hasBlindBag) {
-      const sampleBags = [
-        {
-          id: "TM-FF-01",
-          game: "blindbag",
-          prime: "Sơ Cấp",
-          rank: "Kim Cương",
-          accountType: "Túi Mù May Mắn",
-          title: "Túi Mù Free Fire Sơ Cấp - Cơ Hội Trúng Prime 4 & Skin Súng VIP",
-          price: 20000,
-          image: "assets/images/cat-ff-blindbag.jpg",
-          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
-          credentials: "Tài khoản: ff_blindbag_01 | Mật khẩu: TubizOne@2026",
-          description: "Túi mù Free Fire mức giá học sinh sinh viên. Cam kết 100% trúng tài khoản đăng nhập được, trắng thông tin, rank từ Kim Cương trở lên.",
-          status: "AVAILABLE",
-          createdAt: new Date().toISOString(),
-          createdDate: new Date().toLocaleDateString('vi-VN')
-        },
-        {
-          id: "TM-FF-02",
-          game: "blindbag",
-          prime: "VIP Cyber",
-          rank: "Huyền Thoại",
-          accountType: "Túi Mù VIP",
-          title: "Túi Mù Free Fire VIP - Tỷ Lệ Cao Trúng AK Rồng Xanh & MP40 Mãng Xà",
-          price: 50000,
-          image: "assets/images/cat-ff-blindbag.jpg",
-          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
-          credentials: "Tài khoản: ff_blindbag_vip02 | Mật khẩu: TubizOne@2026",
-          description: "Túi mù VIP được săn đón nhiều nhất! Tỷ lệ cao mở trúng Prime 5-6, AK Rồng Xanh Lv4+, trang phục siêu hiếm.",
-          status: "AVAILABLE",
-          createdAt: new Date().toISOString(),
-          createdDate: new Date().toLocaleDateString('vi-VN')
-        },
-        {
-          id: "TM-FF-03",
-          game: "blindbag",
-          prime: "Siêu Cấp",
-          rank: "Huyền Thoại",
-          accountType: "Túi Mù Thần Thoại",
-          title: "Túi Mù Free Fire Thần Thoại - Full Skin Súng Tiến Hóa Max Lv7",
-          price: 100000,
-          image: "assets/images/cat-ff-blindbag.jpg",
-          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
-          credentials: "Tài khoản: ff_mythic_03 | Mật khẩu: TubizOne@2026",
-          description: "Túi mù cực phẩm dành cho game thủ chịu chơi. Tỷ lệ cao trúng Nick Prime 7-8, Full AK Rồng Xanh Max, MP40 Mãng Xà Lv7, trang phục Quỷ Dạ Xoa.",
-          status: "AVAILABLE",
-          createdAt: new Date().toISOString(),
-          createdDate: new Date().toLocaleDateString('vi-VN')
-        },
-        {
-          id: "TM-FF-04",
-          game: "blindbag",
-          prime: "Thần Thoại",
-          rank: "Thách Đấu",
-          accountType: "Túi Mù Thần Thoại",
-          title: "Túi Mù Free Fire Độc Quyền - Prime 8 Thách Đấu Max Cực Phẩm",
-          price: 200000,
-          image: "assets/images/cat-ff-blindbag.jpg",
-          images: ["assets/images/cat-ff-blindbag.jpg", "assets/images/cat-freefire.jpg"],
-          credentials: "Tài khoản: ff_god_04 | Mật khẩu: TubizOne@2026",
-          description: "Túi mù đẳng cấp nhất shop tuBIzOne! 100% tài khoản Prime 8 siêu VIP, full súng tiến hóa cấp tối đa, đầy đủ thẻ vô cực các mùa đầu.",
-          status: "AVAILABLE",
-          createdAt: new Date().toISOString(),
-          createdDate: new Date().toLocaleDateString('vi-VN')
-        }
-      ];
-      this.accounts.push(...sampleBags);
+    // 3B. Dọn dẹp triệt để các nick mẫu túi mù ảo tự sinh trước đây (TM-FF-01 -> TM-FF-04)
+    const sampleIds = ['TM-FF-01', 'TM-FF-02', 'TM-FF-03', 'TM-FF-04'];
+    const hasSampleIds = this.accounts.some(a => sampleIds.includes(String(a.id)));
+    if (hasSampleIds || localStorage.getItem('tubizone_sample_bags_purged_v2') !== 'true') {
+      this.accounts = this.accounts.filter(a => !sampleIds.includes(String(a.id)));
+      try {
+        localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));
+        localStorage.setItem('tubizone_sample_bags_purged_v2', 'true');
+        let deletedIds = JSON.parse(localStorage.getItem('tubizone_deleted_acc_ids') || '[]');
+        sampleIds.forEach(id => {
+          if (!deletedIds.includes(id)) deletedIds.push(id);
+          dbDeleteAccount(id).catch(() => {});
+        });
+        localStorage.setItem('tubizone_deleted_acc_ids', JSON.stringify(deletedIds));
+      } catch (e) {
+        console.warn('[Store] Cleanup sample bags warning:', e);
+      }
     }
 
     // 4. Lịch sử đơn hàng mua nick & Doanh thu
@@ -204,18 +151,26 @@ class AppStore {
       if (cloudAccounts !== null && Array.isArray(cloudAccounts)) {
         // Lấy danh sách ID đã bị xóa gần đây (để tránh phục hồi acc vừa xóa)
         const deletedIds = JSON.parse(localStorage.getItem('tubizone_deleted_acc_ids') || '[]');
+        const sampleIds = ['TM-FF-01', 'TM-FF-02', 'TM-FF-03', 'TM-FF-04'];
+
+        // Tự động dọn dẹp các acc mẫu ảo nếu chúng tồn tại trên Cloud
+        cloudAccounts.forEach(a => {
+          if (sampleIds.includes(String(a.id))) {
+            dbDeleteAccount(String(a.id)).catch(() => {});
+          }
+        });
 
         // Tạo Map các tài khoản hiện có ở local và cloud
         const localMap = new Map((this.accounts || []).map(a => [String(a.id), a]));
         const cloudMap = new Map(cloudAccounts.map(a => [String(a.id), a]));
 
-        // Danh sách hợp nhất: Bắt đầu từ cloud (lọc bỏ các ID đã xóa)
-        const mergedList = cloudAccounts.filter(a => !deletedIds.includes(String(a.id)));
+        // Danh sách hợp nhất: Bắt đầu từ cloud (lọc bỏ các ID đã xóa và nick mẫu ảo)
+        const mergedList = cloudAccounts.filter(a => !deletedIds.includes(String(a.id)) && !sampleIds.includes(String(a.id)));
 
         // Những tài khoản có ở Local nhưng chưa có trên Cloud (Admin vừa tạo hoặc mạng lag trước đó):
         // Tuyệt đối giữ lại và tự động đẩy lên Supabase Cloud để vĩnh viễn không bao giờ mất!
         for (const [id, localAcc] of localMap.entries()) {
-          if (!cloudMap.has(id) && !deletedIds.includes(id)) {
+          if (!cloudMap.has(id) && !deletedIds.includes(id) && !sampleIds.includes(id)) {
             mergedList.unshift(localAcc);
             // Tự động đẩy lên Supabase Cloud
             dbInsertAccount(localAcc).catch(e => console.warn('[Supabase Auto Sync] dbInsertAccount error:', e));
@@ -643,6 +598,11 @@ class AppStore {
     };
   }
 
+  // --- THỐNG KÊ TỔNG SỐ NICK TOÀN BỘ SHOP (TẤT CẢ KHO GỘP LẠI) ---
+  getTotalAvailableAccounts() {
+    return (this.accounts || []).filter(a => a.status === 'AVAILABLE').length;
+  }
+
   // --- ADMIN: BÁO CÁO DOANH THU & GIAO DỊCH ---
   getMonthlyRevenue() {
     const totalRevenue = this.orders.reduce((sum, ord) => sum + (ord.price || 0), 0);
@@ -652,7 +612,8 @@ class AppStore {
       freefire: { count: 0, revenue: 0 },
       lienquan: { count: 0, revenue: 0 },
       fcmobile: { count: 0, revenue: 0 },
-      roblox: { count: 0, revenue: 0 }
+      roblox: { count: 0, revenue: 0 },
+      blindbag: { count: 0, revenue: 0 }
     };
 
     this.orders.forEach(ord => {
