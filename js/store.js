@@ -89,10 +89,10 @@ class AppStore {
     }
 
     // 4. Lịch sử đơn hàng mua nick & Doanh thu
-    if (localStorage.getItem('tubizone_orders_reset_v1') !== 'true') {
+    if (localStorage.getItem('tubizone_orders_reset_v2') !== 'true') {
       this.orders = [];
       localStorage.setItem('tubizone_orders', '[]');
-      localStorage.setItem('tubizone_orders_reset_v1', 'true');
+      localStorage.setItem('tubizone_orders_reset_v2', 'true');
       dbClearAllOrders().catch(() => {});
     } else {
       const savedOrders = localStorage.getItem('tubizone_orders') || localStorage.getItem('tuanzone_orders');
@@ -767,24 +767,33 @@ class AppStore {
   }
 
   // --- ADMIN: RESET DOANH THU & LỊCH SỬ ĐƠN HÀNG VỀ 0 ---
-  adminResetOrders() {
+  async adminResetOrders() {
     this.orders = [];
     try {
       localStorage.setItem('tubizone_orders', '[]');
+      localStorage.setItem('tubizone_orders_reset_v2', 'true');
     } catch (e) {}
     this.save();
-    dbClearAllOrders().catch(e => console.warn('[Supabase] dbClearAllOrders error:', e));
+    try {
+      await dbClearAllOrders();
+    } catch (e) {
+      console.warn('[Supabase] dbClearAllOrders error:', e);
+    }
     return { success: true, message: "Đã reset toàn bộ doanh thu và lịch sử đơn hàng về 0đ!" };
   }
 
   // --- ADMIN: RESET TOÀN BỘ PHIẾU NẠP TIỀN ---
-  adminResetDeposits() {
+  async adminResetDeposits() {
     this.depositHistory = [];
     try {
       localStorage.setItem('tubizone_deposit_history', '[]');
     } catch (e) {}
     this.save();
-    dbClearAllDeposits().catch(e => console.warn('[Supabase] dbClearAllDeposits error:', e));
+    try {
+      await dbClearAllDeposits();
+    } catch (e) {
+      console.warn('[Supabase] dbClearAllDeposits error:', e);
+    }
     return { success: true, message: "Đã reset toàn bộ danh sách phiếu nạp tiền thành công!" };
   }
 }

@@ -2092,7 +2092,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetDeposits();
+          await store.adminResetDeposits();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();
           if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
@@ -2115,7 +2115,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetOrders();
+          await store.adminResetOrders();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();
           if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
@@ -2159,7 +2159,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetOrders();
+          await store.adminResetOrders();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();
           if (document.getElementById('admin-dashboard-modal')?.classList.contains('active')) {
@@ -2368,7 +2368,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetOrders();
+          await store.adminResetOrders();
           this.renderAdminDashboard();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();
@@ -2388,7 +2388,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetDeposits();
+          await store.adminResetDeposits();
           this.renderAdminDeposits();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();
@@ -2408,7 +2408,7 @@ class TuBIzOneApp {
           cancelText: "Hủy Bỏ"
         });
         if (ok) {
-          store.adminResetOrders();
+          await store.adminResetOrders();
           this.renderAdminDashboard();
           this.renderAdminWarehouseHub();
           this.renderHeaderAuth();

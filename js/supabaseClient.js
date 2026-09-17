@@ -388,7 +388,13 @@ export async function dbClearAllOrders() {
   const sb = getSupabase();
   if (!sb) return false;
   try {
-    const { error } = await sb.from('orders').delete().neq('id', '___none___');
+    // Lưu ý: Cột định danh chính trong bảng orders trên Supabase là 'orderId'
+    let { error } = await sb.from('orders').delete().neq('orderId', '___none___');
+    if (error) {
+      console.warn('[Supabase] dbClearAllOrders with orderId failed, trying fallback id:', error.message);
+      const resFallback = await sb.from('orders').delete().neq('id', '___none___');
+      error = resFallback.error;
+    }
     if (error) {
       console.warn('[Supabase] dbClearAllOrders warning:', error.message);
       return false;
@@ -399,3 +405,4 @@ export async function dbClearAllOrders() {
     return false;
   }
 }
+
