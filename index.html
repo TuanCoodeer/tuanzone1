@@ -107,105 +107,134 @@
     </section>
 
     <!-- =========================================================
-         KHU VỰC DANH MỤC KHO GAME (GAME CATEGORY CARDS)
-         Thiết kế khung hình vuông chuẩn đẹp theo Ảnh 2
-         Bấm vào khung để mở danh sách tài khoản tương ứng
+         KHU VỰC CÁC VÙNG KHO GAME (PHÂN CHIA THEO PHONG CÁCH ẢNH 1)
+         Chia thành các vùng kho riêng: Free Fire, Liên Quân, FC Mobile
+         Chỉ dùng đúng 4 danh mục đang có, không thêm các mục mới
          ========================================================= -->
     <section class="section-game-categories" id="game-categories-section">
-      <div class="categories-header-bar">
-        <div class="categories-title-group">
-          <span class="categories-header-icon">🎮</span>
-          <div>
-            <h2 class="categories-heading">DANH MỤC KHO NICK GAME</h2>
-            <p class="categories-subheading">Hệ thống phân phối tài khoản tự động 24/7 • Bấm vào khung để xem chi tiết kho nick</p>
+
+      <!-- VÙNG 1: KHO NICK FREE FIRE -->
+      <div class="category-warehouse-group">
+        <div class="warehouse-group-header">
+          <div class="warehouse-group-title">
+            <span class="warehouse-group-icon">🎮</span>
+            <h2 class="warehouse-group-heading">KHO NICK FREE FIRE</h2>
+          </div>
+          <a href="#kho-freefire" class="warehouse-group-viewall" data-open-warehouse="freefire">
+            Xem tất cả <span class="arrow">›</span>
+          </a>
+        </div>
+        <div class="game-categories-grid">
+          <!-- Card 1: Nick Free Fire -->
+          <div class="game-category-card" data-game-category="freefire" role="button" tabindex="0" title="Bấm để xem kho tài khoản Free Fire">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-freefire.jpg" alt="Nick Free Fire" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-ff">🔥 Free Fire</span>
+                <span class="cat-status-tag">Tự Động 24/7</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action">Xem Kho Nick ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Nick Free Fire</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-freefire">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Kho Túi Mù Free Fire -->
+          <div class="game-category-card card-blindbag-special" data-game-category="blindbag" role="button" tabindex="0" title="Bấm để xem Kho Túi Mù Free Fire - 100% Trúng Nick VIP">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-ff-blindbag.jpg" alt="Túi Mù Free Fire" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-blindbag">🎁 Túi Mù FF</span>
+                <span class="cat-status-tag tag-hot">🔥 100% Trúng Nick</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action btn-action-blindbag">Mở Túi Mù ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Túi Mù Free Fire</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-blindbag">0</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Lưới 3 Khung Danh Mục Game Hình Vuông -->
-      <div class="game-categories-grid">
-        
-        <!-- Khung 1: Nick Free Fire -->
-        <div class="game-category-card" data-game-category="freefire" role="button" tabindex="0" title="Bấm để xem kho tài khoản Free Fire">
-          <div class="category-card-thumb-wrap">
-            <img src="assets/images/cat-freefire.jpg" alt="Nick Free Fire" class="category-card-img" loading="lazy">
-            <div class="category-card-badges">
-              <span class="cat-game-tag tag-ff">🔥 Free Fire</span>
-              <span class="cat-status-tag">Tự Động 24/7</span>
-            </div>
-            <div class="category-card-hover-mask">
-              <span class="btn-category-action">Xem Kho Nick ➔</span>
-            </div>
+      <!-- VÙNG 2: KHO NICK LIÊN QUÂN -->
+      <div class="category-warehouse-group">
+        <div class="warehouse-group-header">
+          <div class="warehouse-group-title">
+            <span class="warehouse-group-icon">🎮</span>
+            <h2 class="warehouse-group-heading">KHO NICK LIÊN QUÂN</h2>
           </div>
-          <div class="category-card-info">
-            <h3 class="category-card-title">Nick Free Fire</h3>
-            <div class="category-card-count">
-              Số tài khoản: <span class="count-num" id="cat-count-freefire">0</span>
+          <a href="#kho-lienquan" class="warehouse-group-viewall" data-open-warehouse="lienquan">
+            Xem tất cả <span class="arrow">›</span>
+          </a>
+        </div>
+        <div class="game-categories-grid">
+          <!-- Card: Nick Liên Quân Mobile -->
+          <div class="game-category-card" data-game-category="lienquan" role="button" tabindex="0" title="Bấm để xem kho tài khoản Liên Quân">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-lienquan.jpg" alt="Nick Liên Quân" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-lq">⚔️ Liên Quân</span>
+                <span class="cat-status-tag">Tự Động 24/7</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action">Xem Kho Nick ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Nick Liên Quân Mobile</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-lienquan">0</span>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Khung 2: Nick Liên Quân -->
-        <div class="game-category-card" data-game-category="lienquan" role="button" tabindex="0" title="Bấm để xem kho tài khoản Liên Quân">
-          <div class="category-card-thumb-wrap">
-            <img src="assets/images/cat-lienquan.jpg" alt="Nick Liên Quân" class="category-card-img" loading="lazy">
-            <div class="category-card-badges">
-              <span class="cat-game-tag tag-lq">⚔️ Liên Quân</span>
-              <span class="cat-status-tag">Tự Động 24/7</span>
-            </div>
-            <div class="category-card-hover-mask">
-              <span class="btn-category-action">Xem Kho Nick ➔</span>
-            </div>
-          </div>
-          <div class="category-card-info">
-            <h3 class="category-card-title">Nick Liên Quân Mobile</h3>
-            <div class="category-card-count">
-              Số tài khoản: <span class="count-num" id="cat-count-lienquan">0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Khung 3: Nick FC Mobile -->
-        <div class="game-category-card" data-game-category="fcmobile" role="button" tabindex="0" title="Bấm để xem kho tài khoản FC Mobile">
-          <div class="category-card-thumb-wrap">
-            <img src="assets/images/cat-fcmobile.jpg" alt="Nick FC Mobile" class="category-card-img" loading="lazy">
-            <div class="category-card-badges">
-              <span class="cat-game-tag tag-fc">⚽ FC Mobile</span>
-              <span class="cat-status-tag">Tự Động 24/7</span>
-            </div>
-            <div class="category-card-hover-mask">
-              <span class="btn-category-action">Xem Kho Nick ➔</span>
-            </div>
-          </div>
-          <div class="category-card-info">
-            <h3 class="category-card-title">Nick FC Mobile</h3>
-            <div class="category-card-count">
-              Số tài khoản: <span class="count-num" id="cat-count-fcmobile">0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Khung 4: Kho Túi Mù Free Fire (HOT) -->
-        <div class="game-category-card" data-game-category="blindbag" role="button" tabindex="0" title="Bấm để xem Kho Túi Mù Free Fire - 100% Trúng Nick VIP">
-          <div class="category-card-thumb-wrap">
-            <img src="assets/images/cat-ff-blindbag.jpg" alt="Túi Mù Free Fire" class="category-card-img" loading="lazy">
-            <div class="category-card-badges">
-              <span class="cat-game-tag tag-blindbag">🎁 Túi Mù FF</span>
-              <span class="cat-status-tag tag-hot">🔥 100% Trúng Nick</span>
-            </div>
-            <div class="category-card-hover-mask">
-              <span class="btn-category-action">Xem Kho Nick ➔</span>
-            </div>
-          </div>
-          <div class="category-card-info">
-            <h3 class="category-card-title">Túi Mù Free Fire</h3>
-            <div class="category-card-count">
-              Số tài khoản: <span class="count-num" id="cat-count-blindbag">0</span>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- VÙNG 3: KHO NICK FC MOBILE -->
+      <div class="category-warehouse-group">
+        <div class="warehouse-group-header">
+          <div class="warehouse-group-title">
+            <span class="warehouse-group-icon">🎮</span>
+            <h2 class="warehouse-group-heading">KHO NICK FC MOBILE</h2>
+          </div>
+          <a href="#kho-fcmobile" class="warehouse-group-viewall" data-open-warehouse="fcmobile">
+            Xem tất cả <span class="arrow">›</span>
+          </a>
+        </div>
+        <div class="game-categories-grid">
+          <!-- Card: Nick FC Mobile -->
+          <div class="game-category-card" data-game-category="fcmobile" role="button" tabindex="0" title="Bấm để xem kho tài khoản FC Mobile">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-fcmobile.jpg" alt="Nick FC Mobile" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-fc">⚽ FC Mobile</span>
+                <span class="cat-status-tag">Tự Động 24/7</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action">Xem Kho Nick ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Nick FC Mobile</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-fcmobile">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- =========================================================

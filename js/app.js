@@ -315,6 +315,17 @@ class TuBIzOneApp {
       });
     });
 
+    // 1b. Click nút "Xem tất cả >" ở từng nhóm vùng kho game
+    document.querySelectorAll('[data-open-warehouse]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const game = btn.getAttribute('data-open-warehouse');
+        if (game) {
+          this.openWarehouse(game);
+        }
+      });
+    });
+
     // 2. Click nút quay lại danh mục game
     document.querySelectorAll('[data-back-to-categories]').forEach(btn => {
       btn.addEventListener('click', (e) => {
