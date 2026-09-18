@@ -1,7 +1,7 @@
 // =========================================================
-// tuBIzOne.com - Hiệu Ứng Lưới Tinh Thể Pha Lê Đa Giác (Prime 6 - 8)
-// Cấu trúc Low-Poly Faceted Crystal (Mặt cắt pha lê đa giác chuẩn theo ảnh mẫu)
-// Chế độ: NHÁY LÊN BÙNG SÁNG TOÀN MÀN HÌNH (Flash) - Nhanh, sắc nét & phân cấp
+// tuBIzOne.com - Hiệu Ứng Lưới Mặt Cắt Pha Lê Đa Giác (Prime 6 - 8)
+// Cấu trúc: Các phiến pha lê / kim cương giác cắt 4 mặt (Faceted Crystal Diamonds)
+// Phủ toàn màn hình, NHÁY LÊN chớp sáng bùng nổ rồi tan biến dứt khoát
 // =========================================================
 
 export class PrimeCrystalAura {
@@ -15,10 +15,10 @@ export class PrimeCrystalAura {
     this.height = 0;
     this.dpr = 1;
 
-    this.triangles = [];
+    this.crystalGems = [];
     this.currentLevel = 6;
     this.startTime = 0;
-    this.duration = 650; // Nhanh & dứt khoát: nháy lên chớp sáng rồi tan biến
+    this.duration = 650; // Nhanh & dứt khoát
 
     this.init();
   }
@@ -44,81 +44,86 @@ export class PrimeCrystalAura {
     this.height = window.innerHeight;
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
-    this.buildMesh();
+    this.buildCrystalMesh();
   }
 
   /**
-   * Xây dựng mạng lưới mặt cắt pha lê đa giác (Low-Poly Crystal Facets)
-   * Phủ kín toàn bộ màn hình chuẩn theo hình ảnh mẫu
+   * Xây dựng mạng lưới các khối pha lê giác cắt (Faceted Crystal Gems)
+   * Mỗi ô là một hình thoi / kim cương pha lê đa diện gồm 4 mặt cắt hướng tâm (Apex)
    */
-  buildMesh() {
-    this.triangles = [];
-    // Bước lưới từ 50px đến 70px tạo độ chi tiết mặt cắt hoàn hảo
-    const step = Math.max(50, Math.min(70, Math.floor(this.width / 24)));
+  buildCrystalMesh() {
+    this.crystalGems = [];
+
+    // Kích thước mỗi khối pha lê từ 60px đến 85px
+    const step = Math.max(60, Math.min(85, Math.floor(this.width / 20)));
     const cols = Math.ceil(this.width / step) + 2;
     const rows = Math.ceil(this.height / step) + 2;
 
-    // Sinh ma trận các điểm tọa độ với độ lệch ngẫu nhiên có trật tự
-    const grid = [];
+    // 1. Tạo ma trận các đỉnh góc (Corners Grid)
+    const corners = [];
     for (let r = 0; r < rows; r++) {
       const row = [];
       for (let c = 0; c < cols; c++) {
         let x = c * step;
         let y = r * step;
 
-        // Chỉ làm lệch các điểm bên trong để mép biên màn hình luôn kín khít
+        // Làm lệch nhẹ các điểm bên trong để góc pha lê tự nhiên, không cứng nhắc
         if (c > 0 && c < cols - 1) {
-          x += (Math.sin(c * 17.1 + r * 31.7) * 0.42) * step;
+          x += Math.sin(c * 13.7 + r * 19.3) * 0.22 * step;
         }
         if (r > 0 && r < rows - 1) {
-          y += (Math.cos(c * 23.3 + r * 19.5) * 0.42) * step;
+          y += Math.cos(c * 17.5 + r * 11.2) * 0.22 * step;
         }
 
         row.push({ x, y });
       }
-      grid.push(row);
+      corners.push(row);
     }
 
-    // Ghép các điểm thành các tam giác mặt cắt tinh thể (Facets)
+    // 2. Tạo từng khối pha lê 4 mặt cắt (4-Facet Diamond Gem)
     for (let r = 0; r < rows - 1; r++) {
       for (let c = 0; c < cols - 1; c++) {
-        const p1 = grid[r][c];
-        const p2 = grid[r][c + 1];
-        const p3 = grid[r + 1][c];
-        const p4 = grid[r + 1][c + 1];
+        const tl = corners[r][c];
+        const tr = corners[r][c + 1];
+        const bl = corners[r + 1][c];
+        const br = corners[r + 1][c + 1];
 
-        // 2 tam giác cho mỗi ô lưới
-        const triA = [p1, p2, p3];
-        const triB = [p2, p4, p3];
+        // Đỉnh chóp trung tâm của viên pha lê (Crystal Apex)
+        const cx = (tl.x + tr.x + bl.x + br.x) / 4 + Math.sin(r * 3.1 + c * 7.7) * 0.16 * step;
+        const cy = (tl.y + tr.y + bl.y + br.y) / 4 + Math.cos(r * 5.3 + c * 2.9) * 0.16 * step;
+        const apex = { x: cx, y: cy };
 
-        [triA, triB].forEach((pts, idx) => {
-          const cx = (pts[0].x + pts[1].x + pts[2].x) / 3;
-          const cy = (pts[0].y + pts[1].y + pts[2].y) / 3;
-          // Hệ số phản quang cơ sở của từng mặt cắt pha lê
-          const seed = Math.abs(Math.sin(cx * 12.9898 + cy * 78.233 + idx * 43.123));
-          const colorVariant = Math.floor(seed * 100) % 6;
+        // Hệ số phản quang và biến thể màu cho viên pha lê này
+        const seed = Math.abs(Math.sin(cx * 12.9898 + cy * 78.233));
+        const colorVariant = Math.floor(seed * 100) % 6;
 
-          this.triangles.push({
-            pts,
-            cx,
-            cy,
-            seed,
-            colorVariant
-          });
+        // 4 mặt cắt của viên pha lê (Top, Right, Bottom, Left facets)
+        const facets = [
+          { pts: [tl, tr, apex], type: 'top' },    // Mặt trên hứng sáng mạnh nhất
+          { pts: [tr, br, apex], type: 'right' },  // Mặt phải phản xạ góc nghiêng
+          { pts: [br, bl, apex], type: 'bottom' }, // Mặt đáy tông màu trầm đầm
+          { pts: [bl, tl, apex], type: 'left' }    // Mặt trái khúc xạ ánh sáng
+        ];
+
+        this.crystalGems.push({
+          apex,
+          facets,
+          seed,
+          colorVariant
         });
       }
     }
   }
 
   /**
-   * Kích hoạt hiệu ứng NHÁY LÊN (Flash) của mạng lưới pha lê đa giác
+   * Kích hoạt hiệu ứng NHÁY LÊN của các khối pha lê
    * @param {number} level - Cấp Prime (6, 7, 8)
    */
   trigger(level = 6) {
     if (!this.canvas || !this.ctx) return;
     this.currentLevel = level;
 
-    // Thời lượng hiệu ứng nhanh & dứt khoát:
+    // Thời lượng hiệu ứng nhanh gọn:
     // Prime 6: 550ms, Prime 7: 650ms, Prime 8: 750ms
     if (level === 6) this.duration = 550;
     else if (level === 7) this.duration = 650;
@@ -176,101 +181,113 @@ export class PrimeCrystalAura {
 
     const level = this.currentLevel;
 
-    // Duyệt qua tất cả các mặt cắt đa giác tam giác phủ toàn màn hình
-    for (let i = 0; i < this.triangles.length; i++) {
-      const tri = this.triangles[i];
-      const pts = tri.pts;
-      const seed = tri.seed;
-      const variant = tri.colorVariant;
+    // Duyệt qua tất cả các khối pha lê giác cắt
+    for (let i = 0; i < this.crystalGems.length; i++) {
+      const gem = this.crystalGems[i];
+      const apex = gem.apex;
+      const seed = gem.seed;
+      const variant = gem.colorVariant;
 
-      let r, g, b, a, strokeStyle;
+      // Xác định bảng màu cơ sở cho viên pha lê này
+      let baseR, baseG, baseB, strokeColor;
 
       if (level === 8) {
         // === PRIME 8: SẶC SỠ & ĐẸP NHẤT ===
         // Tán sắc lăng kính cầu vồng thần thoại (Prismatic Rainbow Diamond Facets):
-        // Các mặt cắt đan xen đa sắc lộng lẫy (vàng kim, tím thần thoại, xanh cyan, hồng neon, ngọc lục bảo, trắng tuyết)
         switch (variant) {
-          case 0: // Vàng Kim Hoàng Gia
-            r = 255; g = 215; b = 0;
+          case 0: // Kim cương Vàng Hoàng Gia
+            baseR = 255; baseG = 215; baseB = 0;
             break;
-          case 1: // Tím Thần Thoại (Amethyst)
-            r = 224; g = 64; b = 251;
+          case 1: // Thạch Anh Tím Thần Thoại (Amethyst)
+            baseR = 224; baseG = 64; baseB = 251;
             break;
-          case 2: // Xanh Cyan Quang Học (Celestial Cyan)
-            r = 0; g = 229; b = 255;
+          case 2: // Kim Cương Xanh Cyan Quang Học (Celestial Cyan)
+            baseR = 0; baseG = 229; baseB = 255;
             break;
-          case 3: // Hồng Ngọc Neon (Neon Ruby)
-            r = 255; g = 64; b = 129;
+          case 3: // Pha Lê Hồng Ngọc Neon (Neon Ruby)
+            baseR = 255; baseG = 64; baseB = 129;
             break;
-          case 4: // Ngọc Lục Bảo (Emerald)
-            r = 0; g = 230; b = 118;
+          case 4: // Ngọc Lục Bảo Tinh Thể (Emerald)
+            baseR = 0; baseG = 230; baseB = 118;
             break;
-          default: // Ánh Kim Cương Trắng Tuyết
-            r = 255; g = 250; b = 230;
+          default: // Kim Cương Lam Sapphire
+            baseR = 124; baseG = 77; baseB = 255;
             break;
         }
-
-        // Độ đậm nhạt từng mặt cắt theo hệ số phản quang
-        if (seed > 0.75) {
-          a = (0.55 + seed * 0.25) * flashAlpha; // Mặt cắt chói sáng
-        } else if (seed > 0.4) {
-          a = (0.35 + seed * 0.2) * flashAlpha;
-        } else {
-          a = (0.2 + seed * 0.15) * flashAlpha;  // Mặt cắt chìm
-        }
-
-        // Đường viền mặt cắt phát sáng kim cương
-        const strokeA = (0.25 + seed * 0.4) * flashAlpha;
-        strokeStyle = `rgba(255, 255, 255, ${strokeA.toFixed(3)})`;
+        strokeColor = `rgba(255, 255, 255, ${(0.3 + seed * 0.45) * flashAlpha})`;
 
       } else if (level === 7) {
         // === PRIME 7: HỔ PHÁCH & LỬA RỰC RỠ ===
-        // Sắc thái lửa vàng cam đậm đà (Amber & Solar Flare Gold Facets)
-        if (seed > 0.7) {
-          r = 255; g = 240; b = 140; a = 0.65 * flashAlpha; // Vàng ánh dương rực sáng
-        } else if (seed > 0.4) {
-          r = 255; g = 150; b = 15; a = 0.52 * flashAlpha;  // Cam hổ phách đậm
-        } else if (seed > 0.2) {
-          r = 215; g = 90; b = 5; a = 0.38 * flashAlpha;   // Đỏ cam lửa
+        // Sắc thái lửa vàng cam đậm đà (Amber & Solar Flare Gold)
+        if (seed > 0.6) {
+          baseR = 255; baseG = 175; baseB = 10;
+        } else if (seed > 0.3) {
+          baseR = 255; baseG = 120; baseB = 0;
         } else {
-          r = 140; g = 50; b = 0; a = 0.25 * flashAlpha;   // Đồng đậm sẫm
+          baseR = 255; baseG = 80; baseB = 0;
         }
-
-        const strokeA = (0.2 + seed * 0.35) * flashAlpha;
-        strokeStyle = `rgba(255, 220, 140, ${strokeA.toFixed(3)})`;
+        strokeColor = `rgba(255, 230, 160, ${(0.25 + seed * 0.35) * flashAlpha})`;
 
       } else {
         // === PRIME 6: VÀNG HOÀNG KIM THANH NHÃ ===
-        // Sắc thái vàng kim citrine tinh khiết, nhẹ nhàng (Citrine Gold Facets)
-        if (seed > 0.7) {
-          r = 255; g = 235; b = 120; a = 0.52 * flashAlpha; // Vàng sáng
-        } else if (seed > 0.4) {
-          r = 245; g = 190; b = 30; a = 0.38 * flashAlpha;  // Vàng hoàng kim
-        } else if (seed > 0.18) {
-          r = 195; g = 135; b = 15; a = 0.26 * flashAlpha;  // Vàng đồng
+        // Sắc thái vàng kim citrine tinh khiết, nhẹ nhàng
+        if (seed > 0.5) {
+          baseR = 255; baseG = 220; baseB = 40;
         } else {
-          r = 125; g = 75; b = 8; a = 0.16 * flashAlpha;   // Nền trầm
+          baseR = 240; baseG = 180; baseB = 20;
         }
-
-        const strokeA = (0.15 + seed * 0.25) * flashAlpha;
-        strokeStyle = `rgba(255, 235, 160, ${strokeA.toFixed(3)})`;
+        strokeColor = `rgba(255, 240, 180, ${(0.18 + seed * 0.28) * flashAlpha})`;
       }
 
-      // Vẽ mặt cắt tam giác đa giác
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      ctx.lineTo(pts[1].x, pts[1].y);
-      ctx.lineTo(pts[2].x, pts[2].y);
-      ctx.closePath();
+      // Vẽ 4 mặt cắt của viên pha lê hình thoi (Mỗi mặt cắt có độ sáng khác nhau tạo chiều sâu 3D)
+      for (let f = 0; f < gem.facets.length; f++) {
+        const facet = gem.facets[f];
+        const pts = facet.pts;
 
-      // Đổ màu mặt cắt
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
-      ctx.fill();
+        let lumMultiplier = 1;
+        let alphaMultiplier = 1;
 
-      // Vẽ đường viền cạnh đa giác sắc sảo (Tạo hình các mặt cắt đa giác chuẩn ảnh mẫu)
-      ctx.strokeStyle = strokeStyle;
-      ctx.lineWidth = level === 8 ? 1.0 : 0.8;
-      ctx.stroke();
+        if (facet.type === 'top') {
+          lumMultiplier = 1.35; // Mặt trên sáng nhất
+          alphaMultiplier = 0.72;
+        } else if (facet.type === 'left') {
+          lumMultiplier = 1.15; // Mặt trái sáng trung bình
+          alphaMultiplier = 0.58;
+        } else if (facet.type === 'right') {
+          lumMultiplier = 0.95; // Mặt phải phản quang
+          alphaMultiplier = 0.48;
+        } else {
+          lumMultiplier = 0.75; // Mặt đáy tối nhất
+          alphaMultiplier = 0.36;
+        }
+
+        const r = Math.min(255, Math.floor(baseR * lumMultiplier));
+        const g = Math.min(255, Math.floor(baseG * lumMultiplier));
+        const b = Math.min(255, Math.floor(baseB * lumMultiplier));
+        const a = (alphaMultiplier * (0.6 + seed * 0.4)) * flashAlpha;
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        ctx.lineTo(pts[1].x, pts[1].y);
+        ctx.lineTo(pts[2].x, pts[2].y);
+        ctx.closePath();
+
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a.toFixed(3)})`;
+        ctx.fill();
+
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = level === 8 ? 0.95 : 0.75;
+        ctx.stroke();
+      }
+
+      // Điểm chóp đỉnh kim cương (Apex Glint) nhấp nháy ở giữa mỗi viên pha lê
+      if (progress > 0.08 && progress < 0.45 && seed > 0.45) {
+        const glintSize = level === 8 ? 2.2 : 1.5;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(apex.x, apex.y, glintSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     ctx.restore();

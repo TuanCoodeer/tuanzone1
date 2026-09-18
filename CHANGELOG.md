@@ -10,8 +10,8 @@
   - Giữ nguyên nút "Tất cả Prime" với trạng thái mặc định.
   - Tích hợp hiệu ứng viền vàng kim `#f59e0b`, hào quang phát sáng khi hover và active, đảm bảo đồng bộ hoàn hảo với logic lọc tài khoản.
 
-### 2. Hiệu ứng Mạng Lưới Pha Lê Đa Giác Nháy Sáng Toàn Màn Hình (Prime 6 - 8)
-- **Chuẩn hóa đồ họa Mặt cắt Pha lê Đa giác (Low-Poly Crystal Facets):** Toàn màn hình được bao phủ bởi mạng lưới các tam giác mặt cắt tinh thể sắc nét đúng chuẩn ảnh mẫu game Free Fire (nhìn xuyên thấu các chi tiết shop bên dưới).
+### 2. Hiệu ứng Mạng Lưới Khối Pha Lê Đa Diện Nháy Sáng Toàn Màn Hình (Prime 6 - 8)
+- **Chuẩn hóa hình dạng Các khối Pha Lê / Kim Cương Giác Cắt (Faceted Crystal Diamonds):** Mạng lưới toàn màn hình được tạo bởi các khối pha lê hình thoi đa diện gồm 4 mặt cắt hướng tâm (Apex) có độ sâu 3D rõ rệt, kết hợp điểm lóe sáng (Apex Glint) nhấp nháy trên đỉnh mỗi viên pha lê mà vẫn giữ nguyên bố cục phủ kín màn hình nhìn xuyên thấu.
 - **Cơ chế Nháy Lên (Flash Pulse) thay vì quét chạy qua:** Toàn bộ mạng lưới đa giác đồng loạt nháy bùng sáng lên chớp nhoáng (~70ms) đạt độ phản quang cực đại, rồi mờ dần và tan biến thanh thoát trong vòng 550ms - 750ms cực kỳ dứt khoát.
 - **Phân cấp độ đậm nhạt & sặc sỡ đỉnh cao:**
   - 🌟 **Prime 6:** Mạng lưới pha lê Vàng Kim Citrine thanh nhã, độ sáng vừa phải, nhẹ nhàng (550ms).
