@@ -205,7 +205,7 @@
 
 .prime-gold-aura.flashing {
   visibility: visible;
-  animation: primeGoldAuraFlash 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: primeGoldAuraFlash 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Các góc ửng hào quang ánh kim */
@@ -320,18 +320,18 @@
 @keyframes primeGoldAuraFlash {
   0% {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(0.96);
   }
-  16% {
+  20% {
     opacity: 1;
-    transform: scale(1.015);
+    transform: scale(1.02);
   }
-  38% {
-    opacity: 0.9;
+  45% {
+    opacity: 0.85;
     transform: scale(1);
   }
-  65% {
-    opacity: 0.55;
+  75% {
+    opacity: 0.4;
   }
   100% {
     opacity: 0;
@@ -353,7 +353,7 @@
   border-radius: 50%;
   background: radial-gradient(circle, #fff7c2 0%, #ffd700 40%, #ff8c00 100%);
   box-shadow: 0 0 10px #ffd700, 0 0 18px #ff9500;
-  animation: goldSparkFloatUp 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: goldSparkFloatUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes goldSparkFloatUp {

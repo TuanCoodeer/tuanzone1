@@ -10,11 +10,14 @@
   - Giữ nguyên nút "Tất cả Prime" với trạng thái mặc định.
   - Tích hợp hiệu ứng viền vàng kim `#f59e0b`, hào quang phát sáng khi hover và active, đảm bảo đồng bộ hoàn hảo với logic lọc tài khoản.
 
-### 2. Hiệu ứng Lưới Tinh Thể Đa Giác & Hào Quang Vàng Ánh Kim (Prime 6 - 8)
-- **Lưới tinh thể đa giác 3D (Low-Poly Crystal Facet Mesh):** Xây dựng module canvas chuyên trách `PrimeCrystalAura` vẽ mạng lưới tam giác đa giác phản quang kim cương bao phủ toàn màn hình giống hệt ảnh mẫu trong game khi bấm vào các nút **Prime 6, Prime 7, Prime 8**.
-- **Hiệu ứng quét sáng (Dynamic Light Sweep):** Nguồn sáng quét chéo qua các mặt cắt tinh thể tạo ánh phản quang lấp lánh chân thực, đường viền facet wireframe vàng kim tinh tế và biến đổi sắc thái theo cấp Prime (Prime 6 Vàng Hoàng Kim ➔ Prime 7 Ánh Dương Lửa ➔ Prime 8 Kim Cương Huyền Thoại).
-- **Hào quang góc & Tia sáng động:** Đồng bộ với lớp hào quang ửng vàng ánh kim tại các góc màn hình và chùm hạt sáng bắn lên từ 2 góc dưới.
-- **Loại bỏ hiệu ứng màn hình cho Prime 5:** Nút Prime 5 được cách ly hoàn toàn, khi nhấn chỉ thực hiện lọc tài khoản nội bộ và không kích hoạt bất kỳ hiệu ứng màn hình nào theo yêu cầu người dùng.
+### 2. Hiệu ứng Các Viên Pha Lê 2D Ánh Kim Siêu Tốc & Sặc Sỡ (Prime 6 - 8)
+- **Tái cấu trúc sang định dạng Viên Pha Lê 2D (2D Crystal Gemstones):** Thay thế toàn bộ lưới tam giác cũ bằng hệ thống các viên pha lê 2D giác cắt độc lập bùng nổ khắp màn hình (Trụ pha lê nhọn 2 đầu `Crystal Shard`, Kim cương giác cắt `Diamond Gem`, Viên ngọc lục giác `Hexagon Gem` và Ngôi sao phản quang `Prismatic Star`).
+- **Tối ưu tốc độ siêu nhanh (< 1 giây):** Rút ngắn toàn bộ thời lượng hiệu ứng xuống còn **650ms - 850ms**, nở to bùng nổ chớp nhoáng (100ms) rồi tan biến thanh thoát, mang lại cảm giác cực kỳ nhạy và dứt khoát.
+- **Phân cấp sắc thái, độ đậm nhạt & sặc sỡ đỉnh cao:**
+  - 🌟 **Prime 6:** Pha lê Vàng Kim Citrine tinh khiết, nhẹ nhàng thanh lịch (~30 viên, 650ms).
+  - 🔥 **Prime 7:** Pha lê Lửa Hổ Phách rực rỡ, đậm đà với độ tương phản cao và tia lửa viền sắc sảo (~50 viên, 750ms).
+  - 💎🌈 **Prime 8 (Sặc sỡ & đẹp nhất):** Tinh thể Kim Cương Cầu Vồng Thần Thoại (Mythic Prismatic Rainbow Diamond) - bùng nổ ~80 viên pha lê đa sắc lộng lẫy (vàng hoàng kim, tím thần thoại, xanh cyan quang học, hồng ngọc neon, ngọc lục bảo và ánh kim cương trắng) kèm chùm sao lấp lánh phản chiếu rực sáng nhất toàn shop.
+- **Giữ nguyên cách ly cho Prime 5:** Nút Prime 5 hoàn toàn không kích hoạt hiệu ứng màn hình theo đúng yêu cầu.
 
 ## 📅 Phiên làm việc ngày 17/09/2026
 

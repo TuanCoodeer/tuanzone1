@@ -1382,16 +1382,16 @@ class TuBIzOneApp {
       }
 
       spark.style.setProperty('--ty1', `${-(Math.random() * 35 + 25)}px`);
-      spark.style.setProperty('--ty2', `${-(Math.random() * 130 + 75)}px`);
-      spark.style.animationDuration = `${(Math.random() * 0.4 + 1.2).toFixed(2)}s`;
+      spark.style.setProperty('--ty2', `${-(Math.random() * 120 + 65)}px`);
+      spark.style.animationDuration = `${(Math.random() * 0.2 + 0.65).toFixed(2)}s`;
 
       container.appendChild(spark);
     }
 
-    // Tự động dọn dẹp sau khi animation kết thúc
+    // Tự động dọn dẹp nhanh sau khi animation kết thúc (dưới 1 giây)
     setTimeout(() => {
       if (container) container.innerHTML = '';
-    }, 1700);
+    }, 850);
   }
 
   // --- 7. KHU VỰC QUẢN TRỊ VIÊN: THÊM ACC (DEDICATED VIEW) & BÁO CÁO DOANH THU ---
