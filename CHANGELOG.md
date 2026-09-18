@@ -24,6 +24,10 @@
 - **Cập nhật hình ảnh nhận diện:** Thay thế ảnh đại diện kho nick Free Fire (`assets/images/cat-freefire.jpg`) bằng banner đồ họa mới "ACC FREE FIRE TỰ CHỌN" với phong cách vàng kim 3D nổi bật, hoa anh đào nở rộ và tạo hình nhân vật Free Fire mặt nạ Kitsune / Oni.
 - **Đồng bộ toàn hệ thống:** Tự động cập nhật đồng bộ thẻ danh mục Kho Free Fire trên trang chủ, banner tiêu đề chi tiết kho nick và ảnh mẫu trong hệ thống Admin.
 
+### 4. Cập nhật Banner & Ảnh đại diện Kho Nick Liên Quân Mobile mới
+- **Cập nhật hình ảnh nhận diện:** Thay thế ảnh đại diện kho nick Liên Quân (`assets/images/cat-lienquan.jpg`) bằng banner đồ họa mới "ACC LIÊN QUÂN - TRẮNG THÔNG TIN" với phong cách sấm sét neon xanh tím hiện đại, vầng trăng lồng đèn huyền ảo và tạo hình nhân vật phong cách anime ấn tượng.
+- **Đồng bộ toàn hệ thống:** Tự động cập nhật đồng bộ thẻ danh mục Kho Liên Quân trên trang chủ, banner chi tiết kho nick và mẫu ảnh trong hệ thống Admin.
+
 ## 📅 Phiên làm việc ngày 17/09/2026
 
 ### 1. Phân chia độc lập các kho game (Theo chuẩn Giao diện yêu cầu)
