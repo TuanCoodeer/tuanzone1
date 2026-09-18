@@ -990,3 +990,203 @@
   color: #10b981;
 }
 
+/* =========================================================
+   LIGHT THEME ENHANCEMENTS FOR MODALS, POPUPS & TOASTS
+   ========================================================= */
+[data-theme="light"] .modal-window {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.22);
+}
+
+[data-theme="light"] .modal-header-block {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .modal-title-text {
+  color: #0f172a;
+}
+
+[data-theme="light"] .modal-sub-text {
+  color: #64748b;
+}
+
+[data-theme="light"] .modal-close-trigger {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+[data-theme="light"] .modal-close-trigger:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+[data-theme="light"] .segmented-tabs-bar,
+[data-theme="light"] .auth-segmented-control {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .seg-tab-btn,
+[data-theme="light"] .auth-seg-btn {
+  color: #475569;
+}
+
+[data-theme="light"] .seg-tab-btn:hover,
+[data-theme="light"] .auth-seg-btn:hover {
+  color: #0f172a;
+}
+
+[data-theme="light"] .auth-seg-btn.active {
+  background: #ffffff;
+  color: #0084ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .modal-field-label,
+[data-theme="light"] .auth-field-label {
+  color: #1e293b;
+}
+
+[data-theme="light"] .modal-input-field,
+[data-theme="light"] .modal-select-field,
+[data-theme="light"] .auth-input {
+  background-color: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .modal-input-field:focus,
+[data-theme="light"] .modal-select-field:focus,
+[data-theme="light"] .auth-input:focus {
+  border-color: #0084ff;
+  background-color: #ffffff;
+}
+
+[data-theme="light"] .provider-item-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+[data-theme="light"] .provider-item-btn:hover {
+  border-color: #0084ff;
+  background: #e0f2fe;
+}
+
+[data-theme="light"] .bank-qr-layout {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .info-data-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .info-data-val {
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-mini-copy {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0084ff;
+}
+
+[data-theme="light"] .user-order-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .user-order-header {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .user-order-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .user-order-price {
+  color: #d97706;
+}
+
+[data-theme="light"] .user-credentials-box {
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+}
+
+[data-theme="light"] .user-credentials-content {
+  color: #b45309;
+}
+
+[data-theme="light"] .custom-popup-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+}
+
+[data-theme="light"] .custom-popup-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .custom-popup-message {
+  color: #475569;
+}
+
+[data-theme="light"] .custom-popup-btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .custom-popup-btn-cancel:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+[data-theme="light"] .custom-popup-close-x {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+[data-theme="light"] .custom-toast-item {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .auth-lockout-banner {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+}
+
+[data-theme="light"] .auth-lockout-banner .lockout-text p {
+  color: #475569;
+}
+
+[data-theme="light"] .pwd-strength-container {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .pwd-strength-bar-wrap {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .pwd-strength-meta {
+  color: #475569;
+}
+
+[data-theme="light"] .pwd-checklist .check-item {
+  color: #64748b;
+}
+
+[data-theme="light"] .pwd-checklist .check-item.passed {
+  color: #0f172a;
+}
+
+

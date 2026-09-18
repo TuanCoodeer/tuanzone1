@@ -54,16 +54,20 @@ class TuBIzOneApp {
 
   // --- 1. THEME SWITCHER (Light / Dark) ---
   initTheme() {
-    const savedTheme = localStorage.getItem('tz_theme') || 'dark';
+    const savedTheme = localStorage.getItem('tz_theme') || localStorage.getItem('tubizone_theme') || 'light';
     document.body.setAttribute('data-theme', savedTheme);
     this.updateThemeBtnState(savedTheme);
 
     const toggleBtn = document.getElementById('btn-toggle-theme');
     toggleBtn?.addEventListener('click', () => {
-      const current = document.body.getAttribute('data-theme') || 'dark';
+      const current = document.body.getAttribute('data-theme') || 'light';
       const next = current === 'dark' ? 'light' : 'dark';
       document.body.setAttribute('data-theme', next);
       localStorage.setItem('tz_theme', next);
+      localStorage.setItem('tubizone_theme', next);
+      if (typeof store !== 'undefined' && store) {
+        store.theme = next;
+      }
       this.updateThemeBtnState(next);
     });
   }

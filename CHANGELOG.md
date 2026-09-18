@@ -28,6 +28,16 @@
 - **Cập nhật hình ảnh nhận diện:** Thay thế ảnh đại diện kho nick Liên Quân (`assets/images/cat-lienquan.jpg`) bằng banner đồ họa mới "ACC LIÊN QUÂN - TRẮNG THÔNG TIN" với phong cách sấm sét neon xanh tím hiện đại, vầng trăng lồng đèn huyền ảo và tạo hình nhân vật phong cách anime ấn tượng.
 - **Đồng bộ toàn hệ thống:** Tự động cập nhật đồng bộ thẻ danh mục Kho Liên Quân trên trang chủ, banner chi tiết kho nick và mẫu ảnh trong hệ thống Admin.
 
+### 5. Nâng cấp toàn diện UI Chế độ Sáng (Light Mode) & Thiết lập làm Mặc định
+- **Thiết lập Mặc định Chế độ Sáng (Light Mode Default):** Cấu hình toàn bộ hệ thống (`index.html`, `js/app.js`, `js/store.js`) khởi động mặc định ở giao diện Sáng (`data-theme="light"`), nút chuyển đổi hiển thị icon mặt trời `☀️ Sáng`.
+- **Khắc phục triệt để hiện tượng chữ/màu bị mờ:**
+  - Tiêu đề nhóm kho (`.warehouse-group-heading`): Chuyển từ màu trắng cố định (`#ffffff`) sang biến nhận diện động (`var(--text-main)` / `#0f172a`), hiển thị sắc nét 100% trên nền sáng.
+  - Tăng độ tương phản đường viền (`--border-color`): Nâng cấp từ `rgba(0,0,0,0.08)` rất mờ lên `#cbd5e1` (Slate-300) sắc sảo, định hình rõ viền thẻ tài khoản, form tìm kiếm, thanh lọc chip và bảng dữ liệu.
+  - Nâng cấp độ đậm văn bản phụ (`--text-muted: #475569`, `--text-dim: #64748b`): Loại bỏ tình trạng chữ xám nhạt khó đọc.
+  - Vàng Hoàng Kim & Xanh Cyber tương phản cao: Đổi `--accent-gold` sang màu vàng hổ phách đậm `#d97706` và `--accent-cyan` sang `#0284c7`, giúp giá tiền, số dư ví và huy hiệu nổi bật rõ ràng trên nền trắng.
+  - Khắc phục hiệu ứng Logo Shimmer: Tinh chỉnh dải gradient logo TB One không bị chìm/biến mất trên nền header trắng.
+  - Tinh chỉnh lớp Hạt Cyber Sparks: Giảm độ phủ và chuyển sang chế độ hòa trộn `multiply` (`opacity: 0.25`, `z-index: 0`) ở giao diện sáng để không che mờ nội dung thẻ nick và chữ.
+
 ## 📅 Phiên làm việc ngày 17/09/2026
 
 ### 1. Phân chia độc lập các kho game (Theo chuẩn Giao diện yêu cầu)

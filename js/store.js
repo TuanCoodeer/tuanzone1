@@ -47,8 +47,8 @@ class AppStore {
   }
 
   init() {
-    // 1. Theme State (Dark by default)
-    const savedTheme = localStorage.getItem('tubizone_theme') || localStorage.getItem('tuanzone_theme') || 'dark';
+    // 1. Theme State (Light by default)
+    const savedTheme = localStorage.getItem('tz_theme') || localStorage.getItem('tubizone_theme') || localStorage.getItem('tuanzone_theme') || 'light';
     this.theme = savedTheme;
     document.body.setAttribute('data-theme', this.theme);
 
@@ -212,6 +212,7 @@ class AppStore {
   save() {
     this.syncUserBalance();
     try {
+      localStorage.setItem('tz_theme', this.theme);
       localStorage.setItem('tubizone_theme', this.theme);
       localStorage.setItem('tubizone_user_auth', JSON.stringify(this.user));
       localStorage.setItem('tubizone_warehouse_accounts', JSON.stringify(this.accounts));

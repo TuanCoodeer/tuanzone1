@@ -114,8 +114,9 @@
 }
 
 [data-theme="light"] .cyber-sparks-canvas {
-  mix-blend-mode: normal;
-  opacity: 0.75;
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+  z-index: 0;
 }
 
 /* =========================================================

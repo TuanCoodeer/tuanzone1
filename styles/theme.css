@@ -58,30 +58,33 @@ body[data-theme="dark"] {
 }
 
 /* =========================================================
-   LIGHT THEME
+   LIGHT THEME (Default)
    ========================================================= */
 body[data-theme="light"] {
-  --bg-main: #f0f4f9;
+  --bg-main: #f1f5f9;
   --bg-header: #ffffff;
   --bg-surface: #ffffff;
   --bg-surface-elevated: #ffffff;
   --bg-card: #ffffff;
   --bg-input: #f8fafc;
-  --bg-subtle: rgba(0, 0, 0, 0.04);
+  --bg-subtle: #f1f5f9;
   --bg-modal-overlay: rgba(15, 23, 42, 0.65);
 
-  --border-color: rgba(0, 0, 0, 0.08);
+  --border-color: #cbd5e1;
   --border-active: #0084ff;
-  --border-gold: rgba(245, 158, 11, 0.3);
+  --border-gold: rgba(217, 119, 6, 0.45);
 
   --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-dim: #94a3b8;
+  --text-muted: #475569;
+  --text-dim: #64748b;
   --text-inverse: #ffffff;
 
-  --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.06);
-  --shadow-header: 0 2px 14px rgba(0, 0, 0, 0.05);
-  --shadow-btn: 0 4px 12px rgba(0, 132, 255, 0.25);
+  --accent-gold: #d97706;
+  --accent-cyan: #0284c7;
+
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-header: 0 2px 14px rgba(15, 23, 42, 0.08);
+  --shadow-btn: 0 4px 14px rgba(0, 132, 255, 0.28);
   --btn-topup-bg: linear-gradient(135deg, #0070f3 0%, #00a8e8 100%);
 }
 
