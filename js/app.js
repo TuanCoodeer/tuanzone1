@@ -1222,6 +1222,9 @@ class TuBIzOneApp {
         chip.classList.add('active');
         store.filters.freefire.prime = chip.dataset.prime;
         this.renderFreeFireWarehouse();
+
+        // Kích hoạt hiệu ứng ửng vàng ánh kim các góc màn hình khi bấm Prime 5 - 8
+        this.triggerPrimeGoldAura(chip.dataset.prime);
       });
     });
 
@@ -1301,6 +1304,77 @@ class TuBIzOneApp {
       store.filters.blindbag.sortBy = e.target.value;
       this.renderBlindBagWarehouse();
     });
+  }
+
+  // --- HIỆU ỨNG ỬNG VÀNG ÁNH KIM GÓC MÀN HÌNH KHI CHỌN PRIME 5 - 8 ---
+  /**
+   * Kích hoạt hiệu ứng ửng vàng ánh kim ở các góc màn hình (nháy góc dưới)
+   * @param {string} prime - Cấp Prime được click (VD: "Prime 5", "Prime 6", "Prime 7", "Prime 8")
+   */
+  triggerPrimeGoldAura(prime) {
+    const validPrimes = ['Prime 5', 'Prime 6', 'Prime 7', 'Prime 8'];
+    const auraEl = document.getElementById('prime-gold-aura');
+    if (!auraEl) return;
+
+    if (!validPrimes.includes(prime)) {
+      auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
+      const container = document.getElementById('aura-sparks-container');
+      if (container) container.innerHTML = '';
+      return;
+    }
+
+    const match = prime.match(/\d+/);
+    const level = match ? match[0] : '5';
+
+    // Reset animation class để có thể nháy lại mượt mà mỗi lần click liên tục
+    auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
+    void auraEl.offsetWidth; // Bắt buộc reflow
+
+    auraEl.classList.add('flashing', `prime-level-${level}`);
+    this.spawnGoldAuraSparks(parseInt(level, 10));
+  }
+
+  /**
+   * Bắn các hạt tia sáng vàng ánh kim (gold sparks) lơ lửng từ 2 góc dưới màn hình
+   * @param {number} level - Cấp Prime từ 5 đến 8
+   */
+  spawnGoldAuraSparks(level) {
+    const container = document.getElementById('aura-sparks-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const sparkCount = 8 + (level - 5) * 4; // Cấp càng cao càng nhiều hạt ánh kim
+
+    for (let i = 0; i < sparkCount; i++) {
+      const isLeft = i % 2 === 0;
+      const spark = document.createElement('div');
+      spark.className = 'gold-spark-particle';
+
+      const size = Math.floor(Math.random() * 5) + 4; // 4px - 8px
+      spark.style.width = `${size}px`;
+      spark.style.height = `${size}px`;
+
+      if (isLeft) {
+        spark.style.left = `${Math.random() * 12}vw`;
+        spark.style.bottom = `${Math.random() * 7}vh`;
+        spark.style.setProperty('--tx', `${Math.random() * 55 + 15}px`);
+      } else {
+        spark.style.right = `${Math.random() * 12}vw`;
+        spark.style.bottom = `${Math.random() * 7}vh`;
+        spark.style.setProperty('--tx', `${-(Math.random() * 55 + 15)}px`);
+      }
+
+      spark.style.setProperty('--ty1', `${-(Math.random() * 35 + 25)}px`);
+      spark.style.setProperty('--ty2', `${-(Math.random() * 130 + 75)}px`);
+      spark.style.animationDuration = `${(Math.random() * 0.4 + 1.2).toFixed(2)}s`;
+
+      container.appendChild(spark);
+    }
+
+    // Tự động dọn dẹp sau khi animation kết thúc
+    setTimeout(() => {
+      if (container) container.innerHTML = '';
+    }, 1700);
   }
 
   // --- 7. KHU VỰC QUẢN TRỊ VIÊN: THÊM ACC (DEDICATED VIEW) & BÁO CÁO DOANH THU ---
