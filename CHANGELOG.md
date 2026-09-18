@@ -10,14 +10,14 @@
   - Giữ nguyên nút "Tất cả Prime" với trạng thái mặc định.
   - Tích hợp hiệu ứng viền vàng kim `#f59e0b`, hào quang phát sáng khi hover và active, đảm bảo đồng bộ hoàn hảo với logic lọc tài khoản.
 
-### 2. Hiệu ứng Các Viên Pha Lê 2D Ánh Kim Siêu Tốc & Sặc Sỡ (Prime 6 - 8)
-- **Tái cấu trúc sang định dạng Viên Pha Lê 2D (2D Crystal Gemstones):** Thay thế toàn bộ lưới tam giác cũ bằng hệ thống các viên pha lê 2D giác cắt độc lập bùng nổ khắp màn hình (Trụ pha lê nhọn 2 đầu `Crystal Shard`, Kim cương giác cắt `Diamond Gem`, Viên ngọc lục giác `Hexagon Gem` và Ngôi sao phản quang `Prismatic Star`).
-- **Tối ưu tốc độ siêu nhanh (< 1 giây):** Rút ngắn toàn bộ thời lượng hiệu ứng xuống còn **650ms - 850ms**, nở to bùng nổ chớp nhoáng (100ms) rồi tan biến thanh thoát, mang lại cảm giác cực kỳ nhạy và dứt khoát.
-- **Phân cấp sắc thái, độ đậm nhạt & sặc sỡ đỉnh cao:**
-  - 🌟 **Prime 6:** Pha lê Vàng Kim Citrine tinh khiết, nhẹ nhàng thanh lịch (~30 viên, 650ms).
-  - 🔥 **Prime 7:** Pha lê Lửa Hổ Phách rực rỡ, đậm đà với độ tương phản cao và tia lửa viền sắc sảo (~50 viên, 750ms).
-  - 💎🌈 **Prime 8 (Sặc sỡ & đẹp nhất):** Tinh thể Kim Cương Cầu Vồng Thần Thoại (Mythic Prismatic Rainbow Diamond) - bùng nổ ~80 viên pha lê đa sắc lộng lẫy (vàng hoàng kim, tím thần thoại, xanh cyan quang học, hồng ngọc neon, ngọc lục bảo và ánh kim cương trắng) kèm chùm sao lấp lánh phản chiếu rực sáng nhất toàn shop.
-- **Hào quang chỉ ửng sáng ở góc dưới màn hình:** Xóa bỏ hoàn toàn 4 vệt tròn thô ở 4 góc, thay thế bằng lớp hào quang mềm mại (`.aura-bottom-corners`) chỉ ửng sáng tinh tế từ 2 góc dưới và đáy màn hình bốc lên, hòa quyện mượt mà vào giao diện.
+### 2. Hiệu ứng Mạng Lưới Pha Lê Đa Giác Nháy Sáng Toàn Màn Hình (Prime 6 - 8)
+- **Chuẩn hóa đồ họa Mặt cắt Pha lê Đa giác (Low-Poly Crystal Facets):** Toàn màn hình được bao phủ bởi mạng lưới các tam giác mặt cắt tinh thể sắc nét đúng chuẩn ảnh mẫu game Free Fire (nhìn xuyên thấu các chi tiết shop bên dưới).
+- **Cơ chế Nháy Lên (Flash Pulse) thay vì quét chạy qua:** Toàn bộ mạng lưới đa giác đồng loạt nháy bùng sáng lên chớp nhoáng (~70ms) đạt độ phản quang cực đại, rồi mờ dần và tan biến thanh thoát trong vòng 550ms - 750ms cực kỳ dứt khoát.
+- **Phân cấp độ đậm nhạt & sặc sỡ đỉnh cao:**
+  - 🌟 **Prime 6:** Mạng lưới pha lê Vàng Kim Citrine thanh nhã, độ sáng vừa phải, nhẹ nhàng (550ms).
+  - 🔥 **Prime 7:** Mạng lưới pha lê Lửa Hổ Phách & Vàng Ánh Dương rực rỡ, độ tương phản cao, đậm đà (650ms).
+  - 💎🌈 **Prime 8 (SẶC SỠ & ĐẸP NHẤT):** Mạng lưới pha lê Tán Sắc Cầu Vồng Thần Thoại (Prismatic Rainbow Diamond Facets) - các mặt cắt đan xen đa sắc lộng lẫy (vàng hoàng gia, tím thần thoại, xanh cyan quang học, hồng ngọc neon, ngọc lục bảo và kim cương tuyết) kèm viền phản quang trắng sáng chói lọi nhất (750ms).
+- **Hào quang chỉ ửng sáng ở góc dưới màn hình:** Lớp hào quang mềm mại (`.aura-bottom-corners`) chỉ ửng sáng tinh tế từ đáy và 2 góc dưới màn hình lên.
 - **Giữ nguyên cách ly cho Prime 5:** Nút Prime 5 hoàn toàn không kích hoạt hiệu ứng màn hình theo đúng yêu cầu.
 
 ## 📅 Phiên làm việc ngày 17/09/2026
