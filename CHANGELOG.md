@@ -20,6 +20,10 @@
 - **Hào quang chỉ ửng sáng ở góc dưới màn hình:** Lớp hào quang mềm mại (`.aura-bottom-corners`) chỉ ửng sáng tinh tế từ đáy và 2 góc dưới màn hình lên.
 - **Giữ nguyên cách ly cho Prime 5:** Nút Prime 5 hoàn toàn không kích hoạt hiệu ứng màn hình theo đúng yêu cầu.
 
+### 3. Cập nhật Banner & Ảnh đại diện Kho Nick Free Fire mới
+- **Cập nhật hình ảnh nhận diện:** Thay thế ảnh đại diện kho nick Free Fire (`assets/images/cat-freefire.jpg`) bằng banner đồ họa mới "ACC FREE FIRE TỰ CHỌN" với phong cách vàng kim 3D nổi bật, hoa anh đào nở rộ và tạo hình nhân vật Free Fire mặt nạ Kitsune / Oni.
+- **Đồng bộ toàn hệ thống:** Tự động cập nhật đồng bộ thẻ danh mục Kho Free Fire trên trang chủ, banner tiêu đề chi tiết kho nick và ảnh mẫu trong hệ thống Admin.
+
 ## 📅 Phiên làm việc ngày 17/09/2026
 
 ### 1. Phân chia độc lập các kho game (Theo chuẩn Giao diện yêu cầu)
