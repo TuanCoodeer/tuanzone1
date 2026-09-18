@@ -176,7 +176,22 @@
 }
 
 /* =========================================================
-   HIỆU ỨNG ỬNG VÀNG ÁNH KIM GÓC MÀN HÌNH (PRIME 5 - 8)
+   HIỆU ỨNG LƯỚI TINH THỂ ĐA GIÁC VÀNG ÁNH KIM (PRIME 6 - 8)
+   ========================================================= */
+.prime-crystal-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none !important;
+  z-index: 99988;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+/* =========================================================
+   HIỆU ỨNG ỬNG VÀNG ÁNH KIM GÓC MÀN HÌNH (PRIME 6 - 8)
    ========================================================= */
 .prime-gold-aura {
   position: fixed;

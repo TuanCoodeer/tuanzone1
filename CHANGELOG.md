@@ -10,10 +10,11 @@
   - Giữ nguyên nút "Tất cả Prime" với trạng thái mặc định.
   - Tích hợp hiệu ứng viền vàng kim `#f59e0b`, hào quang phát sáng khi hover và active, đảm bảo đồng bộ hoàn hảo với logic lọc tài khoản.
 
-### 2. Hiệu ứng ửng vàng ánh kim các góc màn hình khi chọn Prime 5 - 8
-- **Hào quang đa tầng (Multi-layered Golden Aura):** Khi người dùng nhấp vào các nút icon từ Prime 5 đến Prime 8, hệ thống sẽ kích hoạt hiệu ứng ửng sáng vàng ánh kim (`#prime-gold-aura`) tại các góc màn hình với tâm điểm bùng nổ rực rỡ ở 2 góc dưới (Bottom-Left & Bottom-Right).
-- **Tia sáng động (Gold Spark Particles):** Tự động bắn các hạt tinh thể vàng kim lơ lửng bốc lên từ 2 góc dưới đáy màn hình, độ rực rỡ và số lượng hạt gia tăng theo cấp độ Prime (Prime 8 tỏa ánh hào quang đỉnh cao nhất).
-- **Tối ưu trải nghiệm:** Tích hợp `pointer-events: none` không gây ảnh hưởng đến thao tác bấm trên web, tự động restart nhịp nháy mượt mà khi bấm chuyển đổi liên tục giữa các Prime và tự giải phóng bộ nhớ sau khi hoàn tất.
+### 2. Hiệu ứng Lưới Tinh Thể Đa Giác & Hào Quang Vàng Ánh Kim (Prime 6 - 8)
+- **Lưới tinh thể đa giác 3D (Low-Poly Crystal Facet Mesh):** Xây dựng module canvas chuyên trách `PrimeCrystalAura` vẽ mạng lưới tam giác đa giác phản quang kim cương bao phủ toàn màn hình giống hệt ảnh mẫu trong game khi bấm vào các nút **Prime 6, Prime 7, Prime 8**.
+- **Hiệu ứng quét sáng (Dynamic Light Sweep):** Nguồn sáng quét chéo qua các mặt cắt tinh thể tạo ánh phản quang lấp lánh chân thực, đường viền facet wireframe vàng kim tinh tế và biến đổi sắc thái theo cấp Prime (Prime 6 Vàng Hoàng Kim ➔ Prime 7 Ánh Dương Lửa ➔ Prime 8 Kim Cương Huyền Thoại).
+- **Hào quang góc & Tia sáng động:** Đồng bộ với lớp hào quang ửng vàng ánh kim tại các góc màn hình và chùm hạt sáng bắn lên từ 2 góc dưới.
+- **Loại bỏ hiệu ứng màn hình cho Prime 5:** Nút Prime 5 được cách ly hoàn toàn, khi nhấn chỉ thực hiện lọc tài khoản nội bộ và không kích hoạt bất kỳ hiệu ứng màn hình nào theo yêu cầu người dùng.
 
 ## 📅 Phiên làm việc ngày 17/09/2026
 

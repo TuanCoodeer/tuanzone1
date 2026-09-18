@@ -7,6 +7,7 @@ import { WAREHOUSES, TOP_DEPOSIT_USERS } from '../data/games.js?v=1.0.6';
 import { showPopup, showAlert, showConfirm, showToast, initPopupSystem } from './popup.js';
 import { initCyberSparks } from './cyberSparks.js';
 import { SecurityService } from './security.js';
+import { PrimeCrystalAura } from './primeCrystalAura.js';
 
 class TuBIzOneApp {
   constructor() {
@@ -17,12 +18,14 @@ class TuBIzOneApp {
     this.currentGalleryIndex = 0;
     this.adminUploadedImages = [];
     this.cyberSparks = null;
+    this.primeCrystalAura = null;
     this.lockoutInterval = null;
   }
 
   init() {
     initPopupSystem();
     this.cyberSparks = initCyberSparks();
+    this.primeCrystalAura = new PrimeCrystalAura('prime-crystal-canvas');
     this.initTheme();
     this.renderTopLeaderboard();
     this.renderHeaderAuth();
@@ -1306,32 +1309,46 @@ class TuBIzOneApp {
     });
   }
 
-  // --- HIỆU ỨNG ỬNG VÀNG ÁNH KIM GÓC MÀN HÌNH KHI CHỌN PRIME 5 - 8 ---
+  // --- HIỆU ỨNG LƯỚI TINH THỂ ĐA GIÁC & ỬNG VÀNG ÁNH KIM (CHỈ DÀNH CHO PRIME 6 - 8) ---
   /**
-   * Kích hoạt hiệu ứng ửng vàng ánh kim ở các góc màn hình (nháy góc dưới)
-   * @param {string} prime - Cấp Prime được click (VD: "Prime 5", "Prime 6", "Prime 7", "Prime 8")
+   * Kích hoạt hiệu ứng lưới tinh thể đa giác và ửng vàng ánh kim
+   * (Prime 5 ĐÃ ĐƯỢC XÓA BỎ HOÀN TOÀN khỏi hiệu ứng màn hình theo yêu cầu)
+   * @param {string} prime - Cấp Prime được click ("Prime 6", "Prime 7", "Prime 8")
    */
   triggerPrimeGoldAura(prime) {
-    const validPrimes = ['Prime 5', 'Prime 6', 'Prime 7', 'Prime 8'];
+    // CHỈ kích hoạt cho Prime 6, 7, 8 (Tuyệt đối không áp dụng cho Prime 5)
+    const validPrimes = ['Prime 6', 'Prime 7', 'Prime 8'];
     const auraEl = document.getElementById('prime-gold-aura');
-    if (!auraEl) return;
 
     if (!validPrimes.includes(prime)) {
-      auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
+      if (auraEl) {
+        auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
+      }
       const container = document.getElementById('aura-sparks-container');
       if (container) container.innerHTML = '';
+      if (this.primeCrystalAura) {
+        this.primeCrystalAura.stop();
+      }
       return;
     }
 
     const match = prime.match(/\d+/);
-    const level = match ? match[0] : '5';
+    const level = match ? parseInt(match[0], 10) : 6;
 
-    // Reset animation class để có thể nháy lại mượt mà mỗi lần click liên tục
-    auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
-    void auraEl.offsetWidth; // Bắt buộc reflow
+    // 1. Kích hoạt hiệu ứng Lưới Tinh Thể Đa Giác (Low-Poly Crystal Mesh 3D)
+    if (this.primeCrystalAura) {
+      this.primeCrystalAura.trigger(level);
+    }
 
-    auraEl.classList.add('flashing', `prime-level-${level}`);
-    this.spawnGoldAuraSparks(parseInt(level, 10));
+    // 2. Kích hoạt hào quang vàng ánh kim ở các góc màn hình
+    if (auraEl) {
+      auraEl.classList.remove('flashing', 'prime-level-5', 'prime-level-6', 'prime-level-7', 'prime-level-8');
+      void auraEl.offsetWidth; // Bắt buộc reflow để restart animation nháy
+      auraEl.classList.add('flashing', `prime-level-${level}`);
+    }
+
+    // 3. Bắn các hạt tia sáng vàng ánh kim lơ lửng từ 2 góc dưới
+    this.spawnGoldAuraSparks(level);
   }
 
   /**
