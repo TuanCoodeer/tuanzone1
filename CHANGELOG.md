@@ -1,5 +1,15 @@
 # 📋 NHẬT KÝ CẬP NHẬT DỰ ÁN — tuBIzOne (tuanzone1)
 
+## 📅 Phiên làm việc ngày 18/09/2026
+
+### 1. Tích hợp bộ Icon Bậc Prime (Prime 1 -> Prime 8) cho Kho Free Fire
+- **Kho lưu trữ tài nguyên:** Tạo thư mục `assets/prime-icons/` lưu trữ trọn bộ 8 icon vương miện Bậc Prime (Prime 1 đến Prime 8) định dạng PNG trong suốt.
+- **Xử lý đồ họa:** Tự động cân chỉnh bounding box để 8 icon đạt độ đồng đều và sắc nét tối đa trên giao diện người dùng.
+- **Nâng cấp giao diện nút lọc:**
+  - Chuyển đổi 8 nút bấm lọc từ dạng chữ sang dạng nút icon vương miện bấm được (`.filter-chip-prime`).
+  - Giữ nguyên nút "Tất cả Prime" với trạng thái mặc định.
+  - Tích hợp hiệu ứng viền vàng kim `#f59e0b`, hào quang phát sáng khi hover và active, đảm bảo đồng bộ hoàn hảo với logic lọc tài khoản.
+
 ## 📅 Phiên làm việc ngày 17/09/2026
 
 ### 1. Phân chia độc lập các kho game (Theo chuẩn Giao diện yêu cầu)
