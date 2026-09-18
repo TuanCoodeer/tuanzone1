@@ -35,8 +35,7 @@
   - Tăng độ tương phản đường viền (`--border-color`): Nâng cấp từ `rgba(0,0,0,0.08)` rất mờ lên `#cbd5e1` (Slate-300) sắc sảo, định hình rõ viền thẻ tài khoản, form tìm kiếm, thanh lọc chip và bảng dữ liệu.
   - Nâng cấp độ đậm văn bản phụ (`--text-muted: #475569`, `--text-dim: #64748b`): Loại bỏ tình trạng chữ xám nhạt khó đọc.
   - Vàng Hoàng Kim & Xanh Cyber tương phản cao: Đổi `--accent-gold` sang màu vàng hổ phách đậm `#d97706` và `--accent-cyan` sang `#0284c7`, giúp giá tiền, số dư ví và huy hiệu nổi bật rõ ràng trên nền trắng.
-  - Khắc phục hiệu ứng Logo Shimmer: Tinh chỉnh dải gradient logo TB One không bị chìm/biến mất trên nền header trắng.
-  - Tinh chỉnh lớp Hạt Cyber Sparks: Giảm độ phủ và chuyển sang chế độ hòa trộn `multiply` (`opacity: 0.25`, `z-index: 0`) ở giao diện sáng để không che mờ nội dung thẻ nick và chữ.
+  - Tối ưu hóa gọn gàng qua biến màu hệ thống (`styles/theme.css`): Quản lý tập trung toàn bộ màu sắc chế độ sáng qua Design Tokens (`--border-color: #cbd5e1`, `--text-main: #0f172a`, `--text-muted: #475569`, v.v.), giữ `components.css` và `modals.css` nguyên bản, gọn gàng, không bị trùng lặp mã nguồn.
 
 ## 📅 Phiên làm việc ngày 17/09/2026
 

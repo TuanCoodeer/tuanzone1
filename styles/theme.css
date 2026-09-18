@@ -88,6 +88,14 @@ body[data-theme="light"] {
   --btn-topup-bg: linear-gradient(135deg, #0070f3 0%, #00a8e8 100%);
 }
 
+/* Đảm bảo tiêu đề và đường viền nhóm kho sắc nét khi ở chế độ sáng */
+body[data-theme="light"] .warehouse-group-heading {
+  color: var(--text-main);
+}
+body[data-theme="light"] .warehouse-group-header {
+  border-bottom-color: var(--border-color);
+}
+
 /* Global Reset */
 * {
   margin: 0;
