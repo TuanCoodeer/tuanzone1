@@ -1,7 +1,7 @@
 // =========================================================
 // tuBIzOne.com - Hiệu Ứng Lưới Mặt Cắt Pha Lê Đa Giác (Prime 6 - 8)
 // Cấu trúc: Các phiến pha lê / kim cương giác cắt 4 mặt (Faceted Crystal Diamonds)
-// Phủ toàn màn hình, NHÁY LÊN chớp sáng bùng nổ rồi tan biến dứt khoát
+// Chế độ: QUÉT CHẠY QUA (Sweep Wave) - Luồng sáng lăng kính quét chéo qua toàn màn hình
 // =========================================================
 
 export class PrimeCrystalAura {
@@ -18,7 +18,7 @@ export class PrimeCrystalAura {
     this.crystalGems = [];
     this.currentLevel = 6;
     this.startTime = 0;
-    this.duration = 650; // Nhanh & dứt khoát
+    this.duration = 900; // Tốc độ quét nhanh, mượt mà và dứt khoát
 
     this.init();
   }
@@ -48,8 +48,8 @@ export class PrimeCrystalAura {
   }
 
   /**
-   * Xây dựng mạng lưới các khối pha lê giác cắt (Faceted Crystal Gems)
-   * Mỗi ô là một hình thoi / kim cương pha lê đa diện gồm 4 mặt cắt hướng tâm (Apex)
+   * Xây dựng mạng lưới các khối pha lê giác cắt (Faceted Crystal Diamonds)
+   * Phủ kín toàn bộ màn hình, mỗi khối gồm 4 mặt cắt hướng tâm (Apex)
    */
   buildCrystalMesh() {
     this.crystalGems = [];
@@ -93,7 +93,10 @@ export class PrimeCrystalAura {
         const cy = (tl.y + tr.y + bl.y + br.y) / 4 + Math.cos(r * 5.3 + c * 2.9) * 0.16 * step;
         const apex = { x: cx, y: cy };
 
-        // Hệ số phản quang và biến thể màu cho viên pha lê này
+        // Tọa độ đường chéo chuẩn hóa (0 ở góc trên-trái, 1 ở góc dưới-phải) phục vụ hiệu ứng quét chạy qua
+        const diagPos = (cx / this.width + cy / this.height) * 0.5;
+
+        // Hệ số phản quang và biến thể màu
         const seed = Math.abs(Math.sin(cx * 12.9898 + cy * 78.233));
         const colorVariant = Math.floor(seed * 100) % 6;
 
@@ -107,6 +110,7 @@ export class PrimeCrystalAura {
 
         this.crystalGems.push({
           apex,
+          diagPos,
           facets,
           seed,
           colorVariant
@@ -116,18 +120,18 @@ export class PrimeCrystalAura {
   }
 
   /**
-   * Kích hoạt hiệu ứng NHÁY LÊN của các khối pha lê
+   * Kích hoạt hiệu ứng QUÉT CHẠY QUA (Sweep Wave) của các khối pha lê
    * @param {number} level - Cấp Prime (6, 7, 8)
    */
   trigger(level = 6) {
     if (!this.canvas || !this.ctx) return;
     this.currentLevel = level;
 
-    // Thời lượng hiệu ứng nhanh gọn:
-    // Prime 6: 550ms, Prime 7: 650ms, Prime 8: 750ms
-    if (level === 6) this.duration = 550;
-    else if (level === 7) this.duration = 650;
-    else if (level === 8) this.duration = 750;
+    // Thời lượng hiệu ứng quét chạy qua: Nhanh, mượt mà và dứt khoát
+    // Prime 6: 800ms, Prime 7: 900ms, Prime 8: 1000ms
+    if (level === 6) this.duration = 800;
+    else if (level === 7) this.duration = 900;
+    else if (level === 8) this.duration = 1000;
 
     this.startTime = performance.now();
 
@@ -165,35 +169,54 @@ export class PrimeCrystalAura {
     ctx.scale(this.dpr, this.dpr);
     ctx.clearRect(0, 0, this.width, this.height);
 
-    // Đường cong NHÁY LÊN (FLASH CURVE):
-    // 0 -> 0.12 (khoảng 70ms): Bùng sáng chớp nhoáng lên mức cực đại
-    // 0.12 -> 0.40: Duy trì độ sáng pha lê lấp lánh
-    // 0.40 -> 1.00: Mờ dần và tan biến thanh thoát
-    let flashAlpha = 0;
-    if (progress < 0.12) {
-      flashAlpha = progress / 0.12;
-    } else if (progress < 0.4) {
-      flashAlpha = 1.0;
-    } else {
-      const pOut = (progress - 0.4) / 0.6;
-      flashAlpha = 1 - Math.pow(pOut, 1.4);
+    // Vị trí mặt sóng quét chéo qua màn hình từ góc trên-trái xuống góc dưới-phải
+    // Quét từ -0.25 đến 1.25 để bao phủ trọn vẹn toàn bộ diện tích
+    const sweepFront = progress * 1.5 - 0.25;
+    const waveBand = 0.26; // Độ rộng dải sáng quét qua
+
+    // Độ mờ tổng thể (vào mượt ở đầu và thoát êm ở cuối)
+    let globalAlpha = 1;
+    if (progress < 0.08) {
+      globalAlpha = progress / 0.08;
+    } else if (progress > 0.82) {
+      globalAlpha = 1 - (progress - 0.82) / 0.18;
     }
 
     const level = this.currentLevel;
 
-    // Duyệt qua tất cả các khối pha lê giác cắt
+    // Duyệt qua tất cả các khối pha lê giác cắt 4 mặt
     for (let i = 0; i < this.crystalGems.length; i++) {
       const gem = this.crystalGems[i];
       const apex = gem.apex;
       const seed = gem.seed;
       const variant = gem.colorVariant;
+      const diagPos = gem.diagPos;
+
+      // Khoảng cách từ vị trí viên pha lê tới dải sóng sáng đang quét qua
+      const dist = diagPos - sweepFront;
+      const absDist = Math.abs(dist);
+
+      let waveIntensity = 0;
+
+      if (absDist < waveBand) {
+        // Cường độ cực đại ngay tại đỉnh sóng quét qua
+        waveIntensity = Math.pow(Math.cos((absDist / waveBand) * Math.PI * 0.5), 1.5);
+      } else if (dist < 0 && absDist < waveBand * 1.8) {
+        // Vệt đuôi sáng lung linh tan biến dần phía sau luồng sóng quét
+        const trailDist = (absDist - waveBand) / (waveBand * 0.8);
+        waveIntensity = (1 - trailDist) * 0.25;
+      }
+
+      if (waveIntensity <= 0.02) continue; // Tối ưu hiệu năng: bỏ qua các khối ngoài vùng quét
+
+      const effectiveAlpha = waveIntensity * globalAlpha;
 
       // Xác định bảng màu cơ sở cho viên pha lê này
       let baseR, baseG, baseB, strokeColor;
 
       if (level === 8) {
         // === PRIME 8: SẶC SỠ & ĐẸP NHẤT ===
-        // Tán sắc lăng kính cầu vồng thần thoại (Prismatic Rainbow Diamond Facets):
+        // Tán sắc lăng kính cầu vồng thần thoại khi luồng sáng quét qua:
         switch (variant) {
           case 0: // Kim cương Vàng Hoàng Gia
             baseR = 255; baseG = 215; baseB = 0;
@@ -214,11 +237,11 @@ export class PrimeCrystalAura {
             baseR = 124; baseG = 77; baseB = 255;
             break;
         }
-        strokeColor = `rgba(255, 255, 255, ${(0.3 + seed * 0.45) * flashAlpha})`;
+        strokeColor = `rgba(255, 255, 255, ${(0.35 + seed * 0.5) * effectiveAlpha})`;
 
       } else if (level === 7) {
         // === PRIME 7: HỔ PHÁCH & LỬA RỰC RỠ ===
-        // Sắc thái lửa vàng cam đậm đà (Amber & Solar Flare Gold)
+        // Sắc thái lửa vàng cam đậm đà quét qua:
         if (seed > 0.6) {
           baseR = 255; baseG = 175; baseB = 10;
         } else if (seed > 0.3) {
@@ -226,20 +249,20 @@ export class PrimeCrystalAura {
         } else {
           baseR = 255; baseG = 80; baseB = 0;
         }
-        strokeColor = `rgba(255, 230, 160, ${(0.25 + seed * 0.35) * flashAlpha})`;
+        strokeColor = `rgba(255, 230, 160, ${(0.28 + seed * 0.4) * effectiveAlpha})`;
 
       } else {
         // === PRIME 6: VÀNG HOÀNG KIM THANH NHÃ ===
-        // Sắc thái vàng kim citrine tinh khiết, nhẹ nhàng
+        // Sắc thái vàng kim citrine tinh khiết, nhẹ nhàng quét qua:
         if (seed > 0.5) {
           baseR = 255; baseG = 220; baseB = 40;
         } else {
           baseR = 240; baseG = 180; baseB = 20;
         }
-        strokeColor = `rgba(255, 240, 180, ${(0.18 + seed * 0.28) * flashAlpha})`;
+        strokeColor = `rgba(255, 240, 180, ${(0.22 + seed * 0.32) * effectiveAlpha})`;
       }
 
-      // Vẽ 4 mặt cắt của viên pha lê hình thoi (Mỗi mặt cắt có độ sáng khác nhau tạo chiều sâu 3D)
+      // Vẽ 4 mặt cắt của viên pha lê hình thoi (Mỗi mặt cắt có độ sáng khác nhau tạo chiều sâu 3D khi sóng quét tới)
       for (let f = 0; f < gem.facets.length; f++) {
         const facet = gem.facets[f];
         const pts = facet.pts;
@@ -248,23 +271,23 @@ export class PrimeCrystalAura {
         let alphaMultiplier = 1;
 
         if (facet.type === 'top') {
-          lumMultiplier = 1.35; // Mặt trên sáng nhất
-          alphaMultiplier = 0.72;
+          lumMultiplier = 1.35; // Mặt trên hứng sáng mạnh nhất
+          alphaMultiplier = 0.78;
         } else if (facet.type === 'left') {
           lumMultiplier = 1.15; // Mặt trái sáng trung bình
-          alphaMultiplier = 0.58;
+          alphaMultiplier = 0.62;
         } else if (facet.type === 'right') {
           lumMultiplier = 0.95; // Mặt phải phản quang
-          alphaMultiplier = 0.48;
+          alphaMultiplier = 0.52;
         } else {
           lumMultiplier = 0.75; // Mặt đáy tối nhất
-          alphaMultiplier = 0.36;
+          alphaMultiplier = 0.4;
         }
 
         const r = Math.min(255, Math.floor(baseR * lumMultiplier));
         const g = Math.min(255, Math.floor(baseG * lumMultiplier));
         const b = Math.min(255, Math.floor(baseB * lumMultiplier));
-        const a = (alphaMultiplier * (0.6 + seed * 0.4)) * flashAlpha;
+        const a = (alphaMultiplier * (0.65 + seed * 0.35)) * effectiveAlpha;
 
         ctx.beginPath();
         ctx.moveTo(pts[0].x, pts[0].y);
@@ -276,17 +299,31 @@ export class PrimeCrystalAura {
         ctx.fill();
 
         ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = level === 8 ? 0.95 : 0.75;
+        ctx.lineWidth = level === 8 ? 1.05 : 0.85;
         ctx.stroke();
       }
 
-      // Điểm chóp đỉnh kim cương (Apex Glint) nhấp nháy ở giữa mỗi viên pha lê
-      if (progress > 0.08 && progress < 0.45 && seed > 0.45) {
-        const glintSize = level === 8 ? 2.2 : 1.5;
-        ctx.fillStyle = '#ffffff';
+      // Điểm chóp đỉnh kim cương (Apex Glint) chớp sáng rực rỡ ngay lúc luồng sóng quét qua đỉnh
+      if (waveIntensity > 0.65 && seed > 0.35) {
+        const glintAlpha = (waveIntensity - 0.65) / 0.35 * globalAlpha;
+        const glintSize = (level === 8 ? 2.5 : 1.8) * (0.8 + glintAlpha * 0.5);
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${glintAlpha.toFixed(3)})`;
         ctx.beginPath();
         ctx.arc(apex.x, apex.y, glintSize, 0, Math.PI * 2);
         ctx.fill();
+
+        // Ngôi sao 4 cánh phản quang nhỏ cho Prime 8
+        if (level === 8 && waveIntensity > 0.85) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${(glintAlpha * 0.8).toFixed(3)})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(apex.x - 5, apex.y);
+          ctx.lineTo(apex.x + 5, apex.y);
+          ctx.moveTo(apex.x, apex.y - 5);
+          ctx.lineTo(apex.x, apex.y + 5);
+          ctx.stroke();
+        }
       }
     }
 
