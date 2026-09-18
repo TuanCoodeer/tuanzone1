@@ -208,79 +208,21 @@
   animation: primeGoldAuraFlash 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Các góc ửng hào quang ánh kim */
-.aura-corner {
+/* Hào quang ửng vàng ánh kim mềm mại ở góc dưới màn hình */
+.aura-bottom-corners {
   position: absolute;
-  pointer-events: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38vh;
+  max-height: 420px;
+  background: 
+    radial-gradient(ellipse 65% 95% at 0% 100%, rgba(255, 215, 60, 0.72) 0%, rgba(255, 155, 10, 0.38) 28%, rgba(210, 100, 0, 0.12) 58%, transparent 80%),
+    radial-gradient(ellipse 65% 95% at 100% 100%, rgba(255, 215, 60, 0.72) 0%, rgba(255, 155, 10, 0.38) 28%, rgba(210, 100, 0, 0.12) 58%, transparent 80%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255, 200, 40, 0.35) 0%, rgba(255, 140, 0, 0.14) 35%, transparent 75%);
+  filter: blur(18px);
   mix-blend-mode: screen;
-}
-
-/* 2 góc dưới màn hình (trung tâm hào quang vàng ánh kim) */
-.aura-corner-bl {
-  left: 0;
-  bottom: 0;
-  width: 48vw;
-  max-width: 620px;
-  height: 48vh;
-  max-height: 540px;
-  background: radial-gradient(
-    circle at 0% 100%,
-    rgba(255, 225, 90, 0.9) 0%,
-    rgba(255, 175, 10, 0.55) 24%,
-    rgba(225, 110, 0, 0.25) 50%,
-    transparent 74%
-  );
-  filter: blur(2px);
-}
-
-.aura-corner-br {
-  right: 0;
-  bottom: 0;
-  width: 48vw;
-  max-width: 620px;
-  height: 48vh;
-  max-height: 540px;
-  background: radial-gradient(
-    circle at 100% 100%,
-    rgba(255, 225, 90, 0.9) 0%,
-    rgba(255, 175, 10, 0.55) 24%,
-    rgba(225, 110, 0, 0.25) 50%,
-    transparent 74%
-  );
-  filter: blur(2px);
-}
-
-/* 2 góc trên màn hình (hào quang điểm xuyết cân đối) */
-.aura-corner-tl {
-  left: 0;
-  top: 0;
-  width: 32vw;
-  max-width: 420px;
-  height: 32vh;
-  max-height: 360px;
-  background: radial-gradient(
-    circle at 0% 0%,
-    rgba(255, 220, 80, 0.55) 0%,
-    rgba(255, 150, 0, 0.25) 26%,
-    transparent 68%
-  );
-  filter: blur(2px);
-}
-
-.aura-corner-tr {
-  right: 0;
-  top: 0;
-  width: 32vw;
-  max-width: 420px;
-  height: 32vh;
-  max-height: 360px;
-  background: radial-gradient(
-    circle at 100% 0%,
-    rgba(255, 220, 80, 0.55) 0%,
-    rgba(255, 150, 0, 0.25) 26%,
-    transparent 68%
-  );
-  filter: blur(2px);
+  pointer-events: none;
 }
 
 /* Đường viền ánh kim đáy màn hình */

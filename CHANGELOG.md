@@ -17,6 +17,7 @@
   - 🌟 **Prime 6:** Pha lê Vàng Kim Citrine tinh khiết, nhẹ nhàng thanh lịch (~30 viên, 650ms).
   - 🔥 **Prime 7:** Pha lê Lửa Hổ Phách rực rỡ, đậm đà với độ tương phản cao và tia lửa viền sắc sảo (~50 viên, 750ms).
   - 💎🌈 **Prime 8 (Sặc sỡ & đẹp nhất):** Tinh thể Kim Cương Cầu Vồng Thần Thoại (Mythic Prismatic Rainbow Diamond) - bùng nổ ~80 viên pha lê đa sắc lộng lẫy (vàng hoàng kim, tím thần thoại, xanh cyan quang học, hồng ngọc neon, ngọc lục bảo và ánh kim cương trắng) kèm chùm sao lấp lánh phản chiếu rực sáng nhất toàn shop.
+- **Hào quang chỉ ửng sáng ở góc dưới màn hình:** Xóa bỏ hoàn toàn 4 vệt tròn thô ở 4 góc, thay thế bằng lớp hào quang mềm mại (`.aura-bottom-corners`) chỉ ửng sáng tinh tế từ 2 góc dưới và đáy màn hình bốc lên, hòa quyện mượt mà vào giao diện.
 - **Giữ nguyên cách ly cho Prime 5:** Nút Prime 5 hoàn toàn không kích hoạt hiệu ứng màn hình theo đúng yêu cầu.
 
 ## 📅 Phiên làm việc ngày 17/09/2026
