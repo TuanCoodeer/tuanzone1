@@ -244,6 +244,32 @@ class TuBIzOneApp {
       window.location.hash = 'trangchu';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // 5. Xử lý ẩn Hàng 2 khi người dùng lướt xuống xem shop, giữ Hàng 1 cố định
+    const headerEl = document.getElementById('site-header');
+    if (headerEl) {
+      const updateHeaderScroll = () => {
+        if (window.scrollY > 35) {
+          headerEl.classList.add('is-scrolled');
+        } else {
+          headerEl.classList.remove('is-scrolled');
+        }
+      };
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateHeaderScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Kiểm tra trạng thái ngay khi khởi tạo
+      updateHeaderScroll();
+    }
   }
 
   // --- 4. RENDER CÁC KHO TÀI KHOẢN & DANH MỤC GAME (THEO ẢNH 2) ---

@@ -37,54 +37,61 @@
   <!-- =========================================================
        HEADER CHÍNH THỨC
        ========================================================= -->
-  <header class="site-header">
-    <div class="header-inner">
-      <!-- 1. Logo Website -->
-      <a href="#trangchu" class="brand-wrapper" id="header-logo-btn">
-        <div class="brand-badge-icon">
-          <img src="assets/images/logo-tb-badge.png" alt="tuBIzOne Logo" class="brand-badge-img">
-        </div>
-        <div class="brand-text">
-          <div class="brand-name">tuBIz<span>One</span>.com</div>
-          <div class="brand-sub">UY TÍN - GIÁ RẺ - CHẤT LƯỢNG</div>
-        </div>
-      </a>
+  <header class="site-header" id="site-header">
+    <!-- HÀNG 1: Logo Website, Thanh Tìm Kiếm, Các Nút Hành Động (Cố định khi cuộn trang) -->
+    <div class="header-top-row" id="header-top-row">
+      <div class="header-top-inner">
+        <!-- 1. Logo Website -->
+        <a href="#trangchu" class="brand-wrapper" id="header-logo-btn">
+          <div class="brand-badge-icon">
+            <img src="assets/images/logo-tb-badge.png" alt="tuBIzOne Logo" class="brand-badge-img">
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">tuBIz<span>One</span>.com</div>
+            <div class="brand-sub">UY TÍN - GIÁ RẺ - CHẤT LƯỢNG</div>
+          </div>
+        </a>
 
-      <!-- 2. Menu Điều Hướng Nhanh Đến Các Kho & Túi Mù -->
-      <nav class="header-nav">
-        <a href="#kho-freefire" class="nav-link">🔥 Kho Free Fire</a>
-        <a href="#kho-lienquan" class="nav-link">⚔️ Kho Liên Quân</a>
-        <a href="#kho-fcmobile" class="nav-link">⚽ Kho FC Mobile</a>
-        <a href="#kho-blindbag" class="nav-link nav-link-hot" id="nav-link-blindbag">🎁 Túi Mù FF</a>
-        <a href="#kho-lq-blindbag" class="nav-link nav-link-hot" id="nav-link-lq-blindbag">🎁 Túi Mù LQ</a>
-        <a href="#kho-fc-blindbag" class="nav-link nav-link-hot" id="nav-link-fc-blindbag">🎁 Túi Mù FC</a>
-        <a href="#kho-admin" class="nav-link nav-link-admin" id="nav-link-header-admin" style="display: none;">👑 Kho Admin</a>
-      </nav>
+        <!-- 2. Thanh Tìm Kiếm Acc Bằng Mã Hoặc Mô Tả -->
+        <div class="header-search">
+          <input type="text" class="search-input-box" id="global-search-input" placeholder="Tìm mã acc hoặc mô tả...">
+          <button class="search-submit-btn" id="global-search-btn" title="Tìm kiếm">🔍</button>
+        </div>
 
-      <!-- 3. Thanh Tìm Kiếm Acc Bằng Mã Hoặc Mô Tả -->
-      <div class="header-search">
-        <input type="text" class="search-input-box" id="global-search-input" placeholder="Tìm mã acc hoặc mô tả...">
-        <button class="search-submit-btn" id="global-search-btn" title="Tìm kiếm">🔍</button>
+        <!-- 3. Nút Đổi Chế Độ Sáng/Tối, Nạp Tiền & Đăng Nhập/Đăng Ký -->
+        <div class="header-actions">
+          <!-- Nút Bật/Tắt Sáng Tối (Light / Dark Mode) -->
+          <button class="btn-theme-toggle" id="btn-toggle-theme" title="Chuyển chế độ Sáng / Tối">
+            <span id="theme-toggle-icon">☀️</span>
+            <span id="theme-toggle-label">Sáng</span>
+          </button>
+
+          <!-- Nút Nạp Tiền (Mở 2 Phương Án: Thẻ cào & Ngân hàng/ATM) -->
+          <button class="btn-topup-main" id="btn-open-deposit-modal">
+            <span>💳</span> Nạp Tiền
+          </button>
+
+          <!-- Khu vực Đăng Nhập / Đăng Ký -->
+          <div class="auth-group" id="header-auth-group">
+            <button class="btn-auth-item" id="btn-header-login">Đăng Nhập</button>
+            <button class="btn-auth-item" id="btn-header-register" style="background: var(--primary-blue); color: #fff; border: none;">Đăng Ký</button>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <!-- 4. Nút Đổi Chế Độ Sáng/Tối, Nạp Tiền & Đăng Nhập/Đăng Ký -->
-      <div class="header-actions">
-        <!-- Nút Bật/Tắt Sáng Tối (Light / Dark Mode) -->
-        <button class="btn-theme-toggle" id="btn-toggle-theme" title="Chuyển chế độ Sáng / Tối">
-          <span id="theme-toggle-icon">☀️</span>
-          <span id="theme-toggle-label">Sáng</span>
-        </button>
-
-        <!-- Nút Nạp Tiền (Mở 2 Phương Án: Thẻ cào & Ngân hàng/ATM) -->
-        <button class="btn-topup-main" id="btn-open-deposit-modal">
-          <span>💳</span> Nạp Tiền
-        </button>
-
-        <!-- Khu vực Đăng Nhập / Đăng Ký -->
-        <div class="auth-group" id="header-auth-group">
-          <button class="btn-auth-item" id="btn-header-login">Đăng Nhập</button>
-          <button class="btn-auth-item" id="btn-header-register" style="background: var(--primary-blue); color: #fff; border: none;">Đăng Ký</button>
-        </div>
+    <!-- HÀNG 2: Menu Điều Hướng Nhanh Đến Các Kho & Túi Mù (Biến mất khi lướt xuống xem shop) -->
+    <div class="header-bottom-row" id="header-bottom-row">
+      <div class="header-bottom-inner">
+        <nav class="header-nav">
+          <a href="#kho-freefire" class="nav-link">🔥 Kho Free Fire</a>
+          <a href="#kho-lienquan" class="nav-link">⚔️ Kho Liên Quân</a>
+          <a href="#kho-fcmobile" class="nav-link">⚽ Kho FC Mobile</a>
+          <a href="#kho-blindbag" class="nav-link nav-link-hot" id="nav-link-blindbag">🎁 Túi Mù FF</a>
+          <a href="#kho-lq-blindbag" class="nav-link nav-link-hot" id="nav-link-lq-blindbag">🎁 Túi Mù LQ</a>
+          <a href="#kho-fc-blindbag" class="nav-link nav-link-hot" id="nav-link-fc-blindbag">🎁 Túi Mù FC</a>
+          <a href="#kho-admin" class="nav-link nav-link-admin" id="nav-link-header-admin" style="display: none;">👑 Kho Admin</a>
+        </nav>
       </div>
     </div>
   </header>
