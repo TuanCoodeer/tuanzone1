@@ -1230,7 +1230,10 @@ class TuBIzOneApp {
         store.filters.freefire.prime = chip.dataset.prime;
         this.renderFreeFireWarehouse();
 
-        // Kích hoạt hiệu ứng ửng vàng ánh kim các góc màn hình khi bấm Prime 5 - 8
+        // Kích hoạt hiệu ứng bùng nổ xung lực & hạt tinh thể ngay tại nút khi bấm Prime 6 - 8
+        this.triggerPrimeButtonBurst(chip, chip.dataset.prime);
+
+        // Kích hoạt hiệu ứng ửng vàng ánh kim các góc màn hình khi bấm Prime 6 - 8
         this.triggerPrimeGoldAura(chip.dataset.prime);
       });
     });
@@ -1313,7 +1316,149 @@ class TuBIzOneApp {
     });
   }
 
-  // --- HIỆU ỨNG LƯỚI TINH THỂ ĐA GIÁC & ỬNG VÀNG ÁNH KIM (CHỈ DÀNH CHO PRIME 6 - 8) ---
+  // --- HIỆU ỨNG LƯỚI TINH THỂ ĐA GIÁC, BÙNG NỔ NÚT BẤM & HÀO QUANG (PRIME 6 - 8) ---
+  /**
+   * Kích hoạt hiệu ứng bùng nổ xung lực & hạt tinh thể ngay tại nút bấm Prime 6 - 8
+   * Đặc biệt: Prime 8 là cấp độ Thần Thoại - ĐẶC SẮC NHẤT
+   * @param {HTMLElement} chip - Element nút được click
+   * @param {string} prime - Cấp Prime được click ("Prime 6", "Prime 7", "Prime 8")
+   */
+  triggerPrimeButtonBurst(chip, prime) {
+    if (!chip) return;
+    const validPrimes = ['Prime 6', 'Prime 7', 'Prime 8'];
+    if (!validPrimes.includes(prime)) return;
+
+    const match = prime.match(/\d+/);
+    const level = match ? parseInt(match[0], 10) : 6;
+
+    // 1. Hiệu ứng nảy đàn hồi 3D trên chính nút bấm
+    chip.classList.remove('prime-btn-pop-6', 'prime-btn-pop-7', 'prime-btn-pop-8');
+    void chip.offsetWidth; // ép reflow để kích hoạt lại animation
+    chip.classList.add(`prime-btn-pop-${level}`);
+    setTimeout(() => {
+      chip.classList.remove(`prime-btn-pop-${level}`);
+    }, 650);
+
+    // 2. Lấy tọa độ tâm nút bấm trên màn hình (viewport coordinates)
+    const rect = chip.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const burstContainer = document.getElementById('prime-button-burst-container') || document.body;
+
+    // 3. Tạo sóng xung kích tỏa ra từ tâm nút
+    const shockwaveCount = level === 8 ? 3 : (level === 7 ? 2 : 1);
+    for (let s = 0; s < shockwaveCount; s++) {
+      setTimeout(() => {
+        const wave = document.createElement('div');
+        wave.className = `prime-btn-shockwave ${
+          level === 8 ? 'prime-shockwave-rainbow' : (level === 7 ? 'prime-shockwave-fire' : 'prime-shockwave-gold')
+        }`;
+        const waveSize = Math.max(rect.width, rect.height) * (level === 8 ? 1.4 : 1.2);
+        wave.style.width = `${waveSize}px`;
+        wave.style.height = `${waveSize}px`;
+        wave.style.left = `${centerX}px`;
+        wave.style.top = `${centerY}px`;
+        burstContainer.appendChild(wave);
+
+        setTimeout(() => wave.remove(), 750);
+      }, s * 110);
+    }
+
+    // 4. Nếu là Prime 8: Chớp sáng trung tâm (Cosmic Glint Flash)
+    if (level === 8) {
+      const glint = document.createElement('div');
+      glint.className = 'prime-center-glint';
+      glint.style.left = `${centerX}px`;
+      glint.style.top = `${centerY}px`;
+      burstContainer.appendChild(glint);
+      setTimeout(() => glint.remove(), 500);
+    }
+
+    // 5. Bắn chùm hạt tinh thể / ngôi sao tỏa 360 độ từ tâm nút
+    // Prime 6: 12 hạt vàng kim
+    // Prime 7: 18 hạt hỏa diệm cam đỏ rực rỡ
+    // Prime 8: 32 hạt & ngôi sao lăng kính 6 sắc màu thần thoại (ĐẶC SẮC NHẤT)
+    const particleCount = level === 8 ? 32 : (level === 7 ? 18 : 12);
+    
+    // Bảng màu cho từng cấp:
+    const rainbowColors = [
+      { bg: '#e040fb', shadow: '#d500f9' }, // Thạch anh tím (Amethyst)
+      { bg: '#00e5ff', shadow: '#00b0ff' }, // Lam Cyan quang học (Celestial)
+      { bg: '#ff4081', shadow: '#f50057' }, // Hồng Ruby Neon
+      { bg: '#ffd700', shadow: '#ffab00' }, // Vàng Hoàng Gia
+      { bg: '#00e676', shadow: '#00c853' }, // Ngọc Lục Bảo (Emerald)
+      { bg: '#7c4dff', shadow: '#651fff' }  // Lam Sapphire
+    ];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (i / particleCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
+      
+      const maxDistance = level === 8 
+        ? Math.random() * 85 + 55 
+        : (level === 7 ? Math.random() * 65 + 40 : Math.random() * 45 + 28);
+      
+      const targetX = Math.cos(angle) * maxDistance;
+      const targetY = Math.sin(angle) * maxDistance;
+      const dur = (Math.random() * 0.25 + (level === 8 ? 0.6 : 0.5)).toFixed(2);
+      const rot = Math.floor(Math.random() * 360 - 180) + 'deg';
+
+      const isStar = level === 8 && (i % 3 === 0);
+
+      if (isStar) {
+        const star = document.createElement('div');
+        star.className = 'prime-burst-star';
+        star.textContent = '✦';
+        const c = rainbowColors[i % rainbowColors.length];
+        star.style.color = c.bg;
+        star.style.setProperty('--bx', `${targetX}px`);
+        star.style.setProperty('--by', `${targetY}px`);
+        star.style.setProperty('--dur', `${dur}s`);
+        star.style.setProperty('--size', `${Math.floor(Math.random() * 6) + 14}px`);
+        star.style.left = `${centerX}px`;
+        star.style.top = `${centerY}px`;
+        burstContainer.appendChild(star);
+        setTimeout(() => star.remove(), parseFloat(dur) * 1000 + 100);
+      } else {
+        const p = document.createElement('div');
+        p.className = 'prime-burst-particle gem-shape';
+        
+        let pColor, pShadow, pSize;
+        if (level === 8) {
+          const c = rainbowColors[i % rainbowColors.length];
+          pColor = c.bg;
+          pShadow = c.shadow;
+          pSize = Math.floor(Math.random() * 5) + 6; // 6px - 10px
+        } else if (level === 7) {
+          const fieryHues = ['#ff3d00', '#ff6d00', '#ff9100', '#ffd600'];
+          pColor = fieryHues[Math.floor(Math.random() * fieryHues.length)];
+          pShadow = '#dd2c00';
+          pSize = Math.floor(Math.random() * 4) + 5; // 5px - 8px
+        } else {
+          pColor = Math.random() > 0.4 ? '#ffd700' : '#ffe082';
+          pShadow = '#ff9800';
+          pSize = Math.floor(Math.random() * 3) + 4; // 4px - 6px
+        }
+
+        p.style.width = `${pSize}px`;
+        p.style.height = `${pSize}px`;
+        p.style.background = pColor;
+        p.style.boxShadow = `0 0 10px ${pShadow}, 0 0 16px ${pColor}`;
+        p.style.left = `${centerX}px`;
+        p.style.top = `${centerY}px`;
+        p.style.setProperty('--bx', `${targetX}px`);
+        p.style.setProperty('--by', `${targetY}px`);
+        p.style.setProperty('--rot', rot);
+        p.style.setProperty('--dur', `${dur}s`);
+        p.style.setProperty('--s0', (Math.random() * 0.4 + 0.6).toFixed(2));
+        p.style.setProperty('--s1', (Math.random() * 0.2 + 0.1).toFixed(2));
+
+        burstContainer.appendChild(p);
+        setTimeout(() => p.remove(), parseFloat(dur) * 1000 + 100);
+      }
+    }
+  }
+
   /**
    * Kích hoạt hiệu ứng lưới tinh thể đa giác và ửng vàng ánh kim
    * (Prime 5 ĐÃ ĐƯỢC XÓA BỎ HOÀN TOÀN khỏi hiệu ứng màn hình theo yêu cầu)
@@ -1356,15 +1501,16 @@ class TuBIzOneApp {
   }
 
   /**
-   * Bắn các hạt tia sáng vàng ánh kim (gold sparks) lơ lửng từ 2 góc dưới màn hình
-   * @param {number} level - Cấp Prime từ 5 đến 8
+   * Bắn các hạt tia sáng vàng ánh kim (hoặc đa sắc cho Prime 8) lơ lửng từ 2 góc dưới màn hình
+   * @param {number} level - Cấp Prime từ 6 đến 8
    */
   spawnGoldAuraSparks(level) {
     const container = document.getElementById('aura-sparks-container');
     if (!container) return;
 
     container.innerHTML = '';
-    const sparkCount = 8 + (level - 5) * 4; // Cấp càng cao càng nhiều hạt ánh kim
+    const sparkCount = 8 + (level - 5) * 5; // Cấp càng cao càng nhiều hạt (Prime 8 lên tới 23 hạt)
+    const rainbowHues = ['#00e5ff', '#e040fb', '#ff4081', '#ffd700', '#00e676'];
 
     for (let i = 0; i < sparkCount; i++) {
       const isLeft = i % 2 === 0;
@@ -1375,18 +1521,25 @@ class TuBIzOneApp {
       spark.style.width = `${size}px`;
       spark.style.height = `${size}px`;
 
-      if (isLeft) {
-        spark.style.left = `${Math.random() * 12}vw`;
-        spark.style.bottom = `${Math.random() * 7}vh`;
-        spark.style.setProperty('--tx', `${Math.random() * 55 + 15}px`);
-      } else {
-        spark.style.right = `${Math.random() * 12}vw`;
-        spark.style.bottom = `${Math.random() * 7}vh`;
-        spark.style.setProperty('--tx', `${-(Math.random() * 55 + 15)}px`);
+      if (level === 8) {
+        spark.classList.add('rainbow-spark');
+        const color = rainbowHues[i % rainbowHues.length];
+        spark.style.background = `radial-gradient(circle, #ffffff 0%, ${color} 60%, transparent 100%)`;
+        spark.style.color = color;
       }
 
-      spark.style.setProperty('--ty1', `${-(Math.random() * 35 + 25)}px`);
-      spark.style.setProperty('--ty2', `${-(Math.random() * 120 + 65)}px`);
+      if (isLeft) {
+        spark.style.left = `${Math.random() * 14}vw`;
+        spark.style.bottom = `${Math.random() * 8}vh`;
+        spark.style.setProperty('--tx', `${Math.random() * 65 + 20}px`);
+      } else {
+        spark.style.right = `${Math.random() * 14}vw`;
+        spark.style.bottom = `${Math.random() * 8}vh`;
+        spark.style.setProperty('--tx', `${-(Math.random() * 65 + 20)}px`);
+      }
+
+      spark.style.setProperty('--ty1', `${-(Math.random() * 40 + 25)}px`);
+      spark.style.setProperty('--ty2', `${-(Math.random() * 135 + 75)}px`);
       spark.style.animationDuration = `${(Math.random() * 0.2 + 0.65).toFixed(2)}s`;
 
       container.appendChild(spark);
@@ -1395,7 +1548,7 @@ class TuBIzOneApp {
     // Tự động dọn dẹp nhanh sau khi animation kết thúc (dưới 1 giây)
     setTimeout(() => {
       if (container) container.innerHTML = '';
-    }, 850);
+    }, 900);
   }
 
   // --- 7. KHU VỰC QUẢN TRỊ VIÊN: THÊM ACC (DEDICATED VIEW) & BÁO CÁO DOANH THU ---

@@ -256,7 +256,28 @@
   filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.75)) hue-rotate(-15deg);
 }
 .prime-gold-aura.prime-level-8 {
-  filter: drop-shadow(0 0 45px rgba(255, 215, 0, 0.95)) brightness(1.2);
+  filter: drop-shadow(0 0 45px rgba(255, 0, 128, 0.85)) brightness(1.25);
+}
+
+/* PRIME 8 ĐẶC SẮC NHẤT: Hào quang Cực Quang Lăng Kính Đa Sắc ở Đáy Màn Hình */
+.prime-gold-aura.prime-level-8 .aura-bottom-corners {
+  background: 
+    radial-gradient(ellipse 70% 95% at 0% 100%, rgba(121, 40, 202, 0.85) 0%, rgba(0, 223, 216, 0.5) 30%, rgba(255, 0, 128, 0.25) 60%, transparent 82%),
+    radial-gradient(ellipse 70% 95% at 100% 100%, rgba(255, 0, 128, 0.85) 0%, rgba(255, 185, 20, 0.5) 30%, rgba(121, 40, 202, 0.25) 60%, transparent 82%),
+    radial-gradient(ellipse 85% 65% at 50% 100%, rgba(0, 223, 216, 0.6) 0%, rgba(121, 40, 202, 0.4) 40%, transparent 78%);
+  filter: blur(15px);
+}
+
+.prime-gold-aura.prime-level-8 .aura-shimmer-line {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 128, 0.95) 0%,
+    rgba(121, 40, 202, 0.9) 25%,
+    rgba(0, 223, 216, 0.95) 50%,
+    rgba(255, 215, 0, 0.9) 75%,
+    rgba(255, 0, 128, 0.95) 100%
+  );
+  box-shadow: 0 -3px 22px rgba(255, 0, 128, 0.85), 0 -1px 30px rgba(0, 223, 216, 0.85);
 }
 
 /* Keyframes nháy ửng vàng ánh kim */
@@ -282,7 +303,7 @@
   }
 }
 
-/* Container chứa các hạt tia sáng vàng ánh kim bắn lên từ góc dưới */
+/* Container chứa các hạt tia sáng bắn lên từ góc dưới */
 .aura-sparks-container {
   position: absolute;
   inset: 0;
@@ -299,6 +320,11 @@
   animation: goldSparkFloatUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Hạt tia sáng đa sắc cho Prime 8 ở góc màn hình */
+.gold-spark-particle.rainbow-spark {
+  box-shadow: 0 0 12px currentColor, 0 0 22px currentColor;
+}
+
 @keyframes goldSparkFloatUp {
   0% {
     opacity: 0;
@@ -313,3 +339,138 @@
     transform: translate(var(--tx, 0), var(--ty2, -130px)) scale(0.1) rotate(180deg);
   }
 }
+
+/* =========================================================
+   HIỆU ỨNG BÙNG NỔ TẠI CHÍNH NÚT BẤM (BUTTON BURST EFFECTS)
+   Phân cấp: Prime 6 (Vàng Kim), Prime 7 (Hỏa Diệm), Prime 8 (Lăng Kính Thần Thoại)
+   ========================================================= */
+#prime-button-burst-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99995;
+  overflow: hidden;
+}
+
+/* Sóng xung kích tỏa ra từ tâm nút */
+.prime-btn-shockwave {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 1;
+}
+
+/* 1. Sóng Prime 6: Vàng Kim Citrine */
+.prime-shockwave-gold {
+  border: 2px solid rgba(255, 230, 80, 0.95);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.85), inset 0 0 10px rgba(255, 215, 0, 0.6);
+  animation: shockwaveGoldAnim 0.52s cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+/* 2. Sóng Prime 7: Hỏa Diệm Rực Lửa */
+.prime-shockwave-fire {
+  border: 2.5px solid rgba(255, 120, 20, 0.95);
+  box-shadow: 0 0 24px rgba(234, 88, 12, 0.9), inset 0 0 14px rgba(255, 165, 0, 0.7);
+  animation: shockwaveFireAnim 0.58s cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+/* 3. Sóng Prime 8: LĂNG KÍNH CẦU VỒNG THẦN THOẠI (Triple Prismatic Shockwaves) */
+.prime-shockwave-rainbow {
+  border: 2.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 0 25px rgba(255, 0, 128, 0.9),
+    0 0 45px rgba(0, 223, 216, 0.85),
+    inset 0 0 18px rgba(121, 40, 202, 0.75);
+  animation: shockwaveRainbowAnim 0.68s cubic-bezier(0.08, 0.85, 0.25, 1) forwards;
+}
+
+@keyframes shockwaveGoldAnim {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+}
+@keyframes shockwaveFireAnim {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
+@keyframes shockwaveRainbowAnim {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; filter: hue-rotate(0deg); }
+  50% { opacity: 0.95; }
+  100% { transform: translate(-50%, -50%) scale(4.8); opacity: 0; filter: hue-rotate(180deg); }
+}
+
+/* Các hạt tinh thể kim cương bắn ra từ nút */
+.prime-burst-particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  animation: primeParticleBurstOut var(--dur, 0.6s) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hạt kim cương / đa giác vát góc */
+.prime-burst-particle.gem-shape {
+  border-radius: 2px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+@keyframes primeParticleBurstOut {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(var(--s0, 0.6)) rotate(0deg);
+  }
+  60% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--bx), var(--by)) scale(var(--s1, 0.1)) rotate(var(--rot, 180deg));
+  }
+}
+
+/* Ngôi sao 4 cánh lấp lánh (✦) dành riêng cho Prime 8 */
+.prime-burst-star {
+  position: fixed;
+  pointer-events: none;
+  font-size: var(--size, 16px);
+  line-height: 1;
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  animation: primeStarSparkleOut var(--dur, 0.75s) cubic-bezier(0.18, 1, 0.32, 1) forwards;
+  user-select: none;
+}
+
+@keyframes primeStarSparkleOut {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.2) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(calc(var(--bx) * 0.45), calc(var(--by) * 0.45)) scale(1.35) rotate(90deg);
+  }
+  75% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--bx), var(--by)) scale(0.2) rotate(270deg);
+  }
+}
+
+/* Chớp sáng trung tâm (Cosmic Glint Flash) cho Prime 8 */
+.prime-center-glint {
+  position: fixed;
+  pointer-events: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.9) 25%, rgba(0, 223, 216, 0.6) 60%, transparent 80%);
+  box-shadow: 0 0 25px #ffffff, 0 0 50px rgba(0, 223, 216, 0.8), 0 0 75px rgba(255, 0, 128, 0.7);
+  animation: primeCenterGlint 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes primeCenterGlint {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  30% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+

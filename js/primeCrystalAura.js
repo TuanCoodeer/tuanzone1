@@ -313,15 +313,15 @@ export class PrimeCrystalAura {
         ctx.arc(apex.x, apex.y, glintSize, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ngôi sao 4 cánh phản quang nhỏ cho Prime 8
-        if (level === 8 && waveIntensity > 0.85) {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${(glintAlpha * 0.8).toFixed(3)})`;
-          ctx.lineWidth = 0.8;
+        // Ngôi sao 4 cánh phản quang lấp lánh cho Prime 8 (Đặc sắc nhất)
+        if (level === 8 && waveIntensity > 0.72) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${(glintAlpha * 0.95).toFixed(3)})`;
+          ctx.lineWidth = 1.1;
           ctx.beginPath();
-          ctx.moveTo(apex.x - 5, apex.y);
-          ctx.lineTo(apex.x + 5, apex.y);
-          ctx.moveTo(apex.x, apex.y - 5);
-          ctx.lineTo(apex.x, apex.y + 5);
+          ctx.moveTo(apex.x - 7, apex.y);
+          ctx.lineTo(apex.x + 7, apex.y);
+          ctx.moveTo(apex.x, apex.y - 7);
+          ctx.lineTo(apex.x, apex.y + 7);
           ctx.stroke();
         }
       }
