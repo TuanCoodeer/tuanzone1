@@ -772,6 +772,18 @@
   box-shadow: 0 2px 10px rgba(255, 0, 127, 0.5);
 }
 
+.tag-lq-blindbag {
+  background: linear-gradient(135deg, #7c3aed, #0084ff);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.5);
+}
+
+.tag-fc-blindbag {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+}
+
 .tag-hot {
   background: rgba(255, 60, 0, 0.85);
   color: #fff;
@@ -784,6 +796,16 @@
   box-shadow: 0 4px 15px rgba(255, 0, 127, 0.5) !important;
 }
 
+.btn-action-lq-blindbag {
+  background: linear-gradient(135deg, #8b5cf6, #0084ff) !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5) !important;
+}
+
+.btn-action-fc-blindbag {
+  background: linear-gradient(135deg, #10b981, #06b6d4) !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.5) !important;
+}
+
 .card-blindbag-special {
   border-color: rgba(255, 102, 0, 0.35);
 }
@@ -791,6 +813,24 @@
 .card-blindbag-special:hover {
   border-color: #ff6600;
   box-shadow: 0 14px 35px rgba(255, 102, 0, 0.35), 0 0 25px rgba(255, 0, 127, 0.3);
+}
+
+.card-blindbag-lq {
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+.card-blindbag-lq:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 14px 35px rgba(139, 92, 246, 0.35), 0 0 25px rgba(0, 132, 255, 0.3);
+}
+
+.card-blindbag-fc {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.card-blindbag-fc:hover {
+  border-color: #10b981;
+  box-shadow: 0 14px 35px rgba(16, 185, 129, 0.35), 0 0 25px rgba(6, 182, 212, 0.3);
 }
 
 .nav-link-hot {
@@ -1095,6 +1135,8 @@
 .icon-fc { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
 .icon-rb { background: linear-gradient(135deg, #b249f8, #ec4899); color: #fff; }
 .icon-blindbag { background: linear-gradient(135deg, #ff0055, #ff6600); color: #fff; }
+.icon-lq-blindbag { background: linear-gradient(135deg, #7c3aed, #0084ff); color: #fff; }
+.icon-fc-blindbag { background: linear-gradient(135deg, #10b981, #06b6d4); color: #fff; }
 
 .warehouse-heading {
   font-family: var(--font-display);

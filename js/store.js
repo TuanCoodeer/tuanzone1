@@ -125,6 +125,16 @@ class AppStore {
         sortBy: 'default',
         search: ''
       },
+      lq_blindbag: {
+        priceRange: 'all',
+        sortBy: 'default',
+        search: ''
+      },
+      fc_blindbag: {
+        priceRange: 'all',
+        sortBy: 'default',
+        search: ''
+      },
       roblox: {
         subCategory: 'all',
         priceRange: 'all',
@@ -532,6 +542,8 @@ class AppStore {
     if (game === 'freefire') return 'assets/images/cat-freefire.jpg';
     if (game === 'lienquan') return 'assets/images/cat-lienquan.jpg';
     if (game === 'fcmobile') return 'assets/images/cat-fcmobile.jpg';
+    if (game === 'lq-blindbag') return 'assets/images/cat-lq-blindbag.jpg';
+    if (game === 'fc-blindbag') return 'assets/images/cat-fc-blindbag.jpg';
     if (game === 'blindbag' || game === 'ff-blindbag') return 'assets/images/cat-ff-blindbag.jpg';
     return 'assets/images/cat-ff-blindbag.jpg';
   }
@@ -614,7 +626,9 @@ class AppStore {
       lienquan: { count: 0, revenue: 0 },
       fcmobile: { count: 0, revenue: 0 },
       roblox: { count: 0, revenue: 0 },
-      blindbag: { count: 0, revenue: 0 }
+      blindbag: { count: 0, revenue: 0 },
+      'lq-blindbag': { count: 0, revenue: 0 },
+      'fc-blindbag': { count: 0, revenue: 0 }
     };
 
     this.orders.forEach(ord => {

@@ -94,6 +94,38 @@ export const WAREHOUSES = {
       { id: "500k-1m", label: "500K - 1 Triệu", min: 500000, max: 1000000 },
       { id: "over-1m", label: "Trên 1 Triệu", min: 1000000 }
     ]
+  },
+  "lq-blindbag": {
+    id: "lq-blindbag",
+    name: "Kho Túi Mù Liên Quân",
+    icon: "🎁",
+    color: "#0084ff",
+    banner: "assets/images/cat-lq-blindbag.jpg",
+    description: "Kho túi mù Liên Quân Mobile 100% trúng tài khoản VIP có sẵn thông tin đăng nhập, phân loại theo mức giá và sắp xếp linh hoạt.",
+    priceRanges: [
+      { id: "all", label: "Tất cả mức giá" },
+      { id: "under-50k", label: "Dưới 50K", max: 50000 },
+      { id: "50k-200k", label: "50K - 200K", min: 50000, max: 200000 },
+      { id: "200k-500k", label: "200K - 500K", min: 200000, max: 500000 },
+      { id: "500k-1m", label: "500K - 1 Triệu", min: 500000, max: 1000000 },
+      { id: "over-1m", label: "Trên 1 Triệu", min: 1000000 }
+    ]
+  },
+  "fc-blindbag": {
+    id: "fc-blindbag",
+    name: "Kho Túi Mù FC Mobile",
+    icon: "🎁",
+    color: "#10b981",
+    banner: "assets/images/cat-fc-blindbag.jpg",
+    description: "Kho túi mù FC Mobile 100% trúng tài khoản OVR khủng có sẵn thông tin đăng nhập, phân loại theo mức giá và sắp xếp linh hoạt.",
+    priceRanges: [
+      { id: "all", label: "Tất cả mức giá" },
+      { id: "under-50k", label: "Dưới 50K", max: 50000 },
+      { id: "50k-200k", label: "50K - 200K", min: 50000, max: 200000 },
+      { id: "200k-500k", label: "200K - 500K", min: 200000, max: 500000 },
+      { id: "500k-1m", label: "500K - 1 Triệu", min: 500000, max: 1000000 },
+      { id: "over-1m", label: "Trên 1 Triệu", min: 1000000 }
+    ]
   }
 };
 

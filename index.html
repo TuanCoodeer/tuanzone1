@@ -50,6 +50,8 @@
         <a href="#kho-lienquan" class="nav-link">⚔️ Kho Liên Quân</a>
         <a href="#kho-fcmobile" class="nav-link">⚽ Kho FC Mobile</a>
         <a href="#kho-blindbag" class="nav-link nav-link-hot" id="nav-link-blindbag">🎁 Túi Mù FF</a>
+        <a href="#kho-lq-blindbag" class="nav-link nav-link-hot" id="nav-link-lq-blindbag">🎁 Túi Mù LQ</a>
+        <a href="#kho-fc-blindbag" class="nav-link nav-link-hot" id="nav-link-fc-blindbag">🎁 Túi Mù FC</a>
         <a href="#kho-admin" class="nav-link nav-link-admin" id="nav-link-header-admin" style="display: none;">👑 Kho Admin</a>
       </nav>
 
@@ -193,7 +195,7 @@
           </a>
         </div>
         <div class="game-categories-grid">
-          <!-- Card: Nick Liên Quân Mobile -->
+          <!-- Card 1: Nick Liên Quân Mobile -->
           <div class="game-category-card" data-game-category="lienquan" role="button" tabindex="0" title="Bấm để xem kho tài khoản Liên Quân">
             <div class="category-card-thumb-wrap">
               <img src="assets/images/cat-lienquan.jpg" alt="Nick Liên Quân" class="category-card-img" loading="lazy">
@@ -212,6 +214,26 @@
               </div>
             </div>
           </div>
+
+          <!-- Card 2: Kho Túi Mù Liên Quân -->
+          <div class="game-category-card card-blindbag-special card-blindbag-lq" data-game-category="lq-blindbag" role="button" tabindex="0" title="Bấm để xem Kho Túi Mù Liên Quân - 100% Trúng Nick VIP">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-lq-blindbag.jpg" alt="Túi Mù Liên Quân" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-lq-blindbag">🎁 Túi Mù LQ</span>
+                <span class="cat-status-tag tag-hot">🔥 100% Trúng Nick</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action btn-action-lq-blindbag">Mở Túi Mù ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Túi Mù Liên Quân</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-lq-blindbag">0</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -227,7 +249,7 @@
           </a>
         </div>
         <div class="game-categories-grid">
-          <!-- Card: Nick FC Mobile -->
+          <!-- Card 1: Nick FC Mobile -->
           <div class="game-category-card" data-game-category="fcmobile" role="button" tabindex="0" title="Bấm để xem kho tài khoản FC Mobile">
             <div class="category-card-thumb-wrap">
               <img src="assets/images/cat-fcmobile.jpg" alt="Nick FC Mobile" class="category-card-img" loading="lazy">
@@ -243,6 +265,26 @@
               <h3 class="category-card-title">Nick FC Mobile</h3>
               <div class="category-card-count">
                 Số tài khoản: <span class="count-num" id="cat-count-fcmobile">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Kho Túi Mù FC Mobile -->
+          <div class="game-category-card card-blindbag-special card-blindbag-fc" data-game-category="fc-blindbag" role="button" tabindex="0" title="Bấm để xem Kho Túi Mù FC Mobile - 100% Trúng Nick VIP">
+            <div class="category-card-thumb-wrap">
+              <img src="assets/images/cat-fc-blindbag.jpg" alt="Túi Mù FC Mobile" class="category-card-img" loading="lazy">
+              <div class="category-card-badges">
+                <span class="cat-game-tag tag-fc-blindbag">🎁 Túi Mù FC</span>
+                <span class="cat-status-tag tag-hot">🔥 100% Trúng Nick</span>
+              </div>
+              <div class="category-card-hover-mask">
+                <span class="btn-category-action btn-action-fc-blindbag">Mở Túi Mù ➔</span>
+              </div>
+            </div>
+            <div class="category-card-info">
+              <h3 class="category-card-title">Túi Mù FC Mobile</h3>
+              <div class="category-card-count">
+                Số tài khoản: <span class="count-num" id="cat-count-fc-blindbag">0</span>
               </div>
             </div>
           </div>
@@ -427,6 +469,156 @@
 
       <!-- Khung Trạng Thái Kho & Card Container -->
       <div id="blindbag-accounts-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+         KHO TÚI MÙ LIÊN QUÂN
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-lq-blindbag" style="display: none;">
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="warehouse-nav-bar">
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
+          <span>←</span> Quay lại danh mục game
+        </button>
+        <div class="warehouse-breadcrumbs">
+          <a href="#trangchu" class="bc-link" data-back-to-categories>Trang chủ</a>
+          <span class="bc-sep">›</span>
+          <span class="bc-link" data-back-to-categories>Danh mục game</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Kho Túi Mù Liên Quân</span>
+        </div>
+      </div>
+
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-lq-blindbag">🎁</div>
+          <h2 class="warehouse-heading">KHO TÚI MÙ LIÊN QUÂN</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho Túi Mù Liên Quân -->
+      <div class="filter-toolbar">
+        <!-- Tìm kiếm trong Kho Túi Mù Liên Quân -->
+        <div class="filter-search-row">
+          <div class="warehouse-search-box">
+            <span class="warehouse-search-icon">🔍</span>
+            <input type="text" class="warehouse-search-input" id="lq-blindbag-search-input" placeholder="Tìm kiếm trong Kho Túi Mù Liên Quân (Mã ID, loại túi, mức giá...)...">
+            <button type="button" class="warehouse-search-clear" id="lq-blindbag-search-clear" title="Xóa tìm kiếm">✕</button>
+          </div>
+        </div>
+
+        <!-- Lọc Theo Mức Giá -->
+        <div class="filter-row">
+          <span class="filter-label">Mức giá:</span>
+          <div class="chip-group" id="lq-blindbag-price-chips">
+            <button class="filter-chip active" data-price-range="all">Tất cả mức giá</button>
+            <button class="filter-chip" data-price-range="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price-range="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price-range="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price-range="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price-range="over-1m">Trên 1 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Sắp xếp và chọn túi mù Liên Quân phù hợp với bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="lq-blindbag-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="lq-blindbag-accounts-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+         KHO TÚI MÙ FC MOBILE
+         ========================================================= -->
+    <section class="section-warehouse" id="kho-fc-blindbag" style="display: none;">
+      <!-- Thanh Điều Hướng: Nút Quay Lại & Breadcrumbs -->
+      <div class="warehouse-nav-bar">
+        <button class="btn-warehouse-back" type="button" data-back-to-categories>
+          <span>←</span> Quay lại danh mục game
+        </button>
+        <div class="warehouse-breadcrumbs">
+          <a href="#trangchu" class="bc-link" data-back-to-categories>Trang chủ</a>
+          <span class="bc-sep">›</span>
+          <span class="bc-link" data-back-to-categories>Danh mục game</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">Kho Túi Mù FC Mobile</span>
+        </div>
+      </div>
+
+      <div class="warehouse-header-bar">
+        <div class="warehouse-title-group">
+          <div class="warehouse-icon icon-fc-blindbag">🎁</div>
+          <h2 class="warehouse-heading">KHO TÚI MÙ FC MOBILE</h2>
+        </div>
+        <span class="warehouse-total-badge">0 tài khoản</span>
+      </div>
+
+      <!-- Thanh Lọc Kho Túi Mù FC Mobile -->
+      <div class="filter-toolbar">
+        <!-- Tìm kiếm trong Kho Túi Mù FC Mobile -->
+        <div class="filter-search-row">
+          <div class="warehouse-search-box">
+            <span class="warehouse-search-icon">🔍</span>
+            <input type="text" class="warehouse-search-input" id="fc-blindbag-search-input" placeholder="Tìm kiếm trong Kho Túi Mù FC Mobile (Mã ID, loại túi, mức giá...)...">
+            <button type="button" class="warehouse-search-clear" id="fc-blindbag-search-clear" title="Xóa tìm kiếm">✕</button>
+          </div>
+        </div>
+
+        <!-- Lọc Theo Mức Giá -->
+        <div class="filter-row">
+          <span class="filter-label">Mức giá:</span>
+          <div class="chip-group" id="fc-blindbag-price-chips">
+            <button class="filter-chip active" data-price-range="all">Tất cả mức giá</button>
+            <button class="filter-chip" data-price-range="under-50k">Dưới 50K</button>
+            <button class="filter-chip" data-price-range="50k-200k">50K - 200K</button>
+            <button class="filter-chip" data-price-range="200k-500k">200K - 500K</button>
+            <button class="filter-chip" data-price-range="500k-1m">500K - 1 Triệu</button>
+            <button class="filter-chip" data-price-range="over-1m">Trên 1 Triệu</button>
+          </div>
+        </div>
+
+        <!-- Thanh điều khiển: Sắp xếp -->
+        <div class="filter-sub-bar">
+          <div class="filter-counter-hint">
+            <span>💡 Sắp xếp và chọn túi mù FC Mobile phù hợp với bạn</span>
+          </div>
+          <div class="filter-sort-wrapper">
+            <span class="sort-label">Sắp xếp:</span>
+            <select class="sort-select-box" id="fc-blindbag-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="random">Ngẫu nhiên</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Trạng Thái Kho & Card Container -->
+      <div id="fc-blindbag-accounts-container">
         <!-- Rendered via JS -->
       </div>
     </section>
@@ -775,7 +967,9 @@
               <option value="freefire">Free Fire</option>
               <option value="lienquan">Liên Quân</option>
               <option value="fcmobile">FC Mobile</option>
-              <option value="blindbag">Túi Mù</option>
+              <option value="blindbag">Túi Mù Free Fire</option>
+              <option value="lq-blindbag">Túi Mù Liên Quân</option>
+              <option value="fc-blindbag">Túi Mù FC Mobile</option>
             </select>
             <select id="admin-hub-inv-filter-status">
               <option value="all">Tất cả trạng thái</option>
@@ -1129,6 +1323,8 @@
                   <option value="lienquan">⚔️ Liên Quân Mobile</option>
                   <option value="fcmobile">⚽ FC Mobile</option>
                   <option value="blindbag">🎁 Túi Mù Free Fire</option>
+                  <option value="lq-blindbag">🎁 Túi Mù Liên Quân</option>
+                  <option value="fc-blindbag">🎁 Túi Mù FC Mobile</option>
                 </select>
               </div>
 

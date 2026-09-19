@@ -253,6 +253,8 @@ class TuBIzOneApp {
     this.renderLienQuanWarehouse();
     this.renderFcMobileWarehouse();
     this.renderBlindBagWarehouse();
+    this.renderLqBlindBagWarehouse();
+    this.renderFcBlindBagWarehouse();
   }
 
   updateCategoryCounts() {
@@ -260,18 +262,24 @@ class TuBIzOneApp {
     const lqCount = store.accounts.filter(a => a.game === 'lienquan' && a.status === 'AVAILABLE').length;
     const fcCount = store.accounts.filter(a => (a.game === 'fcmobile' || a.game === 'fc' || a.game === 'roblox') && a.status === 'AVAILABLE').length;
     const bbCount = store.accounts.filter(a => (a.game === 'blindbag' || a.game === 'ff-blindbag') && a.status === 'AVAILABLE').length;
+    const lqBbCount = store.accounts.filter(a => a.game === 'lq-blindbag' && a.status === 'AVAILABLE').length;
+    const fcBbCount = store.accounts.filter(a => a.game === 'fc-blindbag' && a.status === 'AVAILABLE').length;
     const totalShopAccounts = store.getTotalAvailableAccounts();
 
     const elFf = document.getElementById('cat-count-freefire');
     const elLq = document.getElementById('cat-count-lienquan');
     const elFc = document.getElementById('cat-count-fcmobile');
     const elBb = document.getElementById('cat-count-blindbag');
+    const elLqBb = document.getElementById('cat-count-lq-blindbag');
+    const elFcBb = document.getElementById('cat-count-fc-blindbag');
     const elAdminTotal = document.getElementById('cat-count-admin-total');
 
     if (elFf) elFf.textContent = ffCount;
     if (elLq) elLq.textContent = lqCount;
     if (elFc) elFc.textContent = fcCount;
     if (elBb) elBb.textContent = bbCount;
+    if (elLqBb) elLqBb.textContent = lqBbCount;
+    if (elFcBb) elFcBb.textContent = fcBbCount;
     if (elAdminTotal) elAdminTotal.textContent = `${totalShopAccounts} nick`;
   }
 
@@ -304,7 +312,7 @@ class TuBIzOneApp {
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'none';
 
-    ['freefire', 'lienquan', 'fcmobile', 'blindbag', 'admin'].forEach(g => {
+    ['freefire', 'lienquan', 'fcmobile', 'blindbag', 'lq-blindbag', 'fc-blindbag', 'admin'].forEach(g => {
       const el = document.getElementById(`kho-${g}`);
       if (el) el.style.display = g === gameKey ? 'block' : 'none';
     });
@@ -338,7 +346,7 @@ class TuBIzOneApp {
     const catSection = document.getElementById('game-categories-section');
     if (catSection) catSection.style.display = 'block';
 
-    ['freefire', 'lienquan', 'fcmobile', 'blindbag', 'admin'].forEach(g => {
+    ['freefire', 'lienquan', 'fcmobile', 'blindbag', 'lq-blindbag', 'fc-blindbag', 'admin'].forEach(g => {
       const el = document.getElementById(`kho-${g}`);
       if (el) el.style.display = 'none';
     });
@@ -467,6 +475,66 @@ class TuBIzOneApp {
     list = this.sortList(list, store.filters.blindbag?.sortBy);
 
     container.innerHTML = this.buildWarehouseHTML('blindbag', list, "Kho Túi Mù Free Fire");
+    this.attachCardBuyTriggers(container);
+  }
+
+  // --- 4C. KHO TÚI MÙ LIÊN QUÂN ---
+  renderLqBlindBagWarehouse() {
+    const container = document.getElementById('lq-blindbag-accounts-container');
+    const badge = document.querySelector('#kho-lq-blindbag .warehouse-total-badge');
+    if (!container) return;
+
+    let list = store.accounts.filter(a => a.game === 'lq-blindbag' && a.status === 'AVAILABLE');
+
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
+    }
+
+    // Lọc Mức giá
+    list = this.filterByPrice(list, store.filters.lq_blindbag?.priceRange);
+
+    // Tìm kiếm
+    if (store.searchQuery) {
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.lq_blindbag?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.lq_blindbag.search));
+    }
+
+    // Sắp xếp
+    list = this.sortList(list, store.filters.lq_blindbag?.sortBy);
+
+    container.innerHTML = this.buildWarehouseHTML('lq-blindbag', list, "Kho Túi Mù Liên Quân");
+    this.attachCardBuyTriggers(container);
+  }
+
+  // --- 4D. KHO TÚI MÙ FC MOBILE ---
+  renderFcBlindBagWarehouse() {
+    const container = document.getElementById('fc-blindbag-accounts-container');
+    const badge = document.querySelector('#kho-fc-blindbag .warehouse-total-badge');
+    if (!container) return;
+
+    let list = store.accounts.filter(a => a.game === 'fc-blindbag' && a.status === 'AVAILABLE');
+
+    if (badge) {
+      badge.textContent = `${list.length} tài khoản`;
+    }
+
+    // Lọc Mức giá
+    list = this.filterByPrice(list, store.filters.fc_blindbag?.priceRange);
+
+    // Tìm kiếm
+    if (store.searchQuery) {
+      list = list.filter(a => this.matchesSearch(a, store.searchQuery));
+    }
+    if (store.filters.fc_blindbag?.search) {
+      list = list.filter(a => this.matchesSearch(a, store.filters.fc_blindbag.search));
+    }
+
+    // Sắp xếp
+    list = this.sortList(list, store.filters.fc_blindbag?.sortBy);
+
+    container.innerHTML = this.buildWarehouseHTML('fc-blindbag', list, "Kho Túi Mù FC Mobile");
     this.attachCardBuyTriggers(container);
   }
 
@@ -663,7 +731,7 @@ class TuBIzOneApp {
             <div class="acc-card-info">
               <h3 class="acc-card-name">${acc.title}</h3>
               <div class="acc-meta-details">
-                <div class="acc-meta-item">Game: <strong>${(acc.game === 'blindbag' || acc.game === 'ff-blindbag') ? 'Túi Mù FF' : (acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile'))}</strong></div>
+                <div class="acc-meta-item">Game: <strong>${(acc.game === 'blindbag' || acc.game === 'ff-blindbag') ? 'Túi Mù FF' : (acc.game === 'lq-blindbag' ? 'Túi Mù LQ' : (acc.game === 'fc-blindbag' ? 'Túi Mù FC' : (acc.game === 'freefire' ? 'Free Fire' : (acc.game === 'lienquan' ? 'Liên Quân' : 'FC Mobile'))))}</strong></div>
                 <div class="acc-meta-item">Loại: <strong>${acc.accountType || 'VIP'}</strong></div>
               </div>
               <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
@@ -779,6 +847,10 @@ class TuBIzOneApp {
         this.openWarehouse('fcmobile', false);
       } else if (hash === '#kho-blindbag' || hash === '#tui-mu-freefire') {
         this.openWarehouse('blindbag', false);
+      } else if (hash === '#kho-lq-blindbag' || hash === '#tui-mu-lienquan') {
+        this.openWarehouse('lq-blindbag', false);
+      } else if (hash === '#kho-fc-blindbag' || hash === '#tui-mu-fcmobile') {
+        this.openWarehouse('fc-blindbag', false);
       } else if (hash === '#kho-admin' || hash === '#admin-hub') {
         if (store.user?.isAdmin) {
           this.openWarehouse('admin', false);
@@ -789,7 +861,7 @@ class TuBIzOneApp {
         }
       } else if (hash.startsWith('#kho-')) {
         const g = hash.replace('#kho-', '').trim();
-        if (['freefire', 'lienquan', 'fcmobile', 'blindbag', 'admin'].includes(g)) {
+        if (['freefire', 'lienquan', 'fcmobile', 'blindbag', 'lq-blindbag', 'fc-blindbag', 'admin'].includes(g)) {
           this.openWarehouse(g, false);
         }
       } else if (hash === '#admin-add-acc') {
@@ -975,6 +1047,8 @@ class TuBIzOneApp {
       fcmobile: "FC Mobile",
       blindbag: "Túi Mù Free Fire",
       "ff-blindbag": "Túi Mù Free Fire",
+      "lq-blindbag": "Túi Mù Liên Quân",
+      "fc-blindbag": "Túi Mù FC Mobile",
       roblox: "Roblox"
     };
     const gameName = gameNames[acc.game] || 'Game Online';
@@ -1313,6 +1387,78 @@ class TuBIzOneApp {
       if (!store.filters.blindbag) store.filters.blindbag = {};
       store.filters.blindbag.sortBy = e.target.value;
       this.renderBlindBagWarehouse();
+    });
+
+    // 5. Kho Túi Mù Liên Quân: Search
+    const lqBbSearchInput = document.getElementById('lq-blindbag-search-input');
+    const lqBbSearchClear = document.getElementById('lq-blindbag-search-clear');
+    lqBbSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.lq_blindbag) store.filters.lq_blindbag = {};
+      store.filters.lq_blindbag.search = val;
+      if (lqBbSearchClear) lqBbSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderLqBlindBagWarehouse();
+    });
+    lqBbSearchClear?.addEventListener('click', () => {
+      if (lqBbSearchInput) lqBbSearchInput.value = '';
+      if (!store.filters.lq_blindbag) store.filters.lq_blindbag = {};
+      store.filters.lq_blindbag.search = '';
+      lqBbSearchClear.style.display = 'none';
+      this.renderLqBlindBagWarehouse();
+    });
+
+    // Kho Túi Mù Liên Quân: Price Chips
+    document.querySelectorAll('#lq-blindbag-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#lq-blindbag-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.lq_blindbag) store.filters.lq_blindbag = {};
+        store.filters.lq_blindbag.priceRange = chip.dataset.priceRange;
+        this.renderLqBlindBagWarehouse();
+      });
+    });
+
+    // Kho Túi Mù Liên Quân: Sort
+    document.getElementById('lq-blindbag-sort-select')?.addEventListener('change', (e) => {
+      if (!store.filters.lq_blindbag) store.filters.lq_blindbag = {};
+      store.filters.lq_blindbag.sortBy = e.target.value;
+      this.renderLqBlindBagWarehouse();
+    });
+
+    // 6. Kho Túi Mù FC Mobile: Search
+    const fcBbSearchInput = document.getElementById('fc-blindbag-search-input');
+    const fcBbSearchClear = document.getElementById('fc-blindbag-search-clear');
+    fcBbSearchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (!store.filters.fc_blindbag) store.filters.fc_blindbag = {};
+      store.filters.fc_blindbag.search = val;
+      if (fcBbSearchClear) fcBbSearchClear.style.display = val ? 'flex' : 'none';
+      this.renderFcBlindBagWarehouse();
+    });
+    fcBbSearchClear?.addEventListener('click', () => {
+      if (fcBbSearchInput) fcBbSearchInput.value = '';
+      if (!store.filters.fc_blindbag) store.filters.fc_blindbag = {};
+      store.filters.fc_blindbag.search = '';
+      fcBbSearchClear.style.display = 'none';
+      this.renderFcBlindBagWarehouse();
+    });
+
+    // Kho Túi Mù FC Mobile: Price Chips
+    document.querySelectorAll('#fc-blindbag-price-chips .filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#fc-blindbag-price-chips .filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        if (!store.filters.fc_blindbag) store.filters.fc_blindbag = {};
+        store.filters.fc_blindbag.priceRange = chip.dataset.priceRange;
+        this.renderFcBlindBagWarehouse();
+      });
+    });
+
+    // Kho Túi Mù FC Mobile: Sort
+    document.getElementById('fc-blindbag-sort-select')?.addEventListener('change', (e) => {
+      if (!store.filters.fc_blindbag) store.filters.fc_blindbag = {};
+      store.filters.fc_blindbag.sortBy = e.target.value;
+      this.renderFcBlindBagWarehouse();
     });
   }
 
@@ -1857,7 +2003,7 @@ class TuBIzOneApp {
       if (val === 'freefire' || val === 'blindbag') {
         if (primeGroup) primeGroup.style.display = 'block';
         if (fcGroup) fcGroup.style.display = 'none';
-      } else if (val === 'fcmobile') {
+      } else if (val === 'fcmobile' || val === 'fc-blindbag') {
         if (primeGroup) primeGroup.style.display = 'none';
         if (fcGroup) fcGroup.style.display = 'block';
       } else {
@@ -1939,6 +2085,20 @@ class TuBIzOneApp {
           'assets/images/cat-freefire.jpg',
           'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800',
           'https://images.unsplash.com/photo-1563089145-599997674d42?w=800'
+        ];
+      } else if (g === 'lq-blindbag') {
+        sampleList = [
+          'assets/images/cat-lq-blindbag.jpg',
+          'assets/images/cat-lienquan.jpg',
+          'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
+          'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800'
+        ];
+      } else if (g === 'fc-blindbag') {
+        sampleList = [
+          'assets/images/cat-fc-blindbag.jpg',
+          'assets/images/cat-fcmobile.jpg',
+          'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800',
+          'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800'
         ];
       } else {
         sampleList = [
@@ -2138,6 +2298,8 @@ class TuBIzOneApp {
       if (gameVal !== 'all') {
         filtered = filtered.filter(a => {
           if (gameVal === 'blindbag') return a.game === 'blindbag' || a.game === 'ff-blindbag';
+          if (gameVal === 'lq-blindbag') return a.game === 'lq-blindbag';
+          if (gameVal === 'fc-blindbag') return a.game === 'fc-blindbag';
           return a.game === gameVal;
         });
       }
@@ -2161,7 +2323,7 @@ class TuBIzOneApp {
       }
 
       tbody.innerHTML = filtered.map(acc => {
-        const gameTag = acc.game === 'freefire' ? '🔥 Free Fire' : (acc.game === 'lienquan' ? '⚔️ Liên Quân' : (acc.game === 'fcmobile' ? '⚽ FC Mobile' : '🎁 Túi Mù'));
+        const gameTag = acc.game === 'freefire' ? '🔥 Free Fire' : (acc.game === 'lienquan' ? '⚔️ Liên Quân' : (acc.game === 'fcmobile' ? '⚽ FC Mobile' : (acc.game === 'lq-blindbag' ? '🎁 Túi Mù LQ' : (acc.game === 'fc-blindbag' ? '🎁 Túi Mù FC' : '🎁 Túi Mù FF'))));
         const statusBadge = acc.status === 'AVAILABLE' 
           ? `<span style="color: #00e676; font-weight: 700; background: rgba(0,230,118,0.15); padding: 3px 8px; border-radius: 4px;">🟢 Đang bán</span>`
           : `<span style="color: #ff334b; font-weight: 700; background: rgba(255,51,75,0.15); padding: 3px 8px; border-radius: 4px;">🔴 Đã bán</span>`;
