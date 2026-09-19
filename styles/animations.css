@@ -201,12 +201,20 @@
   z-index: 99990;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s ease;
 }
 
 .prime-gold-aura.flashing {
   visibility: visible;
-  animation: primeGoldAuraFlash 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: primeGoldAuraContainerFade 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.prime-gold-aura.flashing .aura-bottom-corners {
+  animation: primeAuraCornersBloom 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.prime-gold-aura.flashing .aura-shimmer-line {
+  animation: primeAuraShimmerBloom 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Hào quang ửng vàng ánh kim mềm mại ở góc dưới màn hình */
@@ -215,15 +223,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 38vh;
-  max-height: 420px;
+  height: 42vh;
+  max-height: 450px;
+  transform-origin: bottom center;
   background: 
-    radial-gradient(ellipse 65% 95% at 0% 100%, rgba(255, 215, 60, 0.72) 0%, rgba(255, 155, 10, 0.38) 28%, rgba(210, 100, 0, 0.12) 58%, transparent 80%),
-    radial-gradient(ellipse 65% 95% at 100% 100%, rgba(255, 215, 60, 0.72) 0%, rgba(255, 155, 10, 0.38) 28%, rgba(210, 100, 0, 0.12) 58%, transparent 80%),
-    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255, 200, 40, 0.35) 0%, rgba(255, 140, 0, 0.14) 35%, transparent 75%);
-  filter: blur(18px);
+    radial-gradient(ellipse 75% 100% at 0% 100%, rgba(255, 215, 60, 0.65) 0%, rgba(255, 155, 10, 0.3) 30%, rgba(210, 100, 0, 0.08) 60%, transparent 82%),
+    radial-gradient(ellipse 75% 100% at 100% 100%, rgba(255, 215, 60, 0.65) 0%, rgba(255, 155, 10, 0.3) 30%, rgba(210, 100, 0, 0.08) 60%, transparent 82%),
+    radial-gradient(ellipse 85% 60% at 50% 100%, rgba(255, 200, 40, 0.28) 0%, rgba(255, 140, 0, 0.1) 40%, transparent 78%);
+  filter: blur(24px);
   mix-blend-mode: screen;
   pointer-events: none;
+  will-change: transform, opacity, filter;
 }
 
 /* Đường viền ánh kim đáy màn hình */
@@ -233,6 +243,7 @@
   right: 0;
   bottom: 0;
   height: 3px;
+  transform-origin: center bottom;
   background: linear-gradient(
     90deg,
     rgba(255, 225, 80, 0.95) 0%,
@@ -241,8 +252,9 @@
     rgba(255, 165, 0, 0.6) 82%,
     rgba(255, 225, 80, 0.95) 100%
   );
-  box-shadow: 0 -2px 16px rgba(255, 200, 0, 0.85);
+  box-shadow: 0 -2px 18px rgba(255, 200, 0, 0.85);
   mix-blend-mode: screen;
+  will-change: transform, opacity;
 }
 
 /* Biến thể từng cấp độ Prime 5 - 8 */
@@ -262,10 +274,10 @@
 /* PRIME 8 ĐẶC SẮC NHẤT: Hào quang Cực Quang Lăng Kính Đa Sắc ở Đáy Màn Hình */
 .prime-gold-aura.prime-level-8 .aura-bottom-corners {
   background: 
-    radial-gradient(ellipse 70% 95% at 0% 100%, rgba(121, 40, 202, 0.85) 0%, rgba(0, 223, 216, 0.5) 30%, rgba(255, 0, 128, 0.25) 60%, transparent 82%),
-    radial-gradient(ellipse 70% 95% at 100% 100%, rgba(255, 0, 128, 0.85) 0%, rgba(255, 185, 20, 0.5) 30%, rgba(121, 40, 202, 0.25) 60%, transparent 82%),
-    radial-gradient(ellipse 85% 65% at 50% 100%, rgba(0, 223, 216, 0.6) 0%, rgba(121, 40, 202, 0.4) 40%, transparent 78%);
-  filter: blur(15px);
+    radial-gradient(ellipse 80% 100% at 0% 100%, rgba(121, 40, 202, 0.8) 0%, rgba(0, 223, 216, 0.42) 32%, rgba(255, 0, 128, 0.18) 62%, transparent 84%),
+    radial-gradient(ellipse 80% 100% at 100% 100%, rgba(255, 0, 128, 0.8) 0%, rgba(255, 185, 20, 0.42) 32%, rgba(121, 40, 202, 0.18) 62%, transparent 84%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 223, 216, 0.5) 0%, rgba(121, 40, 202, 0.3) 42%, transparent 80%);
+  filter: blur(22px);
 }
 
 .prime-gold-aura.prime-level-8 .aura-shimmer-line {
@@ -280,26 +292,63 @@
   box-shadow: 0 -3px 22px rgba(255, 0, 128, 0.85), 0 -1px 30px rgba(0, 223, 216, 0.85);
 }
 
-/* Keyframes nháy ửng vàng ánh kim */
-@keyframes primeGoldAuraFlash {
+/* Keyframes container độ mờ tổng thể (fade mượt) */
+@keyframes primeGoldAuraContainerFade {
   0% {
     opacity: 0;
-    transform: scale(0.96);
   }
   20% {
     opacity: 1;
-    transform: scale(1.02);
-  }
-  45% {
-    opacity: 0.85;
-    transform: scale(1);
   }
   75% {
-    opacity: 0.4;
+    opacity: 0.85;
   }
   100% {
     opacity: 0;
-    transform: scale(1);
+  }
+}
+
+/* Keyframes nở ánh sáng ửng lên từ góc dưới (Bloom Rise) cực kỳ êm ái */
+@keyframes primeAuraCornersBloom {
+  0% {
+    opacity: 0;
+    transform: translateY(32px) scaleY(0.82);
+    filter: blur(30px);
+  }
+  32% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1.05);
+    filter: blur(20px);
+  }
+  65% {
+    opacity: 0.85;
+    transform: translateY(-5px) scaleY(1.02);
+    filter: blur(22px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px) scaleY(0.92);
+    filter: blur(32px);
+  }
+}
+
+/* Keyframes dải sáng chân trời nở ra và thu lại */
+@keyframes primeAuraShimmerBloom {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.45);
+  }
+  28% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  70% {
+    opacity: 0.85;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.92);
   }
 }
 
@@ -317,7 +366,8 @@
   border-radius: 50%;
   background: radial-gradient(circle, #fff7c2 0%, #ffd700 40%, #ff8c00 100%);
   box-shadow: 0 0 10px #ffd700, 0 0 18px #ff9500;
-  animation: goldSparkFloatUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: goldSparkFloatUp 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* Hạt tia sáng đa sắc cho Prime 8 ở góc màn hình */
@@ -328,15 +378,18 @@
 @keyframes goldSparkFloatUp {
   0% {
     opacity: 0;
-    transform: translate(0, 0) scale(0.4) rotate(0deg);
+    transform: translate(0, 10px) scale(0.35) rotate(0deg);
   }
-  20% {
+  25% {
     opacity: 1;
-    transform: translate(var(--tx, 0), var(--ty1, -30px)) scale(1.2) rotate(45deg);
+    transform: translate(var(--tx, 0), var(--ty1, -35px)) scale(1.15) rotate(45deg);
+  }
+  70% {
+    opacity: 0.85;
   }
   100% {
     opacity: 0;
-    transform: translate(var(--tx, 0), var(--ty2, -130px)) scale(0.1) rotate(180deg);
+    transform: translate(var(--tx, 0), var(--ty2, -145px)) scale(0.12) rotate(180deg);
   }
 }
 
